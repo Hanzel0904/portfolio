@@ -1,0 +1,665 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Settings — Ceremony Portal</title>
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/system_settings.css">
+  <link rel="stylesheet" href="css/action_feedback_modal.css">
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;">
+    <defs>
+      <path id="ico-dashboard" d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
+      <path id="ico-register" d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-2.2 0-6 1.1-6 3.3V18h12v-1.7c0-2.2-3.8-3.3-6-3.3zm5-9h1V4h2v1h1v2h-1v1h-2V7h-1V5z"/>
+      <path id="ico-records" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm0 2l4 4h-4V4zM6 20V4h2v4h8v2H6v10zm0-6h8v2H6v-2zm0 4h5v2H6v-2z"/>
+      <path id="ico-bars" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+      <path id="ico-user" d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/>
+    </defs>
+  </svg>
+</head>
+
+<body class="settings-body">
+
+<header class="plp-header" role="banner">
+  <a href="dashboard.html" class="plp-logo-wrap">
+    <div class="plp-logo-icon"><img src="assets/logo.png" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
+    <div class="plp-logo-text"><span class="plp-logo-title">PLP Smart Attendance</span><span class="plp-logo-sub">Demo</span></div>
+  </a>
+  <nav class="plp-nav">
+    <a class="plp-nav-link" href="dashboard.html"><span>Dashboard</span></a>
+    <a class="plp-nav-link" href="employee_registration.html"><span>Register</span></a>
+    <a class="plp-nav-link" href="records.html"><span>Records</span></a>
+    <a class="plp-nav-link" href="employee_management.html"><span>Employees</span></a>
+    <a class="plp-nav-link" href="capture.html"><span>Capture</span></a>
+    <a class="plp-nav-link" href="analytics.html"><span>Analytics</span></a>
+    <a class="plp-nav-link" href="audit_monitoring.html"><span>Audit</span></a>
+    <a class="plp-nav-link" href="system_settings.html"><span>Settings</span></a>
+    <a class="plp-nav-link" href="scanner.html"><span>Scanner</span></a><a class="plp-nav-link" href="manualAttendanceDesign.html"><span>Manual</span></a><a class="plp-nav-link" href="fullscreen.html"><span>Ceremony</span></a><a class="plp-nav-link" href="mobileQr_fullscreen.html"><span>Mobile QR</span></a>
+    <a class="plp-nav-link" href="index.html"><span>Logout</span></a>
+  </nav>
+</header>
+
+
+
+<main class="container settings-shell">
+
+  <header class="settings-hero">
+    <h1 class="page-title">System Settings</h1>
+    <p class="page-subtitle">Ceremony schedules, departments, positions, and data preferences in one place</p>
+  </header>
+
+  <div class="settings-grid">
+
+    <div class="settings-top-grid">
+      <section class="card card-elevated" aria-labelledby="dept-heading">
+        <div class="card-top">
+          <h2 id="dept-heading">Departments &amp; colors</h2>
+          <p class="card-subtitle">Used for labels and reports. Changing a color updates lists that read from the database.</p>
+        </div>
+
+        <div class="dept-add-row">
+          <div class="dept-add-field">
+            <label for="newDeptName">New department</label>
+            <input type="text" id="newDeptName" placeholder="e.g. College of Engineering" maxlength="120" autocomplete="organization">
+          </div>
+          <div class="dept-add-field dept-add-narrow">
+            <label for="newDeptColor">Color</label>
+            <input type="color" id="newDeptColor" value="#1a7c3e" aria-label="Department color"
+                   style="width:48px;height:36px;padding:2px;border-radius:6px;cursor:pointer;border:1px solid #ccc;">
+          </div>
+          <div class="dept-add-actions">
+            <button type="button" class="primary-button" id="deptAddBtn">Add department</button>
+          </div>
+        </div>
+
+        <div class="dept-list-toolbar">
+          <button type="button" class="secondary-button dept-list-toggle" id="btnToggleDeptList" aria-expanded="false" aria-controls="deptTablePanel">
+            Show department list
+          </button>
+        </div>
+        <div id="deptTablePanel" class="dept-table-panel" hidden>
+          <div class="dept-table-wrap">
+            <table class="dept-settings-table" id="departmentsTable">
+              <thead>
+                <tr>
+                  <th class="col-swatch"></th>
+                  <th>Name</th>
+                  <th class="col-hex">Hex</th>
+                  <th class="col-act"></th>
+                </tr>
+              </thead>
+              <tbody id="departmentsTableBody">
+                <tr><td colspan="4" class="table-empty">Loading departments…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="card card-elevated" aria-labelledby="pos-heading">
+        <div class="card-top">
+          <h2 id="pos-heading">Positions</h2>
+          <p class="card-subtitle">Job titles shown in Register Employee and when editing an employee (dropdown options come from this list).</p>
+        </div>
+
+        <div class="dept-add-row dept-add-row--single">
+          <div class="dept-add-field">
+            <label for="newPosName">New position</label>
+            <input type="text" id="newPosName" placeholder="e.g. Instructor" maxlength="80" autocomplete="organization-title">
+          </div>
+          <div class="dept-add-actions">
+            <button type="button" class="primary-button" id="posAddBtn">Add position</button>
+          </div>
+        </div>
+
+        <div class="dept-list-toolbar">
+          <button type="button" class="secondary-button dept-list-toggle" id="btnTogglePosList" aria-expanded="false" aria-controls="posTablePanel">
+            Show position list
+          </button>
+        </div>
+        <div id="posTablePanel" class="dept-table-panel" hidden>
+          <div class="dept-table-wrap">
+            <table class="dept-settings-table" id="positionsTable">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th class="col-act"></th>
+                </tr>
+              </thead>
+              <tbody id="positionsTableBody">
+                <tr><td colspan="2" class="table-empty">Loading positions…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card card-elevated" aria-labelledby="daily-ceremony-heading">
+      <div class="card-top">
+        <div class="daily-ceremony-title-row">
+          <h2 id="daily-ceremony-heading" class="daily-ceremony-title">Daily flag ceremony (default schedule)</h2>
+          <div class="form-group ceremony-field ceremony-field--num daily-ceremony-toggle-wrap">
+            <label class="toggle-switch">
+              <input type="checkbox" id="settingAttendanceSuspendedToday" aria-label="Attendance active for today (off pauses logging and flag reminder emails for today)" >
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <p class="card-subtitle daily-ceremony-subtitle">Used when no <strong>special occasion</strong> applies today. Logging opens <strong>early</strong> before the official time, and stays open for the <strong>late threshold</strong> after it (grace period). When attendance is <strong>off for today</strong>, automated <strong>flag ceremony reminder emails</strong> to staff are skipped for this day.</p>
+        <br>
+      </div>
+      <div class="ceremony-schedule">
+        <div class="ceremony-schedule-row">
+          <div class="ceremony-schedule-meta">
+            <div class="ceremony-schedule-name">Flag raising</div>
+            <div class="ceremony-schedule-sub">Default ceremony (time in)</div>
+          </div>
+          <div class="ceremony-schedule-fields">
+            <div class="form-group ceremony-field ceremony-field--time">
+              <label for="ceremonyFlagRaisingDay">Day</label>
+              <select id="ceremonyFlagRaisingDay">
+                
+                  <option value="" >
+                    
+                  </option>
+                
+              </select>
+            </div>
+            <div class="form-group ceremony-field ceremony-field--time">
+              <label for="ceremonyFlagRaising">Time</label>
+              <input type="time" id="ceremonyFlagRaising" value="">
+            </div>
+            <div class="form-group ceremony-field ceremony-field--time">
+              <label for="ceremonyFlagRaisingCloseTime">Close time</label>
+              <input type="time" id="ceremonyFlagRaisingCloseTime" value="">
+            </div>
+          </div>
+        </div>
+
+        <div class="ceremony-schedule-row">
+          <div class="ceremony-schedule-meta">
+            <div class="ceremony-schedule-name">Flag retreat</div>
+            <div class="ceremony-schedule-sub">Default ceremony (time in)</div>
+          </div>
+          <div class="ceremony-schedule-fields">
+            <div class="form-group ceremony-field ceremony-field--time">
+              <label for="ceremonyFlagRetreatDay">Day</label>
+              <select id="ceremonyFlagRetreatDay">
+                
+                  <option value="" >
+                    
+                  </option>
+                
+              </select>
+            </div>
+            <div class="form-group ceremony-field ceremony-field--time">
+              <label for="ceremonyFlagRetreat">Time</label>
+              <input type="time" id="ceremonyFlagRetreat" value="">
+            </div>
+            <div class="form-group ceremony-field ceremony-field--time">
+              <label for="ceremonyFlagRetreatCloseTime">Close time</label>
+              <input type="time" id="ceremonyFlagRetreatCloseTime" value="">
+            </div>
+          </div>
+        </div>
+
+        <div class="ceremony-schedule-row ceremony-schedule-row--rules">
+          <div class="ceremony-schedule-meta">
+            <div class="ceremony-schedule-name">Window rules</div>
+            <div class="ceremony-schedule-sub">Applies to both default ceremonies</div>
+          </div>
+          <div class="ceremony-schedule-fields ceremony-schedule-fields--rules">
+            <div class="form-group ceremony-field ceremony-field--num">
+              <label for="ceremonyEarlyMinutes">Early window (min)</label>
+              <input type="number" id="ceremonyEarlyMinutes" min="0" max="240" value="">
+            </div>
+            <div class="form-group ceremony-field ceremony-field--num">
+              <label for="ceremonyLateThreshold">Late threshold (min)</label>
+              <input type="number" id="ceremonyLateThreshold" min="0" max="600" value="">
+            </div>
+          </div>
+        </div>
+
+        <div class="ceremony-schedule-actions">
+          <button type="button" class="primary-button" id="btnSaveCeremonySettings">Save</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card-elevated" aria-labelledby="special-heading">
+      <div class="card-top">
+        <h2 id="special-heading">Special occasion schedules</h2>
+        <p class="card-subtitle">One-day windows (e.g. training, graduation). Each occasion has its own <strong>early window</strong> (before Time in) and <strong>late threshold</strong> (after Time out). Locks when the window ends.</p>
+      </div>
+
+      <div class="schedule-list">
+        <div class="schedule-list-header-row">
+          <div class="schedule-list-title">Recent schedules <span class="schedule-list-note">(newest 5)</span></div>
+          <div class="schedule-card-actions">
+            <button type="button" class="primary-button" id="btnOpenAddSchedule">Add special occasion</button>
+            <button type="button" class="secondary-button" id="btnViewAllSchedules">View all occasions</button>
+          </div>
+        </div>
+        <div class="special-schedules-table-wrap">
+          <table class="special-schedules-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>In</th>
+                <th>Out</th>
+                <th>Early</th>
+                <th>Thr.</th>
+                <th>Participants</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="specialSchedulesTableBody">
+              <tr>
+                <td colspan="9" class="table-empty">No schedules yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card-muted" aria-labelledby="backup-heading">
+      <div class="card-header">
+        <div>
+          <h2 id="backup-heading">Backup</h2>
+          <p class="card-subtitle">Create and download a database backup.</p>
+        </div>
+      </div>
+      <div class="backup-actions">
+        <div class="backup-actions-row">
+          <div class="backup-actions-text">
+            <strong>Download backup now</strong>
+            <p class="card-subtitle">Generates a fresh backup and downloads it.</p>
+          </div>
+          <a class="secondary-button" href="download_backup.html">Download backup</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card-muted" aria-labelledby="account-settings-heading">
+      <div class="card-header">
+        <div>
+          <h2 id="account-settings-heading">Account settings</h2>
+          <p class="card-subtitle">Update the admin username, password, and security alert email.</p>
+        </div>
+      </div>
+      <div class="backup-actions">
+        <div class="form-row-tight" style="margin-top: 8px; align-items: flex-start;">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="acctDisplayUsername" value="" disabled>
+          </div>
+          <div class="form-group">
+            <label>Account security email</label>
+            <input type="text" id="acctDisplaySecurityEmail" value="" disabled>
+          </div>
+        </div>
+
+        <div class="backup-actions-row" style="margin-top: 6px;">
+          <div class="backup-actions-text"></div>
+          <button type="button" class="secondary-button" id="btnEditAccountSettings">Edit</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="modal-backdrop" id="scheduleAddModalBackdrop" hidden></div>
+<div class="modal" id="scheduleAddModal" role="dialog" aria-modal="true" aria-labelledby="scheduleAddModalTitle" hidden>
+  <div class="modal-card modal-card-wide modal-card-schedule-add">
+    <div class="modal-header">
+      <h3 id="scheduleAddModalTitle">Add special occasion</h3>
+      <div class="modal-header-right">
+        <span class="staff-count-pill" id="scheduleAddStaffCount" aria-label="Selected staff count">— staff</span>
+        <button type="button" class="modal-close-btn" id="scheduleAddModalCloseBtn" aria-label="Close">&times;</button>
+      </div>
+    </div>
+    <div class="modal-body modal-body-schedule-add">
+      <p class="schedule-add-lead">Set the time window and who may log attendance for this occasion.</p>
+      <div class="form-row-tight">
+        <div class="form-group">
+          <label for="specialScheduleName">Schedule name</label>
+          <input type="text" id="specialScheduleName" name="name" placeholder="e.g. Saturday Training">
+        </div>
+        <div class="form-group">
+          <label for="specialScheduleEffectiveDate">Effective date</label>
+          <input type="date" id="specialScheduleEffectiveDate" name="effective_date">
+        </div>
+      </div>
+      <div class="form-row-tight">
+        <div class="form-group">
+          <label for="specialScheduleTimeIn">Time in</label>
+          <input type="time" id="specialScheduleTimeIn" name="time_in">
+        </div>
+        <div class="form-group">
+          <label for="specialScheduleTimeOut">Time out</label>
+          <input type="time" id="specialScheduleTimeOut" name="time_out">
+        </div>
+        <div class="form-group form-group-narrow">
+          <label for="specialScheduleEarly">Early (min)</label>
+          <input type="number" id="specialScheduleEarly" name="early_minutes" min="0" max="240" value="" data-default="">
+        </div>
+        <div class="form-group form-group-narrow">
+          <label for="specialScheduleThreshold">Threshold (min)</label>
+          <input type="number" id="specialScheduleThreshold" name="late_threshold_minutes" min="0" value="5">
+        </div>
+      </div>
+
+      <fieldset class="participant-fieldset">
+        <legend class="participant-legend">Who can attend (participants)</legend>
+        <p class="card-subtitle participant-hint">Restricted modes reject employees who are not included.</p>
+        <div class="participant-mode-stack">
+          <label class="participant-radio participant-radio--block">
+            <input type="radio" name="participantMode" id="participantModeAll" value="all" checked> All staff
+          </label>
+          <div class="participant-mode-block">
+            <label class="participant-radio participant-radio--block">
+              <input type="radio" name="participantMode" id="participantModeDept" value="departments"> By department
+            </label>
+            <div id="participantDeptSection" class="participant-section participant-nested" hidden>
+              <label class="participant-section-label">Departments</label>
+              <div id="participantDeptBoxes" class="participant-dept-grid"></div>
+            </div>
+          </div>
+          <div class="participant-mode-block">
+            <label class="participant-radio participant-radio--block">
+              <input type="radio" name="participantMode" id="participantModeEmp" value="employees"> Custom people
+            </label>
+            <div id="participantEmpSection" class="participant-section participant-nested" hidden>
+              <label for="participantEmpDeptFilter">Filter list by department</label>
+              <select id="participantEmpDeptFilter" class="participant-select">
+                <option value="0">All departments</option>
+              </select>
+              <label class="participant-section-label" for="participantEmpSearch">Search</label>
+              <input type="search" id="participantEmpSearch" class="participant-emp-search" placeholder="Search name or employee ID…" autocomplete="off" aria-label="Search participants">
+              <span class="participant-section-label" id="participantEmployeesLabel">Select participants</span>
+              <div id="participantEmployeesList" class="participant-emp-cb-list participant-emp-cb-list--3col" role="group" aria-labelledby="participantEmployeesLabel"></div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <label class="participant-radio participant-radio--block" style="margin-top:10px;">
+        <input type="checkbox" id="specialScheduleSendReminder">
+        Send email reminder to selected participants after saving
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="secondary-button" id="scheduleAddModalCancelBtn">Cancel</button>
+      <button type="button" class="primary-button" id="specialScheduleAddBtn">Save occasion</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="scheduleEditModalBackdrop" hidden></div>
+<div class="modal" id="scheduleEditModal" role="dialog" aria-modal="true" aria-labelledby="scheduleEditModalTitle" hidden>
+  <div class="modal-card modal-card-wide">
+    <div class="modal-header">
+      <h3 id="scheduleEditModalTitle">Edit schedule</h3>
+      <div class="modal-header-right">
+        <span class="staff-count-pill" id="scheduleEditStaffCount" aria-label="Selected staff count">— staff</span>
+        <button type="button" class="modal-close-btn" id="scheduleEditModalCloseBtn" aria-label="Close">&times;</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editScheduleId">
+      <div class="form-row-tight">
+        <div class="form-group">
+          <label for="editScheduleName">Schedule name</label>
+          <input type="text" id="editScheduleName">
+        </div>
+        <div class="form-group">
+          <label for="editScheduleEffectiveDate">Effective date</label>
+          <input type="date" id="editScheduleEffectiveDate">
+        </div>
+      </div>
+      <div class="form-row-tight">
+        <div class="form-group">
+          <label for="editScheduleTimeIn">Time in</label>
+          <input type="time" id="editScheduleTimeIn">
+        </div>
+        <div class="form-group">
+          <label for="editScheduleTimeOut">Time out</label>
+          <input type="time" id="editScheduleTimeOut">
+        </div>
+        <div class="form-group form-group-narrow">
+          <label for="editScheduleEarly">Early (min)</label>
+          <input type="number" id="editScheduleEarly" min="0" max="240">
+        </div>
+        <div class="form-group form-group-narrow">
+          <label for="editScheduleThreshold">Threshold (min)</label>
+          <input type="number" id="editScheduleThreshold" min="0">
+        </div>
+      </div>
+      <fieldset class="participant-fieldset">
+        <legend class="participant-legend">Participants</legend>
+        <div class="participant-mode-stack">
+          <label class="participant-radio participant-radio--block">
+            <input type="radio" name="editParticipantMode" id="editParticipantModeAll" value="all"> All staff
+          </label>
+          <div class="participant-mode-block">
+            <label class="participant-radio participant-radio--block">
+              <input type="radio" name="editParticipantMode" id="editParticipantModeDept" value="departments"> By department
+            </label>
+            <div id="editParticipantDeptSection" class="participant-section participant-nested" hidden>
+              <label class="participant-section-label">Departments</label>
+              <div id="editParticipantDeptBoxes" class="participant-dept-grid"></div>
+            </div>
+          </div>
+          <div class="participant-mode-block">
+            <label class="participant-radio participant-radio--block">
+              <input type="radio" name="editParticipantMode" id="editParticipantModeEmp" value="employees"> Custom people
+            </label>
+            <div id="editParticipantEmpSection" class="participant-section participant-nested" hidden>
+              <label for="editParticipantEmpDeptFilter">Filter by department</label>
+              <select id="editParticipantEmpDeptFilter" class="participant-select">
+                <option value="0">All departments</option>
+              </select>
+              <label class="participant-section-label" for="editParticipantEmpSearch">Search</label>
+              <input type="search" id="editParticipantEmpSearch" class="participant-emp-search" placeholder="Search name or employee ID…" autocomplete="off" aria-label="Search participants">
+              <span class="participant-section-label" id="editParticipantEmployeesLabel">Select participants</span>
+              <div id="editParticipantEmployeesList" class="participant-emp-cb-list participant-emp-cb-list--3col" role="group" aria-labelledby="editParticipantEmployeesLabel"></div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="secondary-button" id="scheduleEditModalCancelBtn">Cancel</button>
+      <button type="button" class="primary-button" id="scheduleEditModalSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="scheduleAllModalBackdrop" hidden></div>
+<div class="modal" id="scheduleAllModal" role="dialog" aria-modal="true" aria-labelledby="scheduleAllModalTitle" hidden>
+  <div class="modal-card modal-card-wide">
+    <div class="modal-header">
+      <h3 id="scheduleAllModalTitle">All special occasions</h3>
+      <button type="button" class="modal-close-btn" id="scheduleAllModalCloseBtn" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body modal-body-flush">
+      <div class="schedule-all-toolbar">
+        <div class="schedule-all-tabs" role="tablist" aria-label="Filter by status">
+          <button type="button" class="schedule-all-tab is-active" data-all-filter="all" id="tabSchedAll">All <span class="schedule-all-count" id="countSchedAll">(0)</span></button>
+          <button type="button" class="schedule-all-tab" data-all-filter="active" id="tabSchedActive">Active <span class="schedule-all-count" id="countSchedActive">(0)</span></button>
+          <button type="button" class="schedule-all-tab" data-all-filter="inactive" id="tabSchedInactive">Inactive <span class="schedule-all-count" id="countSchedInactive">(0)</span></button>
+        </div>
+        <div class="schedule-all-search-wrap">
+          <input type="search" id="scheduleAllSearch" class="schedule-all-search" placeholder="Search name, date, participants…" autocomplete="off" aria-label="Search schedules">
+        </div>
+      </div>
+      <div class="special-schedules-table-wrap schedule-all-table-wrap">
+        <table class="special-schedules-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>In</th>
+              <th>Out</th>
+              <th>Early</th>
+              <th>Thr.</th>
+              <th>Participants</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="scheduleAllModalBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="deptEditModalBackdrop" hidden></div>
+<div class="modal" id="deptEditModal" role="dialog" aria-modal="true" aria-labelledby="deptEditModalTitle" hidden>
+  <div class="modal-card modal-card-narrow">
+    <div class="modal-header">
+      <h3 id="deptEditModalTitle">Edit department</h3>
+      <button type="button" class="modal-close-btn" id="deptEditModalCloseBtn" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editDeptId">
+      <div class="form-group">
+        <label for="editDeptName">Name</label>
+        <input type="text" id="editDeptName" maxlength="120">
+      </div>
+      <div class="form-group">
+        <label for="editDeptColor">Color</label>
+        <input type="color" id="editDeptColor" value="#1a7c3e" data-original="#1a7c3e"
+               style="width:48px;height:36px;padding:2px;border-radius:6px;cursor:pointer;border:1px solid #ccc;">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="secondary-button" id="deptEditModalCancelBtn">Cancel</button>
+      <button type="button" class="primary-button" id="deptEditModalSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="posEditModalBackdrop" hidden></div>
+<div class="modal" id="posEditModal" role="dialog" aria-modal="true" aria-labelledby="posEditModalTitle" hidden>
+  <div class="modal-card modal-card-narrow">
+    <div class="modal-header">
+      <h3 id="posEditModalTitle">Edit position</h3>
+      <button type="button" class="modal-close-btn" id="posEditModalCloseBtn" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editPosId">
+      <div class="form-group">
+        <label for="editPosName">Name</label>
+        <input type="text" id="editPosName" maxlength="80">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="secondary-button" id="posEditModalCancelBtn">Cancel</button>
+      <button type="button" class="primary-button" id="posEditModalSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="accountSettingsModalBackdrop" hidden></div>
+<div class="modal" id="accountSettingsModal" role="dialog" aria-modal="true" aria-labelledby="accountSettingsModalTitle" hidden>
+  <div class="modal-card modal-card-wide">
+    <div class="modal-header">
+      <h3 id="accountSettingsModalTitle">Edit account settings</h3>
+      <button type="button" class="modal-close-btn" id="accountSettingsModalCloseBtn" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row-tight">
+        <div class="form-group">
+          <label for="acctUsername">Username</label>
+          <input type="text" id="acctUsername" maxlength="80" value="" autocomplete="username" data-original="">
+        </div>
+        <div class="form-group">
+          <label for="acctSecurityEmail">Account security email</label>
+          <input type="email" id="acctSecurityEmail" maxlength="160" value="" placeholder="admin@plpasig.edu.ph" autocomplete="email" data-original="">
+        </div>
+      </div>
+
+      <div class="backup-actions-row" style="margin-top: 6px; justify-content: flex-end;">
+        <button type="button" class="secondary-button dept-list-toggle" id="btnTogglePasswordChange">Change password</button>
+      </div>
+
+      <div class="form-row-tight" id="acctPasswordFields" hidden>
+        <div class="form-group">
+          <label for="acctCurrentPassword">Current password</label>
+          <input type="password" id="acctCurrentPassword" maxlength="120" autocomplete="current-password">
+        </div>
+        <div class="form-group">
+          <label for="acctNewPassword">New password</label>
+          <input type="password" id="acctNewPassword" maxlength="120" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label for="acctConfirmPassword">Confirm new password</label>
+          <input type="password" id="acctConfirmPassword" maxlength="120" autocomplete="new-password">
+        </div>
+        <div class="form-group" style="flex: 1 1 100%;">
+          <label style="display: inline-flex; align-items: center; gap: 8px; font-weight: 500; margin-top: 2px;">
+            <input type="checkbox" id="acctShowPassword" style="width: 16px; height: 16px;">
+            Show password
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="secondary-button" id="btnCancelAccountSettings">Cancel</button>
+      <button type="button" class="primary-button" id="btnSaveAccountSettings">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="feedbackModalBackdrop" hidden></div>
+<div class="modal" id="feedbackModal" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle" hidden>
+  <div class="modal-card modal-card-narrow">
+    <div class="modal-header">
+      <h3 id="feedbackModalTitle">Notice</h3>
+      <button type="button" class="modal-close-btn" id="feedbackModalCloseBtn" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="feedbackModalMessage"></p>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="secondary-button" id="feedbackModalCancelBtn">Cancel</button>
+      <button type="button" class="primary-button" id="feedbackModalOkBtn">OK</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="outOfRangeModalBackdrop" hidden></div>
+<div class="modal" id="outOfRangeModal" role="dialog" aria-modal="true" aria-labelledby="outOfRangeModalTitle" hidden>
+  <div class="modal-card modal-card-narrow">
+    <div class="modal-header">
+      <h3 id="outOfRangeModalTitle">Resolve Out-of-Range Logs</h3>
+      <button type="button" class="modal-close-btn" id="outOfRangeModalCloseBtn" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="outOfRangeModalMessage">Some existing logs are outside the updated event window.</p>
+      <p class="card-subtitle">Choose how to update those records before saving.</p>
+      <div class="modal-actions" style="justify-content:flex-start; gap:8px; flex-wrap:wrap; padding-top:0;">
+        <button type="button" class="secondary-button" data-out-range-action="pending">Mark as Pending</button>
+        <button type="button" class="secondary-button" data-out-range-action="present">Mark as Present</button>
+        <button type="button" class="secondary-button" data-out-range-action="late">Mark as Late</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="secondary-button" id="outOfRangeModalCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="js/institutional-email.js"></script>
+<script src="settings.js"></script>
+<script src="js/action_feedback_modal.js"></script>
+</body>
+</html>

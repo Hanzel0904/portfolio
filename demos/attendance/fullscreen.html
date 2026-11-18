@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flag Ceremony Attendance</title>
+  <link rel="stylesheet" href="css/fullscreen.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <span class="header-title">EVENT ATTENDANCE</span>
+      <span class="badge-flag" id="currentEventBadge">Flag Raising</span>
+    </div>
+    <div class="header-right">
+      <button class="header-icon-btn" id="btnMinimize" title="Minimize to main view" aria-label="Minimize fullscreen">
+        <img class="icon-sm" src="assets/icons/minimize.png" alt="minimize">
+      </button>
+      <span id="currentDate"></span>
+      <img class="icon-sm"
+           src="assets/icons/icon-flag.png"
+           alt="flag">
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT-->
+  <main>
+
+    <!-- ── LEFT: Facial Recognition ── -->
+   <div class="panel-left">
+      <div class="title-row">
+        <div class="panel-title" id="modeTitle">Facial Recognition</div>
+        <label class="switch">
+          <input type="checkbox" id="toggleRecognition" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="camera-wrapper">
+
+        <!-- Live camera feed -->
+        <video id="cameraFeed" autoplay playsinline></video>
+        <canvas id="overlayCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+        <canvas id="fullscreenCanvas" style="position:absolute;left:-9999px;visibility:hidden;" aria-hidden="true"></canvas>
+
+        <!-- Placeholder when camera is off -->
+        <div class="camera-placeholder" id="cameraPlaceholder">
+          <img src="assets/icons/icon-camera-off.png" alt="camera">
+          <span>Camera Feed Active</span>
+        </div>
+
+        <!-- Live badge overlay -->
+        <div class="live-badge" id="liveBadge">
+          <div class="live-dot"></div>
+          LIVE
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="panel-right">
+
+      <!-- Employee Information Card -->
+      <div class="info-card">
+        <div class="info-card-title">Employee Information</div>
+
+        <!-- STATE: Waiting for recognition -->
+        <div class="state-waiting" id="stateWaiting">
+          <div class="avatar-circle">
+            <img src="assets/icons/icon-person.png" alt="person">
+          </div>
+          <div class="waiting-text">
+            Waiting for employees recognition...<br>
+            Position in front of the camera
+          </div>
+        </div>
+
+        <!-- STATE: Employee detected -->
+        <div class="state-detected" id="stateDetected">
+
+          <!-- Attendance banner -->
+          <div class="attendance-banner">
+            <div class="attendance-label">
+              <img src="assets/icons/icon-check-circle.png" alt="check">
+              Attendance Recorded!
+            </div>
+            <span class="badge-timein" id="attendanceTypeBadge">Time in</span>
+          </div>
+
+          <!-- Employee avatar + name -->
+          <div class="emp-avatar">
+            <div class="emp-avatar-circle">
+              <img src="assets/icons/icon-person.png" alt="person">
+            </div>
+            <div class="emp-name" id="empName">Maria Santos</div>
+            <div class="emp-id"   id="empId">EMP2024001</div>
+          </div>
+
+          <!-- Info rows -->
+          <div class="info-rows">
+
+            <div class="info-row">
+              <img class="row-icon"
+                   src="assets/icons/icon-department.png"
+                   alt="department">
+              <div class="info-row-text">
+                <label>Department</label>
+                <span id="empDepartment">College of Engineering</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <img class="row-icon"
+                   src="assets/icons/icon-position.png"
+                   alt="position">
+              <div class="info-row-text">
+                <label>Position</label>
+                <span id="empPosition">Professor</span>
+              </div>
+            </div>
+
+            <div class="info-row highlighted">
+              <img class="row-icon"
+                   src="assets/icons/icon-clock.png"
+                   alt="time">
+              <div class="info-row-text">
+                <label>Time Recorded</label>
+                <span id="timeRecorded">--:-- --</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <img class="row-icon"
+                   src="assets/icons/icon-calendar.png"
+                   alt="date">
+              <div class="info-row-text">
+                <label>Date</label>
+                <span id="dateRecorded">--</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Controls Card -->
+      <div class="controls-card">
+        <div class="controls-label">MAIN CONTROLS</div>
+        <div class="controls-buttons">
+
+          <button class="btn" id="btnStart">
+            <img src="assets/icons/icon-video.png" alt="start">
+            START
+          </button>
+
+          <button class="btn" id="btnStop">
+            <img src="assets/icons/icon-video-off.png" alt="stop">
+            STOP
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // ── DOM References ──────────────────────────────────────────
+    const btnStart             = document.getElementById('btnStart');
+    const btnStop              = document.getElementById('btnStop');
+    const btnMinimize          = document.getElementById('btnMinimize');
+    const toggleRecognition    = document.getElementById('toggleRecognition');
+    const cameraFeed           = document.getElementById('cameraFeed');
+    const cameraPlaceholder    = document.getElementById('cameraPlaceholder');
+    const liveBadge            = document.getElementById('liveBadge');
+    const stateWaiting         = document.getElementById('stateWaiting');
+    const stateDetected        = document.getElementById('stateDetected');
+    const fullscreenCanvas     = document.getElementById('fullscreenCanvas');
+    const overlayCanvas        = document.getElementById('overlayCanvas');
+
+    let stream = null;
+    let pollInterval = null;
+    let lastDetectionId = null;
+    let hideInfoTimer = null;
+    let recognitionInterval = null;
+    let qrInterval = null;
+    let poseInterval = null;
+    let lastQrValue = null;
+    let lastQrTs = 0;
+    let isPoseRunning = false;
+    let isLocalFaceRunning = false;
+    let localFaceInterval = null;
+    let localFaceDetector = null;
+    let localFaceMissStreak = 0;
+    let lastFaceBox = null;   // { box, frame, ts }
+    let lastQr = null;        // { points, frame, ts }
+
+    const RECOGNIZE_API = 'http://127.0.0.1:5000/api/face-recognize';
+    const QR_DECODE_API = 'http://127.0.0.1:5000/api/qr-decode';
+    const FACE_POSE_API = 'http://127.0.0.1:5000/api/face-pose';
+    const RECOGNIZE_INTERVAL_MS = 700;
+    const FACE_POSE_INTERVAL_MS = 180;
+
+    let isRecognitionEnabled = true; // initial state = on
+    let currentEventInterval = null;
+
+    // Match Capture overlay behavior for status badges
+    let loggingInFlight = false;
+    let alreadyTimeInUntilMs = 0;
+    let alreadyTimeOutUntilMs = 0;
+    let unknownFaceUntilMs = 0;
+    let lastMatchedEmployeeId = '';
+    let sameMatchStreak = 0;
+    const REQUIRED_STABLE_MATCHES = 3;
+// ── Change title text when toggle is flipped ───────────────────────
+const modeTitle = document.getElementById('modeTitle');
+
+    // Allow Capture page to open this fullscreen in QR mode.
+    // Usage: fullscreen.php?mode=mobileqr
+    (function () {
+      try {
+        var sp = new URLSearchParams(window.location.search);
+        var mode = String(sp.get('mode') || '').toLowerCase();
+        var wantQr = mode === 'mobileqr' || sp.get('qr') === '1';
+        if (wantQr) {
+          isRecognitionEnabled = false;
+          toggleRecognition.checked = false;
+          if (modeTitle) modeTitle.textContent = "QR code scan";
+        }
+      } catch (e) {}
+    })();
+
+toggleRecognition.addEventListener('change', function() {
+    if (this.checked) {
+        modeTitle.textContent = "Facial Recognition";
+    } else {
+        modeTitle.textContent = "QR code scan";
+    }
+});
+    // ── Set Current Date in Header ──────────────────────────────
+    function formatDate(date) {
+      return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    const today = new Date();
+    document.getElementById('currentDate').textContent = formatDate(today);
+
+    function updateCurrentEventUI(eventData) {
+      const badge = document.getElementById('currentEventBadge');
+      if (!badge || !eventData) return;
+      badge.textContent = eventData.name || 'No Event';
+    }
+
+    function loadCurrentEvent() {
+      const now = new Date();
+      const url =
+        'ajax/current_event.php?t=' +
+        Date.now() +
+        '&client_now=' +
+        encodeURIComponent(now.toISOString()) +
+        '&client_tz_offset_min=' +
+        encodeURIComponent(String(now.getTimezoneOffset()));
+      fetch(url, { cache: 'no-store' })
+        .then(res => res.json())
+        .then(data => {
+          if (!data || !data.success || !data.event) return;
+          updateCurrentEventUI(data.event);
+        })
+        .catch(() => {});
+    }
+
+    // ── Initial Button States
+    btnStop.disabled = true;
+
+    // ── Toggle change handler ───────────────────────────────────
+    toggleRecognition.addEventListener('change', () => {
+      isRecognitionEnabled = toggleRecognition.checked;
+
+      if (!isRecognitionEnabled) {
+        // Optional: immediately stop recognition loop
+        if (recognitionInterval) {
+          clearInterval(recognitionInterval);
+          recognitionInterval = null;
+        }
+        startQrLoop();
+      } else if (stream && cameraFeed.srcObject) {
+        stopQrLoop();
+        // Restart recognition if camera is already on
+        startRecognitionLoop();
+      }
+    });
+
+    function fetchLatestDetection(options = {}) {
+      const isInit = !!options.init;
+      fetch('ajax/last_detection.php', { cache: 'no-store' })
+        .then(res => res.json())
+        .then(data => {
+          if (!data || !data.success || !data.detection) return;
+          const det = data.detection;
+          if (lastDetectionId === det.id) return;
+
+          // On init, set baseline only (don't show last record immediately)
+          if (isInit) {
+            lastDetectionId = det.id;
+            return;
+          }
+
+          lastDetectionId = det.id;
+
+          showEmployeeInfo({
+            name:       det.fullName,
+            id:         det.employeeId,
+            department: det.department,
+            position:   det.position,
+            status:     det.status,
+            time:       det.time,
+            logDate:    det.logDate
+          });
+          scheduleHideInfo();
+        })
+        .catch(() => {});
+    }
+
+    function scheduleHideInfo() {
+      if (hideInfoTimer) clearTimeout(hideInfoTimer);
+      hideInfoTimer = setTimeout(() => {
+        stateWaiting.style.display  = 'flex';
+        stateDetected.style.display = 'none';
+        hideInfoTimer = null;
+      }, 3000);
+    }
+
+    function startPolling() {
+      if (pollInterval) return;
+      // Set baseline so we only show NEW logs after fullscreen opened
+      fetchLatestDetection({ init: true });
+      pollInterval = setInterval(fetchLatestDetection, 3000);
+    }
+
+    function stopPolling() {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+    }
+
+    function captureFrame() {
+      if (!cameraFeed.videoWidth || !fullscreenCanvas) return null;
+      const w = cameraFeed.videoWidth;
+      const h = cameraFeed.videoHeight;
+      fullscreenCanvas.width = w;
+      fullscreenCanvas.height = h;
+      const ctx = fullscreenCanvas.getContext('2d');
+      ctx.drawImage(cameraFeed, 0, 0, w, h);
+      return fullscreenCanvas.toDataURL('image/jpeg', 0.85);
+    }
+
+    function captureFrameForQr() {
+      if (!cameraFeed.videoWidth || !fullscreenCanvas) return null;
+      const w = cameraFeed.videoWidth;
+      const h = cameraFeed.videoHeight;
+      fullscreenCanvas.width = w;
+      fullscreenCanvas.height = h;
+      const ctx = fullscreenCanvas.getContext('2d');
+      ctx.drawImage(cameraFeed, 0, 0, w, h);
+      // PNG preserves crisp QR edges better than JPEG
+      return fullscreenCanvas.toDataURL('image/png');
+    }
+
+    function resizeOverlayCanvas() {
+      if (!overlayCanvas) return;
+      const w = overlayCanvas.clientWidth;
+      const h = overlayCanvas.clientHeight;
+      if (!w || !h) return;
+      if (overlayCanvas.width !== w) overlayCanvas.width = w;
+      if (overlayCanvas.height !== h) overlayCanvas.height = h;
+    }
+
+    function mapRectToOverlay(rect, frame) {
+      // Map frame coords to overlay canvas with object-fit: cover
+      const W = overlayCanvas.width, H = overlayCanvas.height;
+      const scale = Math.max(W / frame.w, H / frame.h);
+      const dispW = frame.w * scale, dispH = frame.h * scale;
+      const offsetX = (W - dispW) / 2, offsetY = (H - dispH) / 2;
+      let x = offsetX + rect.x * scale;
+      const y = offsetY + rect.y * scale;
+      const w = rect.w * scale;
+      const h = rect.h * scale;
+      // Mirror X because video is mirrored in CSS
+      x = W - (x + w);
+      return { x, y, w, h };
+    }
+
+    function mapPointToOverlay(pt, frame) {
+      const W = overlayCanvas.width, H = overlayCanvas.height;
+      const scale = Math.max(W / frame.w, H / frame.h);
+      const dispW = frame.w * scale, dispH = frame.h * scale;
+      const offsetX = (W - dispW) / 2, offsetY = (H - dispH) / 2;
+      let x = offsetX + pt[0] * scale;
+      const y = offsetY + pt[1] * scale;
+      x = W - x; // mirror
+      return [x, y];
+    }
+
+    function drawOverlay() {
+      if (!overlayCanvas) return;
+      resizeOverlayCanvas();
+      const ctx = overlayCanvas.getContext('2d');
+      if (!ctx) return;
+      ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+      const now = Date.now();
+      const pulse = 0.55 + 0.25 * Math.sin(now / 140);
+
+      function drawBadge(x, y, text, kind) {
+        const label = String(text || '').trim();
+        if (!label) return;
+        ctx.save();
+        ctx.font = '700 14px system-ui, -apple-system, Segoe UI, sans-serif';
+        ctx.textBaseline = 'middle';
+        const padX = 10;
+        const w = Math.ceil(ctx.measureText(label).width + padX * 2);
+        const h = 28;
+        const r = 10;
+        const bx = Math.round(x);
+        const by = Math.round(y - h - 10);
+        const fill =
+          kind === 'already' ? 'rgba(255, 251, 235, 0.95)' :
+          kind === 'processing' ? 'rgba(220, 252, 231, 0.95)' :
+          'rgba(248, 250, 252, 0.95)';
+        const stroke =
+          kind === 'already' ? 'rgba(253, 230, 138, 0.95)' :
+          kind === 'processing' ? 'rgba(187, 247, 208, 0.95)' :
+          'rgba(226, 232, 240, 0.95)';
+        const color =
+          kind === 'already' ? '#92400e' :
+          kind === 'processing' ? '#0f5132' :
+          '#334155';
+
+        ctx.beginPath();
+        ctx.moveTo(bx + r, by);
+        ctx.lineTo(bx + w - r, by);
+        ctx.quadraticCurveTo(bx + w, by, bx + w, by + r);
+        ctx.lineTo(bx + w, by + h - r);
+        ctx.quadraticCurveTo(bx + w, by + h, bx + w - r, by + h);
+        ctx.lineTo(bx + r, by + h);
+        ctx.quadraticCurveTo(bx, by + h, bx, by + h - r);
+        ctx.lineTo(bx, by + r);
+        ctx.quadraticCurveTo(bx, by, bx + r, by);
+        ctx.closePath();
+        ctx.fillStyle = fill;
+        ctx.fill();
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.fillText(label, bx + padX, by + h / 2);
+        ctx.restore();
+      }
+
+      // Face box (fresh within 900ms)
+      if (lastFaceBox && (now - lastFaceBox.ts) < 550 && lastFaceBox.box && lastFaceBox.frame) {
+        const r = mapRectToOverlay(lastFaceBox.box, lastFaceBox.frame);
+        ctx.save();
+        ctx.globalAlpha = pulse;
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#22c55e';
+        ctx.shadowColor = 'rgba(34, 197, 94, 0.6)';
+        ctx.shadowBlur = 12;
+        ctx.strokeRect(r.x, r.y, r.w, r.h);
+        ctx.restore();
+
+        const isAlready = Date.now() < alreadyTimeInUntilMs;
+        const isAlreadyOut = Date.now() < alreadyTimeOutUntilMs;
+        const isUnknown = Date.now() < unknownFaceUntilMs;
+        const badgeText = isAlreadyOut
+          ? 'Already time out'
+          : (isAlready
+            ? 'Already time in'
+            : (loggingInFlight
+              ? 'Processing…'
+              : (isUnknown ? 'Unknown' : '')));
+        const badgeKind = (isAlreadyOut || isAlready) ? 'already' : (loggingInFlight ? 'processing' : '');
+        drawBadge(r.x, r.y, badgeText, badgeKind);
+      }
+
+      // QR outline (fresh within 1200ms)
+      if (lastQr && (now - lastQr.ts) < 1200 && lastQr.points && lastQr.frame) {
+        const pts = lastQr.points.map(p => mapPointToOverlay(p, lastQr.frame));
+        ctx.save();
+        ctx.globalAlpha = pulse;
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#facc15';
+        ctx.shadowColor = 'rgba(250, 204, 21, 0.6)';
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.moveTo(pts[0][0], pts[0][1]);
+        ctx.lineTo(pts[1][0], pts[1][1]);
+        ctx.lineTo(pts[2][0], pts[2][1]);
+        ctx.lineTo(pts[3][0], pts[3][1]);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      requestAnimationFrame(drawOverlay);
+    }
+
+    function runRecognition() {
+      if (!isRecognitionEnabled) return;
+      if (Date.now() < alreadyTimeOutUntilMs) return;
+      if (Date.now() < alreadyTimeInUntilMs) return;
+
+      const dataUrl = captureFrame();
+      if (!dataUrl) return;
+      if (lastFaceBox && (Date.now() - lastFaceBox.ts) < 900) {
+        unknownFaceUntilMs = Date.now() + 1500;
+      }
+
+      fetch(RECOGNIZE_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataUrl })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.box && data.frame) {
+            lastFaceBox = { box: data.box, frame: data.frame, ts: Date.now() };
+          }
+          if (data && data.detected && !data.matched) {
+            unknownFaceUntilMs = Date.now() + 1500;
+            lastMatchedEmployeeId = '';
+            sameMatchStreak = 0;
+          } else if (data && data.matched) {
+            unknownFaceUntilMs = 0;
+          }
+          const backendAmbiguous = !!(data && (data.ambiguous === true ||
+            (typeof data.ambiguity_gap === 'number' && data.ambiguity_gap < 0.02) ||
+            (typeof data.confidence === 'number' && data.confidence < 0.22)));
+          if (!data.matched || !data.employee_id || backendAmbiguous) {
+            lastMatchedEmployeeId = '';
+            sameMatchStreak = 0;
+            if (backendAmbiguous && data && data.detected) {
+              unknownFaceUntilMs = Date.now() + 1500;
+            }
+            return;
+          }
+
+          if (lastMatchedEmployeeId === data.employee_id) {
+            sameMatchStreak += 1;
+          } else {
+            lastMatchedEmployeeId = data.employee_id;
+            sameMatchStreak = 1;
+          }
+
+          if (sameMatchStreak < REQUIRED_STABLE_MATCHES) {
+            return;
+          }
+
+          sameMatchStreak = 0;
+          const fd = new FormData();
+          fd.append('employee_id', data.employee_id);
+          fd.append('client_now', new Date().toISOString());
+          fd.append('client_tz_offset_min', String(new Date().getTimezoneOffset()));
+          loggingInFlight = true;
+          return fetch('ajax/log_attendance.php', { method: 'POST', body: fd });
+        })
+        .then(res => res ? res.json() : null)
+        .then(data => {
+          if (data && data.success) {
+            fetchLatestDetection();
+            return;
+          }
+          if (data && !data.success) {
+            const msg = String(data.message || data.error || '').trim();
+            if (msg === 'This ceremony is time-in only. Attendance already recorded.') {
+              alreadyTimeInUntilMs = Date.now() + 3500;
+            }
+            if (msg === 'Time out is not open yet. Please scan during the allowed time-out window.') {
+              alreadyTimeInUntilMs = Date.now() + 3500;
+            }
+            if (msg === 'Already timed out for this event today.') {
+              alreadyTimeOutUntilMs = Date.now() + 3500;
+            }
+          }
+        })
+        .catch(() => {})
+        .finally(() => { loggingInFlight = false; });
+    }
+
+    function runFacePose() {
+      if (!cameraFeed || !cameraFeed.srcObject) return;
+      if (isPoseRunning) return;
+      isPoseRunning = true;
+
+      const img = captureFrame(); // JPEG ok for box guidance; cheaper
+      if (!img) { isPoseRunning = false; return; }
+      const ctrl = new AbortController();
+      const timeoutId = setTimeout(function () {
+        try { ctrl.abort(); } catch (e) {}
+      }, 900);
+
+      fetch(FACE_POSE_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: img }),
+        signal: ctrl.signal
+      })
+        .then(res => res.json())
+        .then(p => {
+          if (p && p.detected && p.box && p.frame) {
+            lastFaceBox = { box: p.box, frame: p.frame, ts: Date.now(), source: 'pose' };
+          } else if (lastFaceBox && lastFaceBox.source === 'pose') {
+            lastFaceBox = null;
+          }
+        })
+        .catch(() => {})
+        .then(() => {
+          clearTimeout(timeoutId);
+          isPoseRunning = false;
+        });
+    }
+
+    function initLocalFaceDetector() {
+      // Disabled intentionally: local detector produced false-positive ghost boxes.
+      return false;
+      if (!('FaceDetector' in window)) return false;
+      if (!localFaceDetector) {
+        try {
+          localFaceDetector = new window.FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
+        } catch (e) {
+          localFaceDetector = null;
+          return false;
+        }
+      }
+      return !!localFaceDetector;
+    }
+
+    function runLocalFaceDetect() {
+      if (!localFaceDetector || !cameraFeed || !cameraFeed.srcObject) return;
+      if (isLocalFaceRunning) return;
+      if (!cameraFeed.videoWidth || !cameraFeed.videoHeight || cameraFeed.readyState < 2) return;
+      isLocalFaceRunning = true;
+      localFaceDetector.detect(cameraFeed)
+        .then(function (faces) {
+          if (!faces || !faces.length) {
+            localFaceMissStreak += 1;
+            if (localFaceMissStreak >= 2 && lastFaceBox && lastFaceBox.source === 'local') {
+              lastFaceBox = null;
+            }
+            return;
+          }
+          var bb = faces[0].boundingBox;
+          if (!bb) {
+            localFaceMissStreak += 1;
+            return;
+          }
+          var fw = Math.max(1, cameraFeed.videoWidth);
+          var fh = Math.max(1, cameraFeed.videoHeight);
+          var areaRatio = (bb.width * bb.height) / (fw * fh);
+          var aspect = bb.width / Math.max(1, bb.height);
+          if (areaRatio < 0.015 || areaRatio > 0.75 || aspect < 0.55 || aspect > 1.85) {
+            localFaceMissStreak += 1;
+            if (localFaceMissStreak >= 2 && lastFaceBox && lastFaceBox.source === 'local') {
+              lastFaceBox = null;
+            }
+            return;
+          }
+          localFaceMissStreak = 0;
+          lastFaceBox = {
+            box: {
+              x: Math.max(0, Math.round(bb.x)),
+              y: Math.max(0, Math.round(bb.y)),
+              w: Math.max(1, Math.round(bb.width)),
+              h: Math.max(1, Math.round(bb.height))
+            },
+            frame: { w: cameraFeed.videoWidth, h: cameraFeed.videoHeight },
+            ts: Date.now(),
+            source: 'local'
+          };
+        })
+        .catch(function () {})
+        .then(function () {
+          isLocalFaceRunning = false;
+        });
+    }
+
+    function startLocalFaceLoop() {
+      if (!initLocalFaceDetector()) return;
+      if (localFaceInterval) clearInterval(localFaceInterval);
+      runLocalFaceDetect();
+      localFaceInterval = setInterval(runLocalFaceDetect, 120);
+    }
+
+    function stopLocalFaceLoop() {
+      if (localFaceInterval) {
+        clearInterval(localFaceInterval);
+        localFaceInterval = null;
+      }
+      isLocalFaceRunning = false;
+      localFaceMissStreak = 0;
+    }
+
+    function startRecognitionLoop() {
+      if (recognitionInterval) clearInterval(recognitionInterval);
+      if (isRecognitionEnabled) {
+        recognitionInterval = setInterval(runRecognition, RECOGNIZE_INTERVAL_MS);
+      }
+    }
+
+    function startQrLoop() {
+      if (qrInterval) clearInterval(qrInterval);
+      if (isRecognitionEnabled) return;
+      qrInterval = setInterval(runQrScan, 600);
+    }
+
+    function stopQrLoop() {
+      if (qrInterval) {
+        clearInterval(qrInterval);
+        qrInterval = null;
+      }
+      lastQrValue = null;
+      lastQrTs = 0;
+    }
+
+    async function runQrScan() {
+      if (isRecognitionEnabled) return;
+      if (!cameraFeed || !cameraFeed.srcObject) return;
+      if (Date.now() < alreadyTimeOutUntilMs) return;
+      if (Date.now() < alreadyTimeInUntilMs) return;
+
+      try {
+        const img = captureFrameForQr();
+        if (!img) return;
+
+        const qrRes = await fetch(QR_DECODE_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: img })
+        });
+        const qrData = await qrRes.json().catch(() => null);
+        if (!qrData || !qrData.found || !qrData.qr_content) return;
+
+        const raw = String(qrData.qr_content || '');
+        if (qrData.points && qrData.frame) {
+          lastQr = { points: qrData.points, frame: qrData.frame, ts: Date.now() };
+        }
+        const now = Date.now();
+        if (raw === lastQrValue && (now - lastQrTs) < 2000) return;
+        lastQrValue = raw;
+        lastQrTs = now;
+
+        const fd = new FormData();
+        fd.append('qr_content', raw);
+        fd.append('client_now', new Date().toISOString());
+        fd.append('client_tz_offset_min', String(new Date().getTimezoneOffset()));
+        loggingInFlight = true;
+        const res = await fetch('ajax/log_attendance.php', { method: 'POST', body: fd });
+        const data = await res.json().catch(() => null);
+        if (data && data.success) fetchLatestDetection();
+        if (data && !data.success) {
+          const msg = String(data.message || data.error || '').trim();
+          if (msg === 'This ceremony is time-in only. Attendance already recorded.') {
+            alreadyTimeInUntilMs = Date.now() + 3500;
+          }
+          if (msg === 'Time out is not open yet. Please scan during the allowed time-out window.') {
+            alreadyTimeInUntilMs = Date.now() + 3500;
+          }
+          if (msg === 'Already timed out for this event today.') {
+            alreadyTimeOutUntilMs = Date.now() + 3500;
+          }
+        }
+      } catch (e) {
+        // ignore frame-by-frame detection errors
+      } finally {
+        loggingInFlight = false;
+      }
+    }
+
+    // ── START: Open Camera
+    btnStart.addEventListener('click', async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: 640, height: 480 },
+          audio: false
+        });
+
+        cameraFeed.srcObject            = stream;
+        cameraFeed.style.display        = 'block';
+        cameraPlaceholder.style.display = 'none';
+        liveBadge.style.display         = 'flex';
+
+        btnStart.disabled = true;
+        btnStop.disabled  = false;
+
+        startPolling();
+
+        function onVideoReady() {
+          cameraFeed.play && cameraFeed.play();
+          startLocalFaceLoop();
+          if (isRecognitionEnabled) {
+            startRecognitionLoop();
+          } else {
+            startQrLoop();
+          }
+          if (poseInterval) clearInterval(poseInterval);
+          runFacePose();
+          setTimeout(runFacePose, 120);
+          setTimeout(runFacePose, 240);
+          setTimeout(runFacePose, 360);
+          poseInterval = setInterval(runFacePose, FACE_POSE_INTERVAL_MS);
+          drawOverlay();
+        }
+
+        if (cameraFeed.readyState >= 2) {
+          onVideoReady();
+        } else {
+          cameraFeed.onloadeddata = onVideoReady;
+        }
+
+        loadCurrentEvent();
+        if (currentEventInterval) clearInterval(currentEventInterval);
+        currentEventInterval = setInterval(loadCurrentEvent, 5000);
+
+      } catch (err) {
+        console.error('Camera access error:', err);
+        alert('Could not open camera: ' + err.message);
+      }
+    });
+
+    // ── STOP: Close Camera 
+    btnStop.addEventListener('click', () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+
+      cameraFeed.srcObject            = null;
+      cameraFeed.style.display        = 'none';
+      cameraPlaceholder.style.display = 'flex';
+      liveBadge.style.display         = 'none';
+
+      btnStart.disabled = false;
+      btnStop.disabled  = true;
+
+      stopPolling();
+      lastDetectionId = null;
+      if (hideInfoTimer) { clearTimeout(hideInfoTimer); hideInfoTimer = null; }
+      if (recognitionInterval) {
+        clearInterval(recognitionInterval);
+        recognitionInterval = null;
+      }
+      if (poseInterval) {
+        clearInterval(poseInterval);
+        poseInterval = null;
+      }
+      stopLocalFaceLoop();
+      stopQrLoop();
+      lastFaceBox = null;
+      lastQr = null;
+      if (currentEventInterval) {
+        clearInterval(currentEventInterval);
+        currentEventInterval = null;
+      }
+      stateWaiting.style.display  = 'flex';
+      stateDetected.style.display = 'none';
+    });
+
+    function showEmployeeInfo(data) {
+      const status = String(data.status || 'time_in');
+      const isOut = status === 'time_out';
+      const isLate = status === 'late';
+      const badge = document.getElementById('attendanceTypeBadge');
+
+      document.getElementById('empName').textContent       = data.name       || 'Unknown';
+      document.getElementById('empId').textContent         = data.id         || '---';
+      document.getElementById('empDepartment').textContent = data.department  || '---';
+      document.getElementById('empPosition').textContent   = data.position    || '---';
+      document.getElementById('timeRecorded').textContent  = data.time || '--:-- --';
+      document.getElementById('dateRecorded').textContent  = data.logDate || '--';
+      if (badge) {
+        badge.textContent = isOut ? 'Time out' : (isLate ? 'Late' : 'Time in');
+        badge.classList.toggle('badge-timeout', isOut);
+        badge.classList.toggle('badge-timein', !isOut);
+      }
+
+      stateWaiting.style.display  = 'none';
+      stateDetected.style.display = 'flex';
+    }
+
+    // ── Minimize back to main capture view ───────────────────────
+    if (btnMinimize) {
+      btnMinimize.addEventListener('click', () => {
+        window.location.href = 'capture.php';
+      });
+    }
+   
+    window.showEmployeeInfo = showEmployeeInfo;
+    loadCurrentEvent();
+
+    // Refresh event immediately when tab becomes active again.
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) loadCurrentEvent();
+    });
+    window.addEventListener('focus', function () {
+      loadCurrentEvent();
+    });
+  </script>
+
+</body>
+</html>

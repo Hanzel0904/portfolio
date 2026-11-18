@@ -1,0 +1,290 @@
+/* System-wide batch import progress tracker + modal */
+:root {
+  --bit-green: #2d7d46;
+  --bit-green-dark: #1f5c33;
+  --bit-red: #d9534f;
+  --bit-gray: #64748b;
+  --bit-bg: #ffffff;
+  --bit-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
+}
+
+.bit-tracker {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 9998;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  max-width: min(320px, calc(100vw - 2rem));
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  box-shadow: var(--bit-shadow);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: var(--bit-bg);
+}
+
+.bit-tracker[hidden] {
+  display: none !important;
+}
+
+.bit-tracker-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  padding: 0.65rem 0.85rem;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+  font: inherit;
+  color: #0f172a;
+}
+
+.bit-tracker-main:hover {
+  background: #f8fafc;
+}
+
+.bit-tracker-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bit-gray);
+}
+
+.bit-tracker-bar-wrap {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bit-tracker-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--bit-green);
+  border-radius: 999px;
+  transition: width 0.35s ease, background 0.2s ease;
+}
+
+.bit-tracker-bar.bit-bar--warn,
+.bit-modal-progress.bit-bar--warn {
+  background: #d97706;
+}
+
+.bit-tracker-bar.bit-bar--error,
+.bit-modal-progress.bit-bar--error {
+  background: var(--bit-red);
+}
+
+.bit-tracker-meta {
+  font-size: 0.78rem;
+  color: var(--bit-gray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bit-tracker-meta strong.bit-ok {
+  color: var(--bit-green);
+  font-weight: 700;
+}
+
+.bit-tracker-meta strong.bit-fail {
+  color: var(--bit-red);
+  font-weight: 700;
+}
+
+.bit-tracker-close {
+  width: 36px;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.bit-tracker-close:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Modal */
+.bit-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  box-sizing: border-box;
+}
+
+.bit-modal-overlay[hidden] {
+  display: none !important;
+}
+
+.bit-modal {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+  padding: 1.5rem 1.5rem 1.25rem;
+  max-height: min(90vh, 640px);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bit-modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.bit-modal-status {
+  font-size: 0.9rem;
+  color: var(--bit-gray);
+  margin: -0.35rem 0 0;
+}
+
+.bit-modal-progress-wrap {
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bit-modal-progress {
+  height: 100%;
+  width: 0%;
+  background: var(--bit-green);
+  border-radius: 999px;
+  transition: width 0.35s ease, background 0.2s ease;
+}
+
+.bit-modal.bit-modal--issues .bit-modal-title {
+  color: #9a3412;
+}
+
+.bit-modal.bit-modal--fatal .bit-modal-title {
+  color: #b91c1c;
+}
+
+.bit-modal-status.bit-modal-status--warn {
+  color: #9a3412;
+  font-weight: 600;
+}
+
+.bit-modal-status.bit-modal-status--error {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.bit-modal-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--bit-gray);
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.bit-modal-stats-right .bit-ok {
+  color: var(--bit-green);
+  font-weight: 700;
+}
+
+.bit-modal-stats-right .bit-fail {
+  color: var(--bit-red);
+  font-weight: 700;
+}
+
+.bit-modal-stats-right .bit-sep {
+  margin: 0 0.25rem;
+  opacity: 0.5;
+}
+
+.bit-modal-log {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 0.75rem;
+  flex: 1;
+  min-height: 120px;
+  max-height: 240px;
+  overflow-y: auto;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.bit-modal-log-line {
+  margin-bottom: 0.4rem;
+  word-break: break-word;
+}
+
+.bit-modal-log-line.bit-line-ok {
+  color: var(--bit-green);
+}
+
+.bit-modal-log-line.bit-line-fail {
+  color: var(--bit-red);
+}
+
+.bit-modal-log-empty {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.bit-modal-done {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: var(--bit-green);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.bit-modal-done:hover {
+  background: var(--bit-green-dark);
+}
+
+.bit-modal-done.bit-modal-done--issues {
+  background: #d97706;
+}
+
+.bit-modal-done.bit-modal-done--issues:hover {
+  background: #b45309;
+}
+
+.bit-modal-done.bit-modal-done--fatal {
+  background: var(--bit-red);
+}
+
+.bit-modal-done.bit-modal-done--fatal:hover {
+  background: #b91c1c;
+}
+
+@media (max-width: 480px) {
+  .bit-tracker {
+    left: 0.75rem;
+    right: 0.75rem;
+    max-width: none;
+  }
+}

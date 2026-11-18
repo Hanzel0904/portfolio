@@ -1,0 +1,167 @@
+:root {
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --green: #1a7c3e;
+  --green-soft: #dcfce7;
+  --red: #b91c1c;
+  --red-soft: #fee2e2;
+  --border: #dbe3ed;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.scanner-app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem 1rem 1.5rem;
+}
+
+.scanner-header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.scanner-header p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+}
+
+.scanner-network-note {
+  font-size: 0.85rem;
+}
+
+.scanner-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.85rem;
+  margin-top: 0.8rem;
+}
+
+.scanner-preview-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0b1220;
+  aspect-ratio: 3 / 4;
+}
+
+#scannerVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.scanner-overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.scanner-overlay.is-active {
+  display: flex;
+}
+
+.scanner-box {
+  width: min(70vw, 260px);
+  height: min(70vw, 260px);
+  border: 3px solid #22c55e;
+  border-radius: 14px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.34);
+}
+
+.scanner-controls {
+  display: flex;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-primary {
+  border-color: var(--green);
+  background: var(--green);
+  color: #fff;
+}
+
+.btn-outline {
+  background: #fff;
+  color: #1f2937;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.scanner-status {
+  margin-top: 0.75rem;
+  border-radius: 10px;
+  padding: 0.62rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+}
+
+.scanner-status-info {
+  background: #f8fafc;
+  color: #334155;
+}
+
+.scanner-status-ok {
+  background: var(--green-soft);
+  color: #0f5132;
+  border-color: #86efac;
+}
+
+.scanner-status-error {
+  background: var(--red-soft);
+  color: var(--red);
+  border-color: #fecaca;
+}
+
+.scanner-card h2 {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.last-scan-meta {
+  margin-top: 0.45rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.last-scan-payload {
+  margin-top: 0.5rem;
+  padding: 0.7rem;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px dashed var(--border);
+  word-break: break-word;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.84rem;
+}

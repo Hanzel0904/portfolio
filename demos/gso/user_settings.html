@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Settings</title>
+    <link rel="stylesheet" href="dashboard.css" />
+    <link rel="stylesheet" href="dashb-gso.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .settings-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #2980b9;
+            padding-bottom: 15px;
+        }
+
+        .settings-header i {
+            font-size: 24px;
+            margin-right: 10px;
+            color: #2980b9;
+        }
+
+        .settings-header h2 {
+            margin: 0;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .setting-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .setting-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .setting-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .setting-header i {
+            margin-right: 10px;
+            color: #2980b9;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #2980b9;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-btn:hover {
+            text-decoration: underline;
+        }
+
+        .toggle-btn i {
+            margin-left: 5px;
+        }
+
+        .setting-content {
+            display: none;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .setting-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #2980b9;
+            outline: none;
+        }
+
+        .name-inputs {
+            display: flex;
+            gap: 15px;
+        }
+
+        .name-inputs .form-group {
+            flex: 1;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1c5980;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .current-value {
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 16px;
+            border-left: 3px solid #2980b9;
+        }
+
+        .message-box {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .message-box i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .message-box.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .message-box.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            height: 5px;
+            background-color: #eee;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .password-feedback {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 15px;
+            }
+            
+            .name-inputs {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar"><h3>Department Portal</h3><div class="user-info"><div class="user-name">Demo account</div><div class="dept-info">Sample office</div></div><ul><li><a href="user_dashboard.html"><span>Dashboard</span></a></li><li><a href="user_add_PLP.html"><span>Request form</span></a></li><li><a href="user_history.html"><span>History</span></a></li><li><a href="user_settings.html"><span>Settings</span></a></li><li><a href="index.html"><span>Logout</span></a></li></ul></div>
+
+
+
+<div class="settings-container">
+    <div class="settings-header">
+        <i class="fas fa-cog"></i>
+        <h2>Account Settings</h2>
+    </div>
+
+    
+        <div class="message-box ">
+            <i class="fas fa-"></i>
+            
+        </div>
+    
+
+    <!-- Profile Settings Card -->
+    <div class="setting-card">
+    <div class="setting-header" onclick="toggleSetting('profile')">
+        <h3><i class="fas fa-user"></i> Profile Information</h3>
+        <button type="button" class="toggle-btn">
+            Edit <i class="fas fa-chevron-down" id="profile-icon"></i>
+        </button>
+    </div>
+    <div class="setting-content" id="profile-content">
+        <div class="current-value">
+            Current name: <strong></strong><br>
+            Department: <strong></strong>
+        </div>
+        <form method="post" onsubmit="return false;">
+            <div class="name-inputs">
+                <div class="form-group">
+                    <label for="fname">First Name</label>
+                    <input type="text" name="fname" id="fname" value="" required>
+                </div>
+                <div class="form-group">
+                    <label for="lname">Last Name</label>
+                    <input type="text" name="lname" id="lname" value="" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="department">Department</label>
+                <input type="text" name="department" id="department" value="" required>
+            </div>
+            <div class="button-group">
+                <button type="submit" name="update_name" class="btn btn-primary">Update Profile</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    <!-- Username Settings Card -->
+    <div class="setting-card">
+        <div class="setting-header" onclick="toggleSetting('username')">
+            <h3><i class="fas fa-at"></i> Username</h3>
+            <button type="button" class="toggle-btn">
+                Edit <i class="fas fa-chevron-down" id="username-icon"></i>
+            </button>
+        </div>
+        <div class="setting-content" id="username-content">
+            <div class="current-value">
+                Current username: <strong></strong>
+            </div>
+            <form method="post" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="new_username">New Username</label>
+                    <input type="text" name="new_username" id="new_username" required>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="toggleSetting('username')">Cancel</button>
+                    <button type="submit" name="update_username" class="btn btn-primary">Change Username</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Settings Card -->
+    <div class="setting-card">
+        <div class="setting-header" onclick="toggleSetting('password')">
+            <h3><i class="fas fa-lock"></i> Password</h3>
+            <button type="button" class="toggle-btn">
+                Edit <i class="fas fa-chevron-down" id="password-icon"></i>
+            </button>
+        </div>
+        <div class="setting-content" id="password-content">
+            <form method="post" onsubmit="return validatePasswordForm()" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="current_password">Current Password</label>
+                    <input type="password" name="current_password" id="current_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new_password">New Password</label>
+                    <input type="password" name="new_password" id="new_password" oninput="checkPasswordStrength()" required>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="password-strength-bar"></div>
+                    </div>
+                    <div class="password-feedback" id="password-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <input type="password" name="confirm_password" id="confirm_password" required>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="toggleSetting('password')">Cancel</button>
+                    <button type="submit" name="update_password" class="btn btn-primary">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleSetting(section) {
+        const content = document.getElementById(section + '-content');
+        const icon = document.getElementById(section + '-icon');
+        
+        content.classList.toggle('active');
+        
+        if (content.classList.contains('active')) {
+            icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+        } else {
+            icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+        }
+    }
+
+    function checkPasswordStrength() {
+        const password = document.getElementById('new_password').value;
+        const strengthBar = document.getElementById('password-strength-bar');
+        const feedback = document.getElementById('password-feedback');
+        
+        // Calculate password strength
+        let strength = 0;
+        
+        if (password.length >= 8) strength += 25;
+        if (password.match(/[A-Z]/)) strength += 25;
+        if (password.match(/[0-9]/)) strength += 25;
+        if (password.match(/[^A-Za-z0-9]/)) strength += 25;
+        
+        // Update the strength bar
+        strengthBar.style.width = strength + '%';
+        
+        // Set the color based on strength
+        if (strength < 25) {
+            strengthBar.style.backgroundColor = '#dc3545';
+            feedback.textContent = 'Very weak';
+        } else if (strength < 50) {
+            strengthBar.style.backgroundColor = '#ffc107';
+            feedback.textContent = 'Weak';
+        } else if (strength < 75) {
+            strengthBar.style.backgroundColor = '#17a2b8';
+            feedback.textContent = 'Good';
+        } else {
+            strengthBar.style.backgroundColor = '#28a745';
+            feedback.textContent = 'Strong';
+        }
+    }
+
+    function validatePasswordForm() {
+        const newPass = document.getElementById('new_password').value;
+        const confirmPass = document.getElementById('confirm_password').value;
+        
+        if (newPass !== confirmPass) {
+            alert('New passwords do not match!');
+            return false;
+        }
+        
+        return true;
+    }
+
+    function toggleSetting(id) {
+    var content = document.getElementById(id + '-content');
+    var icon = document.getElementById(id + '-icon');
+    content.classList.toggle('active');
+    icon.classList.toggle('fa-chevron-down');
+    icon.classList.toggle('fa-chevron-up');
+}
+</script>
+
+</body>
+</html>

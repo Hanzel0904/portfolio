@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deliver</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .close-btn {
+      position: absolute;
+      display: flex;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: transparent;
+      border: none;
+      color: #dc3545 !important;    
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    button[type="submit"] {
+      padding: 10px 20px;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .error-message {
+      color: #dc3545;
+      font-weight: bold;
+      padding: 10px;
+      background-color: rgba(220, 53, 69, 0.1);
+      border-left: 3px solid #dc3545;
+    }
+    .success-message {
+      color: #28a745;
+      font-weight: bold;
+      padding: 10px;
+      background-color: rgba(40, 167, 69, 0.1);
+      border-left: 3px solid #28a745;
+    }
+  </style>
+</head>
+<body>
+  
+    <div class="error-message"></div>
+  
+  <form action="#" method="POST" onsubmit="return false;">
+    <header style="position: relative; padding: 1rem 2rem;">
+      <h1>Deliver Item</h1>
+      <button class="close-btn" onclick="window.location.href = ''; return false;">
+      <i class="fas fa-times"></i>
+    </button>
+    </header>
+    <p><strong>RIS #:</strong> </p>
+    <p><strong>Item Name:</strong> </p>
+    <p><strong>Description:</strong> </p>
+    <p><strong>Quantity Requested:</strong> </p>
+    
+      <p><strong>AVAILABLE:</strong> </p>
+    
+    <label for="quantity">Quantity Delivered:</label>
+    <input type="number" name="quantity" id="quantity"
+           value=""
+           
+             max=""
+           
+           required>
+    <label for="delivery_date">Delivery Date:</label>
+    <input type="date" name="date" id="delivery_date" value="" required>
+    <div class="button-container">
+      <button type="submit" name="deliver">Deliver Item</button>
+    </div>
+  </form>
+</body>
+</html>

@@ -1,0 +1,715 @@
+﻿<!doctype html>
+
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analytics | PLP Smart Attendance Monitoring</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="css/analytics.css" />
+    <link rel="stylesheet" href="css/pdf_report_modal.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;">
+      <defs>
+        <path id="ico-bars" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+        <path id="ico-user" d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/>
+      </defs>
+    </svg>
+  </head>
+  <body>
+
+<header class="plp-header" role="banner">
+  <a href="dashboard.html" class="plp-logo-wrap">
+    <div class="plp-logo-icon"><img src="assets/logo.png" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
+    <div class="plp-logo-text"><span class="plp-logo-title">PLP Smart Attendance</span><span class="plp-logo-sub">Demo</span></div>
+  </a>
+  <nav class="plp-nav">
+    <a class="plp-nav-link" href="dashboard.html"><span>Dashboard</span></a>
+    <a class="plp-nav-link" href="employee_registration.html"><span>Register</span></a>
+    <a class="plp-nav-link" href="records.html"><span>Records</span></a>
+    <a class="plp-nav-link" href="employee_management.html"><span>Employees</span></a>
+    <a class="plp-nav-link" href="capture.html"><span>Capture</span></a>
+    <a class="plp-nav-link" href="analytics.html"><span>Analytics</span></a>
+    <a class="plp-nav-link" href="audit_monitoring.html"><span>Audit</span></a>
+    <a class="plp-nav-link" href="system_settings.html"><span>Settings</span></a>
+    <a class="plp-nav-link" href="scanner.html"><span>Scanner</span></a><a class="plp-nav-link" href="manualAttendanceDesign.html"><span>Manual</span></a><a class="plp-nav-link" href="fullscreen.html"><span>Ceremony</span></a><a class="plp-nav-link" href="mobileQr_fullscreen.html"><span>Mobile QR</span></a>
+    <a class="plp-nav-link" href="index.html"><span>Logout</span></a>
+  </nav>
+</header>
+
+    
+
+    <main class="content analytics-content">
+      <header class="content-header">
+        <h1>System Analytics</h1>
+        <p>Attendance patterns and insights</p>
+      </header>
+
+      <section class="analytics-toolbar card">
+        <div class="analytics-toolbar-left">
+          <h2>Performance Overview</h2>
+          <span>Review attendance trends by period</span>
+        </div>
+        <form class="analytics-controls" method="get" action="#" onsubmit="return false;">
+          <select class="period-select" aria-label="Select report period" name="period" id="periodSelect">
+            <option value="week" >This Week</option>
+            <option value="month" >This Month</option>
+            <option value="quarter" >This Quarter</option>
+          </select>
+          <button class="export-btn" type="button" id="exportPdfBtn">
+            <span class="export-icon">↓</span>
+            <span>Export PDF</span>
+          </button>
+        </form>
+      </section>
+
+      <section class="stats-row">
+        <article class="stat-card">
+          <div class="stat-content">
+            <div class="stat-info">
+              <h3>Avg. Arrival Time</h3>
+              <div class="value"></div>
+            </div>
+            <span class="analytics-stat-icon arrivals" aria-hidden="true"><i class="fa-regular fa-clock"></i></span>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-content">
+            <div class="stat-info">
+              <h3>Avg. Exit Time</h3>
+              <div class="value"></div>
+            </div>
+            <span class="analytics-stat-icon exits" aria-hidden="true"><i class="fa-solid fa-right-from-bracket"></i></span>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-content">
+            <div class="stat-info">
+              <h3>Attendance Rate</h3>
+              <div class="value"></div>
+            </div>
+            <span class="analytics-stat-icon attendance" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-content">
+            <div class="stat-info">
+              <h3>Late Percentage</h3>
+              <div class="value"></div>
+            </div>
+            <span class="analytics-stat-icon late" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></span>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-content">
+            <div class="stat-info">
+              <h3>Absent Percentage</h3>
+              <div class="value"></div>
+            </div>
+            <span class="analytics-stat-icon absent" aria-hidden="true"><i class="fa-solid fa-user-xmark"></i></span>
+          </div>
+        </article>
+      </section>
+
+      <section class="charts-grid">
+        <article class="chart-card card">
+          <h3>Flag Ceremonies Trend (Raising vs Retreat)</h3>
+          <div class="chart-container">
+            <canvas id="flagCombinedChart"></canvas>
+          </div>
+        </article>
+        <article class="chart-card card">
+          <h3>Special Occasions / Added Events Trend</h3>
+          <div class="chart-container">
+            <canvas id="specialOccasionsChart"></canvas>
+          </div>
+        </article>
+        <article class="chart-card card">
+          <h3>Ceremony Attendance Comparison</h3>
+          <div class="chart-container">
+            <canvas id="ceremonyChart"></canvas>
+          </div>
+        </article>
+        <article class="chart-card card">
+          <h3>Department Attendance</h3>
+          <div class="chart-container">
+            <canvas id="departmentChart"></canvas>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="pdf-overlay" id="anPdfModalOverlay" aria-hidden="true">
+      <div class="pdf-modal" role="dialog" aria-modal="true" aria-labelledby="anPdfModalTitle">
+        <div class="pdf-modal-header">
+          <div class="pdf-modal-title" id="anPdfModalTitle">PDF export preview</div>
+          <button type="button" class="pdf-close-btn" id="anClosePdfModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="pdf-modal-body">
+          <div class="pdf-layout">
+            <div class="pdf-config-col">
+              <div class="pdf-section-row">
+                <div class="pdf-section-label">Left logos (3)</div>
+                <div class="pdf-mini-actions" aria-label="Logo history">
+                  <button type="button" class="pdf-mini-btn" id="anPdfLogoUndoBtn" title="Undo" aria-label="Undo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
+                  </button>
+                  <button type="button" class="pdf-mini-btn" id="anPdfLogoRedoBtn" title="Redo" aria-label="Redo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"/></svg>
+                  </button>
+                  <button type="button" class="pdf-mini-btn pdf-mini-btn--wide" id="anPdfLogoResetBtn" title="Back to default logos" aria-label="Back to default logos">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+                      <path d="M3 4v5h5"></path>
+                    </svg>
+                    <span>Default</span>
+                  </button>
+                </div>
+              </div>
+              <div class="pdf-logo-row">
+                <div class="pdf-logo-slot">
+                  <div class="pdf-field"><label for="an-f-l1">Logo 1</label></div>
+                  <div class="pdf-logo-preview-box" id="an-prev-l1"><img src="assets/pasig_seal.png" alt="Logo 1" /></div>
+                  <input type="file" id="an-f-l1" accept="image/*" style="display:none" />
+                  <div class="pdf-upload-row">
+                    <label class="pdf-upload-btn" for="an-f-l1">Upload</label>
+                    <button type="button" class="pdf-upload-btn" id="an-rm-l1">Remove</button>
+                  </div>
+                </div>
+                <div class="pdf-logo-slot">
+                  <div class="pdf-field"><label for="an-f-l2">Logo 2</label></div>
+                  <div class="pdf-logo-preview-box" id="an-prev-l2"><img src="assets/pasig_logo.png" alt="Logo 2" /></div>
+                  <input type="file" id="an-f-l2" accept="image/*" style="display:none" />
+                  <div class="pdf-upload-row">
+                    <label class="pdf-upload-btn" for="an-f-l2">Upload</label>
+                    <button type="button" class="pdf-upload-btn" id="an-rm-l2">Remove</button>
+                  </div>
+                </div>
+                <div class="pdf-logo-slot">
+                  <div class="pdf-field"><label for="an-f-l3">Logo 3</label></div>
+                  <div class="pdf-logo-preview-box" id="an-prev-l3"><img src="assets/logo.png" alt="Logo 3" /></div>
+                  <input type="file" id="an-f-l3" accept="image/*" style="display:none" />
+                  <div class="pdf-upload-row">
+                    <label class="pdf-upload-btn" for="an-f-l3">Upload</label>
+                    <button type="button" class="pdf-upload-btn" id="an-rm-l3">Remove</button>
+                  </div>
+                </div>
+              </div>
+              <div class="pdf-section-label">Right side header info</div>
+              <div class="pdf-fields">
+                <div class="pdf-field"><label for="an-city-name">City / LGU name</label><input id="an-city-name" value="PAMAHALAANG LUNGSOD NG PASIG" /></div>
+                <div class="pdf-field"><label for="an-department-name">Department</label><input id="an-department-name" value="Office of the Human Resource Development" /></div>
+                <div class="pdf-field"><label for="an-address-line">Address</label><input id="an-address-line" value="Alkalde Jose St. Kapasigan Pasig City, Philippines 1600" /></div>
+                <div class="pdf-field"><label for="an-landline-line">Landline</label><input id="an-landline-line" value="628-1014 Loc. 106" /></div>
+                <div class="pdf-field"><label for="an-email-line">Email</label><input id="an-email-line" value="hrd@plpasig.edu.ph" /></div>
+                <div class="pdf-field"><label for="an-office-name">Office (report)</label><input id="an-office-name" value="Human Resource Development" /></div>
+                <div class="pdf-field"><label for="an-doc-date">As-of date</label><input id="an-doc-date" type="date" value="" /></div>
+                <div class="pdf-field"><label for="an-doc-subtitle">Report period (label)</label><input id="an-doc-subtitle" value="" /></div>
+                <div class="pdf-field"><label for="an-recorded-by">Prepared by</label><input id="an-recorded-by" value="HRD Personnel" /></div>
+                <div class="pdf-field"><label for="an-head-of-office-name">Head of Office (printed name)</label><input id="an-head-of-office-name" value="" /></div>
+              </div>
+            </div>
+            <div class="pdf-preview-col">
+              <div class="doc-preview-label">Print preview</div>
+              <div class="pdf-preview-wrap">
+                <div class="pdf-preview" id="an-doc-inner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pdf-modal-footer">
+          <button type="button" class="export-btn" style="background:#6b7280;margin-right:8px" id="anCancelPdfModalBtn">Cancel</button>
+          <button type="button" class="export-btn" id="anDownloadPdfBtn">Download PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const periodSelect = document.getElementById('periodSelect');
+        if (!periodSelect) return;
+        periodSelect.addEventListener('change', function () {
+          const form = periodSelect.form;
+          if (!form) return;
+          const exportInput = form.querySelector('input[name="export"]');
+          if (exportInput) exportInput.remove();
+          form.submit();
+        });
+      })();
+
+      (function () {
+        const exportPdfBtn = document.getElementById('exportPdfBtn');
+        const overlay = document.getElementById('anPdfModalOverlay');
+        const closeBtn = document.getElementById('anClosePdfModalBtn');
+        const cancelBtn = document.getElementById('anCancelPdfModalBtn');
+        const downloadBtn = document.getElementById('anDownloadPdfBtn');
+        if (!exportPdfBtn || !overlay) return;
+
+        const LOGO_STORE_KEY = 'plp_records_pdf_logos_v1';
+        const defaultLogos = { l1: 'assets/pasig_seal.png', l2: 'assets/pasig_logo.png', l3: 'assets/logo.png' };
+        const logos = { l1: defaultLogos.l1, l2: defaultLogos.l2, l3: defaultLogos.l3 };
+        let logoHistory = [];
+        let logoHistoryIdx = -1;
+
+        function esc(s) {
+          return String(s ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+        }
+
+        function cloneLogos() {
+          return { l1: String(logos.l1 || ''), l2: String(logos.l2 || ''), l3: String(logos.l3 || '') };
+        }
+
+        function savePersistedLogos() {
+          try { localStorage.setItem(LOGO_STORE_KEY, JSON.stringify(cloneLogos())); } catch (e) {}
+        }
+
+        function loadPersistedLogos() {
+          try {
+            const raw = localStorage.getItem(LOGO_STORE_KEY);
+            if (!raw) return null;
+            const obj = JSON.parse(raw);
+            if (!obj || typeof obj !== 'object') return null;
+            return { l1: String(obj.l1 || ''), l2: String(obj.l2 || ''), l3: String(obj.l3 || '') };
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function logoEl(key, label) {
+          var u = logos[key];
+          if (u) return '<img src="' + u + '" alt="' + esc(label) + '" />';
+          return '<div class="doc-logo-placeholder">' + esc(label) + '</div>';
+        }
+
+        function applyLogos(state) {
+          if (!state) return;
+          logos.l1 = String(state.l1 || '');
+          logos.l2 = String(state.l2 || '');
+          logos.l3 = String(state.l3 || '');
+          ['l1', 'l2', 'l3'].forEach(function (key, idx) {
+            const prev = document.getElementById('an-prev-' + key);
+            if (!prev) return;
+            if (logos[key]) prev.innerHTML = '<img src="' + logos[key] + '" alt="" />';
+            else prev.innerHTML = '<div class="doc-logo-placeholder">LOGO ' + (idx + 1) + '</div>';
+          });
+          renderAnPdfPreview();
+        }
+
+        function syncLogoHistoryButtons() {
+          const undoBtn = document.getElementById('anPdfLogoUndoBtn');
+          const redoBtn = document.getElementById('anPdfLogoRedoBtn');
+          if (undoBtn) undoBtn.disabled = !(logoHistoryIdx > 0);
+          if (redoBtn) redoBtn.disabled = !(logoHistoryIdx >= 0 && logoHistoryIdx < (logoHistory.length - 1));
+        }
+
+        function pushLogoHistory() {
+          const snap = cloneLogos();
+          if (logoHistoryIdx < logoHistory.length - 1) {
+            logoHistory = logoHistory.slice(0, logoHistoryIdx + 1);
+          }
+          logoHistory.push(snap);
+          logoHistoryIdx = logoHistory.length - 1;
+          syncLogoHistoryButtons();
+          savePersistedLogos();
+        }
+
+        function getCanvasDataUrl(id) {
+          const el = document.getElementById(id);
+          if (!el || typeof el.toDataURL !== 'function') return '';
+          try { return el.toDataURL('image/png'); } catch (e) { return ''; }
+        }
+
+        function renderAnPdfPreview() {
+          const target = document.getElementById('an-doc-inner');
+          if (!target) return;
+          const city = (document.getElementById('an-city-name') || {}).value || '';
+          const dept = (document.getElementById('an-department-name') || {}).value || '';
+          const addr = (document.getElementById('an-address-line') || {}).value || '';
+          const landline = (document.getElementById('an-landline-line') || {}).value || '';
+          const email = (document.getElementById('an-email-line') || {}).value || '';
+          const periodLine = (document.getElementById('an-doc-subtitle') || {}).value || '';
+          const office = (document.getElementById('an-office-name') || {}).value || '';
+          const docDate = (document.getElementById('an-doc-date') || {}).value || '';
+          const rec = (document.getElementById('an-recorded-by') || {}).value || '';
+          const headName = (document.getElementById('an-head-of-office-name') || {}).value || '';
+
+          const kpiCards = Array.from(document.querySelectorAll('.stats-row .stat-card'));
+          const kpiRowsHtml = kpiCards.map(function (card) {
+            const label = (card.querySelector('.stat-info h3') || {}).textContent || '';
+            const value = (card.querySelector('.stat-info .value') || {}).textContent || '';
+            return '<tr><td class="left">' + esc(label.trim()) + '</td><td class="left">' + esc(value.trim()) + '</td></tr>';
+          }).join('');
+
+          const charts = [
+            { title: 'Flag Ceremonies Trend (Raising vs Retreat)', img: getCanvasDataUrl('flagCombinedChart') },
+            { title: 'Special Occasions / Added Events Trend', img: getCanvasDataUrl('specialOccasionsChart') },
+            { title: 'Ceremony Attendance Comparison', img: getCanvasDataUrl('ceremonyChart') },
+            { title: 'Department Attendance', img: getCanvasDataUrl('departmentChart') },
+          ].filter(function (c) { return c.img !== ''; });
+
+          const chartsHtml = charts.map(function (c) {
+            return '<section style="margin:12px 0 18px; break-inside: avoid;">' +
+              '<h3 style="font-size:13px;margin:0 0 6px;color:#111;">' + esc(c.title) + '</h3>' +
+              '<img class="an-chart-thumb" src="' + c.img + '" alt="" />' +
+              '</section>';
+          }).join('');
+
+          const headerHtml =
+            '<div class="doc-header">' +
+              '<div class="doc-logos-left">' + logoEl('l1', 'LOGO 1') + logoEl('l2', 'LOGO 2') + logoEl('l3', 'LOGO 3') + '</div>' +
+              '<div class="doc-right-info"><div class="doc-right-city">' + esc(city) + '</div><div class="doc-right-dept">' + esc(dept) + '</div><div class="doc-right-addr">&#9679; ' + esc(addr) + '<br>&#9742; ' + esc(landline) + ' &nbsp;|&nbsp; &#9993; ' + esc(email) + '</div></div>' +
+            '</div>' +
+            '<hr class="doc-divider" />' +
+            '<div class="doc-ceremony-title">SYSTEM ANALYTICS REPORT</div>' +
+            '<div class="doc-date-line"><strong>REPORT PERIOD:</strong> ' + esc(periodLine) + '</div>' +
+            '<div class="doc-office-line">OFFICE: <strong>' + esc(office) + '</strong></div>' +
+            '<div class="doc-date-line"><strong>AS OF:</strong> ' + esc(docDate) + '</div>';
+
+          const bodyHtml =
+            '<table class="doc-att-table"><thead><tr><th class="left">KPI</th><th class="left">Value</th></tr></thead><tbody>' + kpiRowsHtml + '</tbody></table>' +
+            chartsHtml +
+            '<div class="doc-footer-txt">Prepared by ' + esc(rec) + '</div>' +
+            '<div class="doc-sig-area"><div class="doc-sig-line"><div class="doc-sig-name">' + esc(headName) + '</div>' +
+            '<div class="doc-sig-caption">Signature Over Printed Name<br>Head of Office</div></div></div>';
+
+          target.innerHTML =
+            '<table class="an-doc-sheet" role="presentation"><thead><tr><td>' + headerHtml + '</td></tr></thead><tbody><tr><td>' + bodyHtml + '</td></tr></tbody></table>';
+        }
+
+        function wireLogoUi() {
+          ['l1', 'l2', 'l3'].forEach(function (key) {
+            const inp = document.getElementById('an-f-' + key);
+            const rm = document.getElementById('an-rm-' + key);
+            if (inp) {
+              inp.addEventListener('change', function () {
+                const f = inp.files && inp.files[0];
+                if (!f) return;
+                const r = new FileReader();
+                r.onload = function () {
+                  logos[key] = String(r.result || '');
+                  applyLogos(cloneLogos());
+                  pushLogoHistory();
+                };
+                r.readAsDataURL(f);
+                inp.value = '';
+              });
+            }
+            if (rm) {
+              rm.addEventListener('click', function () {
+                logos[key] = '';
+                pushLogoHistory();
+                applyLogos(logoHistory[logoHistoryIdx]);
+              });
+            }
+          });
+          const undoBtn = document.getElementById('anPdfLogoUndoBtn');
+          const redoBtn = document.getElementById('anPdfLogoRedoBtn');
+          const resetBtn = document.getElementById('anPdfLogoResetBtn');
+          if (undoBtn) {
+            undoBtn.addEventListener('click', function () {
+              if (logoHistoryIdx <= 0) return;
+              logoHistoryIdx--;
+              applyLogos(logoHistory[logoHistoryIdx]);
+              syncLogoHistoryButtons();
+              savePersistedLogos();
+            });
+          }
+          if (redoBtn) {
+            redoBtn.addEventListener('click', function () {
+              if (logoHistoryIdx >= logoHistory.length - 1) return;
+              logoHistoryIdx++;
+              applyLogos(logoHistory[logoHistoryIdx]);
+              syncLogoHistoryButtons();
+              savePersistedLogos();
+            });
+          }
+          if (resetBtn) {
+            resetBtn.addEventListener('click', function () {
+              logoHistory = [];
+              logoHistoryIdx = -1;
+              applyLogos({ l1: defaultLogos.l1, l2: defaultLogos.l2, l3: defaultLogos.l3 });
+              pushLogoHistory();
+              syncLogoHistoryButtons();
+            });
+          }
+        }
+
+        function openModal() {
+          overlay.classList.add('open');
+          overlay.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('modal-open');
+          logoHistory = [];
+          logoHistoryIdx = -1;
+          const saved = loadPersistedLogos();
+          applyLogos(saved || defaultLogos);
+          pushLogoHistory();
+          renderAnPdfPreview();
+          syncLogoHistoryButtons();
+        }
+
+        function closeModal() {
+          overlay.classList.remove('open');
+          overlay.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('modal-open');
+        }
+
+        function printAnalyticsPdf() {
+          renderAnPdfPreview();
+          const inner = (document.getElementById('an-doc-inner') || {}).innerHTML || '';
+          const linkHref = document.querySelector('link[href*="pdf_report_modal.css"]');
+          const cssLink = linkHref ? ('<link rel="stylesheet" href="' + esc(linkHref.getAttribute('href')) + '" />') : '';
+          // Print typography matches records.php downloadPdf() (same order & rules; #doc-inner → #an-doc-inner, .doc-sheet → .an-doc-sheet).
+          const printExtra =
+            '<style>' +
+            'html,body,*{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}' +
+            'body{margin:0;padding:0;background:#fff;color:#111;}' +
+            '#an-doc-inner{padding:0;font-size:13.5px !important;}' +
+            '.doc-right-city{font-size:12.5px !important;}' +
+            '.doc-right-dept{font-size:13px !important;}' +
+            '.doc-right-addr{font-size:11.5px !important;}' +
+            '.doc-ceremony-title{font-size:18px !important;}' +
+            '.doc-date-line,.doc-office-line{font-size:13.5px !important;}' +
+            '.doc-instr{font-size:11.8px !important;}' +
+            '.doc-att-table{font-size:13px !important;}' +
+            '.doc-att-table th{font-size:12px !important;padding:8px 10px !important;}' +
+            '.doc-att-table td{padding:7px 10px !important;}' +
+            '.doc-footer-txt{font-size:11.8px !important;}' +
+            '.doc-sig-name{font-size:12px !important;}' +
+            '.doc-sig-caption{font-size:11px !important;}' +
+            '.doc-note{font-size:10.5px !important;}' +
+            '.doc-att-table th{background:#003366 !important;color:#fff !important;border:0.5px solid #002244 !important;}' +
+            '.doc-att-table tr:nth-child(even) td{background:#f0f4ff !important;}' +
+            '.doc-divider{border-top:1.5px solid #003366 !important;}' +
+            '.doc-right-city{color:#003366 !important;border-bottom:1px solid #003366 !important;}' +
+            '.an-doc-sheet{width:100%;border-collapse:collapse;}' +
+            '.an-doc-sheet>thead>tr>td,.an-doc-sheet>tbody>tr>td{padding:0;border:0;vertical-align:top;}' +
+            '@media print{.an-doc-sheet thead{display:table-header-group;} .an-doc-sheet tfoot{display:table-footer-group;} .an-doc-sheet thead,.an-doc-sheet tr{break-inside:avoid;}}' +
+            '@page{size:auto;margin:20px;}' +
+            '</style>';
+          const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title></title>' + cssLink + printExtra +
+            '</head><body><div id="an-doc-inner">' + inner + '</div></body></html>';
+          const printFrame = document.createElement('iframe');
+          printFrame.style.position = 'fixed';
+          printFrame.style.right = '0';
+          printFrame.style.bottom = '0';
+          printFrame.style.width = '0';
+          printFrame.style.height = '0';
+          printFrame.style.border = '0';
+          printFrame.setAttribute('aria-hidden', 'true');
+          document.body.appendChild(printFrame);
+          const doc = printFrame.contentWindow && printFrame.contentWindow.document;
+          if (!doc || !printFrame.contentWindow) return;
+          doc.open();
+          doc.write(html);
+          doc.close();
+          setTimeout(function () {
+            try {
+              printFrame.contentWindow.focus();
+              printFrame.contentWindow.print();
+            } finally {
+              setTimeout(function () {
+                if (printFrame.parentNode) printFrame.parentNode.removeChild(printFrame);
+              }, 500);
+            }
+          }, 250);
+        }
+
+        wireLogoUi();
+        ['an-city-name', 'an-department-name', 'an-address-line', 'an-landline-line', 'an-email-line', 'an-doc-subtitle', 'an-office-name', 'an-doc-date', 'an-recorded-by', 'an-head-of-office-name'].forEach(function (id) {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('input', renderAnPdfPreview);
+        });
+        if (document.getElementById('an-doc-date')) {
+          document.getElementById('an-doc-date').addEventListener('change', renderAnPdfPreview);
+        }
+
+        exportPdfBtn.addEventListener('click', openModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+        if (downloadBtn) downloadBtn.addEventListener('click', function () { printAnalyticsPdf(); });
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) closeModal();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key !== 'Escape') return;
+          if (!overlay.classList.contains('open')) return;
+          closeModal();
+        });
+      })();
+
+      const flagCombinedCtx = document.getElementById("flagCombinedChart").getContext("2d");
+      new Chart(flagCombinedCtx, {
+        type: "line",
+        data: {
+          labels: ,
+          datasets: [
+            {
+              label: "Flag Raising",
+              data: ,
+              borderColor: "#facc15",
+              backgroundColor: "rgba(250, 204, 21, 0.25)",
+              borderWidth: 3,
+              tension: 0.4,
+              pointBackgroundColor: "#facc15",
+              pointBorderColor: "#fff",
+              pointRadius: 4,
+              pointHoverRadius: 6,
+            },
+            {
+              label: "Flag Retreat",
+              data: ,
+              borderColor: "#3b82f6",
+              backgroundColor: "rgba(59, 130, 246, 0.25)",
+              borderWidth: 3,
+              tension: 0.4,
+              pointBackgroundColor: "#3b82f6",
+              pointBorderColor: "#fff",
+              pointRadius: 4,
+              pointHoverRadius: 6,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: { legend: { display: true, position: "bottom" } },
+          elements: { line: { tension: 0.35 }, point: { radius: 3, hoverRadius: 5 } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: "#e5e7eb" } },
+            x: { grid: { color: "#eef2f7" } },
+          },
+        },
+      });
+
+      const specialOccasionsCtx = document.getElementById("specialOccasionsChart").getContext("2d");
+      new Chart(specialOccasionsCtx, {
+        type: "line",
+        data: {
+          labels: ,
+          datasets: [
+            {
+              label: "Special Occasions / Added Events",
+              data: ,
+              borderColor: "#3b82f6",
+              backgroundColor: "rgba(59, 130, 246, 0.15)",
+              borderWidth: 3,
+              tension: 0.4,
+              pointBackgroundColor: "#3b82f6",
+              pointBorderColor: "#fff",
+              pointRadius: 4,
+              pointHoverRadius: 6,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: { legend: { display: true, position: "bottom" } },
+          elements: { line: { tension: 0.35 }, point: { radius: 3, hoverRadius: 5 } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: "#e5e7eb" } },
+            x: { grid: { color: "#eef2f7" } },
+          },
+        },
+      });
+
+      const ceremonyCtx = document.getElementById("ceremonyChart").getContext("2d");
+      new Chart(ceremonyCtx, {
+        type: "bar",
+        data: {
+          labels: ,
+          datasets: [
+            {
+              label: "Flag Raising",
+              data: ,
+              backgroundColor: "#10b981",
+              borderRadius: 6,
+              barThickness: 24,
+            },
+            {
+              label: "Flag Retreat",
+              data: ,
+              backgroundColor: "#eab308",
+              borderRadius: 6,
+              barThickness: 24,
+            },
+            {
+              label: "Special Occasions",
+              data: ,
+              backgroundColor: "#3b82f6",
+              borderRadius: 6,
+              barThickness: 24,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: { usePointStyle: true, padding: 16, boxWidth: 10 },
+            },
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { color: "#e5e7eb" } },
+            x: { grid: { display: false } },
+          },
+        },
+      });
+
+      const deptCtx = document.getElementById("departmentChart").getContext("2d");
+      new Chart(deptCtx, {
+        type: "bar",
+        data: {
+          labels: ,
+          datasets: [
+            {
+              label: "Present",
+              data: ,
+              backgroundColor: "#10b981",
+              borderRadius: 6,
+            },
+            {
+              label: "Late",
+              data: ,
+              backgroundColor: "#facc15",
+              borderRadius: 6,
+            },
+            {
+              label: "Absent",
+              data: ,
+              backgroundColor: "#ef4444",
+              borderRadius: 6,
+            },
+          ],
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "top",
+              labels: { usePointStyle: true, padding: 15, boxWidth: 10 },
+            },
+          },
+          scales: {
+            x: { stacked: true, beginAtZero: true, grid: { color: "#e5e7eb" } },
+            y: { stacked: true, grid: { display: false } },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

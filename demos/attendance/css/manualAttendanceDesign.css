@@ -1,0 +1,1004 @@
+/* Manual attendance design — scoped for embed (capture) and standalone page */
+
+.manual-attendance-design-root,
+.manual-attendance-design-root * {
+  box-sizing: border-box;
+}
+
+/* Reference layout: light grey canvas, white cards, toolbar full-width (fullscreen top-right of viewport) */
+.manual-attendance-design-root {
+  font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1a1a1a;
+  color-scheme: light;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
+  background-color: transparent;
+}
+
+.manual-attendance-design-root:fullscreen {
+  background-color: #ffffff;
+  width: 100%;
+  min-height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+/* Chromium / Firefox: default fullscreen backdrop is black — paint it white */
+.manual-attendance-design-root:fullscreen::backdrop {
+  background-color: #ffffff;
+}
+
+.manual-attendance-design-root:-webkit-full-screen {
+  background-color: #ffffff;
+  width: 100%;
+  min-height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+.manual-attendance-design-root:-webkit-full-screen::backdrop {
+  background-color: #ffffff;
+}
+
+/* Embed / fallback: class tracks fullscreen alongside :fullscreen */
+.manual-attendance-design-root.is-fullscreen {
+  background-color: #ffffff;
+}
+
+.manual-attendance-design-page {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  min-height: calc(100vh - 72px);
+  padding: 0;
+  background-color: #f8f9fa;
+}
+
+.manual-attendance-design-page > .manual-attendance-design-root {
+  min-height: calc(100vh - 80px);
+}
+
+body.manual-attendance-design-standalone {
+  background-color: #f8f9fa;
+}
+
+/*
+ * Capture embed: gray canvas only behind the two cards; header (back, titles, fullscreen)
+ * sits on the white capture card (#manualModeView is transparent in capture.css).
+ */
+.manual-attendance-design-root--embed .mad-content {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.manual-attendance-design-root--embed:is(:fullscreen, .is-fullscreen) .mad-content {
+  background-color: #ffffff;
+  border-radius: 0;
+}
+
+/* Fullscreen-only header (when manual panel is fullscreened) */
+.manual-attendance-design-root .mad-fs-header {
+  display: none;
+  width: 100%;
+  max-width: none;
+  padding: 12px clamp(16px, 4vw, 40px) 6px;
+  box-sizing: border-box;
+}
+
+.manual-attendance-design-root:fullscreen .mad-fs-header,
+.manual-attendance-design-root.is-fullscreen .mad-fs-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* When using the fullscreen header, hide the old toolbar */
+.manual-attendance-design-root:fullscreen .mad-toolbar,
+.manual-attendance-design-root.is-fullscreen .mad-toolbar {
+  display: none;
+}
+
+.manual-attendance-design-root .mad-fs-header-left {
+  min-width: 0;
+}
+
+.manual-attendance-design-root .mad-fs-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.2;
+}
+
+.manual-attendance-design-root .mad-fs-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.manual-attendance-design-root .mad-fs-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 0 0 auto;
+}
+
+.manual-attendance-design-root .mad-minimize-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: #475569;
+}
+
+.manual-attendance-design-root .mad-minimize-btn:hover {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #1a1a2e;
+}
+
+.manual-attendance-design-root .mad-minimize-btn img {
+  display: block;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.manual-attendance-design-root .mad-fs-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.manual-attendance-design-root .mad-fs-timer svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+.manual-attendance-design-root .mad-toolbar {
+  flex-shrink: 0;
+}
+
+/* Header: full viewport width — back left, fullscreen extreme right (matches reference) */
+.mad-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  width: 100%;
+  max-width: none;
+  margin: 0 0 20px;
+  min-height: 48px;
+  padding: 12px clamp(16px, 4vw, 40px) 4px;
+  box-sizing: border-box;
+}
+
+.mad-toolbar-start {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Embed: heading stack under back button — typography matches capture-main-header */
+.manual-attendance-design-root .mad-embed-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.manual-attendance-design-root .mad-embed-heading .capture-main-title.mad-embed-page-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gray-900, #1a1a2e);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.manual-attendance-design-root .mad-embed-heading .capture-main-subtitle.mad-embed-page-subtitle {
+  font-size: 0.95rem;
+  color: var(--gray-500, #64748b);
+  margin: 0;
+  margin-top: 2px;
+  line-height: 1.45;
+}
+
+.manual-attendance-design-root .mad-toolbar--embed {
+  align-items: flex-start;
+}
+
+.manual-attendance-design-root .mad-toolbar--embed .mad-toolbar-start {
+  align-items: flex-start;
+}
+
+.manual-attendance-design-root .mad-toolbar--embed .mad-toolbar-end {
+  align-self: flex-start;
+}
+
+.mad-toolbar-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.manual-attendance-design-root .mad-toolbar--standalone {
+  justify-content: flex-end;
+}
+
+.mad-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  background: #f1f5f9;
+  color: #334155;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.mad-back-btn:hover {
+  background: #e2e8f0;
+}
+
+.entry-msg {
+  font-size: 12px;
+  color: #64748b;
+  min-height: 1.35em;
+  margin-top: 4px;
+  text-align: center;
+  max-width: 100%;
+  line-height: 1.45;
+  transition: opacity 0.3s ease, color 0.2s ease;
+}
+
+/* Default: compact strip for system layout */
+.manual-attendance-design-root .mad-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: min(900px, 94vw);
+  margin: 0 auto;
+  padding: 6px clamp(12px, 2.5vw, 24px) 24px;
+  min-height: min(360px, 42vh);
+}
+
+/*
+ * Fullscreen: large + readable; header lowered from top edge.
+ * :fullscreen and .is-fullscreen both apply (JS + native).
+ */
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .mad-toolbar {
+  padding-top: clamp(16px, 2.5vh, 32px);
+  padding-left: clamp(14px, 3.6vw, 36px);
+  padding-right: clamp(14px, 3.6vw, 36px);
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .mad-content {
+  max-width: min(1800px, calc(100vw - 24px));
+  max-width: min(1800px, calc(100dvw - 24px));
+  width: 100%;
+  margin: 0 auto;
+  min-height: calc(100vh - 96px);
+  min-height: calc(100dvh - 96px);
+  padding: 10px clamp(12px, 2vw, 28px) clamp(22px, 4vh, 48px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .main-grid {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: min(84vh, 1020px);
+  min-height: min(84dvh, 1020px);
+  gap: clamp(18px, 2.2vw, 36px);
+  align-items: stretch;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .entry-msg {
+  font-size: clamp(14px, 1.5vmin, 18px);
+  max-width: 100%;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .card {
+  min-height: min(78vh, 900px);
+  min-height: min(78dvh, 900px);
+  padding: clamp(26px, 4vh, 52px) clamp(20px, 2.8vw, 40px) clamp(30px, 4.5vh, 56px);
+  border-radius: clamp(14px, 1.3vw, 20px);
+  width: 100%;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 12px 40px rgba(0, 0, 0, 0.06);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .card-title {
+  font-size: clamp(1.55rem, 3vmin, 2.35rem);
+  margin-bottom: clamp(10px, 1.6vh, 20px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .entry-body {
+  gap: clamp(15px, 2.2vh, 26px);
+  align-items: center;
+  width: 100%;
+}
+
+/* Full-width field row only; fixed-width kbd + label stay centered (stretch + definite width = cross-start in flex) */
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .entry-body .emp-input,
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .entry-body .entry-hint,
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .entry-body .entry-msg {
+  align-self: stretch;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .kbd-icon {
+  width: clamp(102px, 13.5vmin, 168px);
+  height: clamp(102px, 13.5vmin, 168px);
+  border-radius: clamp(16px, 1.75vmin, 24px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .icon-kbd {
+  width: clamp(48px, 7vmin, 82px);
+  height: clamp(48px, 7vmin, 82px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .entry-label {
+  font-size: clamp(1.2rem, 2.65vmin, 1.9rem);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .entry-hint {
+  font-size: clamp(0.92rem, 1.5vmin, 1.2rem);
+  max-width: 100%;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .entry-hint kbd {
+  font-size: 0.92em;
+  padding: 3px 12px;
+  border-radius: 8px;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .emp-input {
+  font-size: clamp(1.08rem, 2.15vmin, 1.65rem);
+  padding: clamp(14px, 2.1vh, 24px) clamp(18px, 2.7vmin, 38px);
+  min-height: clamp(56px, 8vh, 84px);
+  border-radius: clamp(12px, 1.2vmin, 18px);
+  max-width: 100%;
+  width: 100%;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .avatar-circle {
+  width: clamp(112px, 15vmin, 172px);
+  height: clamp(112px, 15vmin, 172px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .icon-avatar {
+  width: clamp(52px, 7.5vmin, 88px);
+  height: clamp(52px, 7.5vmin, 88px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .waiting-text {
+  font-size: clamp(1.12rem, 2.35vmin, 1.72rem);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .waiting-sub {
+  font-size: clamp(0.92rem, 1.45vmin, 1.15rem);
+  max-width: 100%;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .info-body {
+  gap: clamp(12px, 1.8vh, 20px);
+  padding-top: clamp(8px, 1.2vh, 18px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .emp-name {
+  font-size: clamp(1.35rem, 2.7vmin, 2.08rem);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .emp-id-display {
+  font-size: clamp(0.92rem, 1.35vmin, 1.12rem);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .info-row {
+  padding: clamp(14px, 2vh, 22px) clamp(16px, 2.2vw, 26px);
+  border-radius: clamp(12px, 1vw, 16px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .icon-row {
+  width: clamp(18px, 2vw, 24px);
+  height: clamp(18px, 2vw, 24px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .info-label {
+  font-size: clamp(0.72rem, 1.15vmin, 0.95rem);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .info-value {
+  font-size: clamp(1.02rem, 1.65vmin, 1.28rem);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .confirmation-banner {
+  font-size: clamp(0.95rem, 1.45vw, 1.15rem);
+  padding: clamp(14px, 2vh, 20px) clamp(16px, 2vw, 24px);
+  border-radius: clamp(12px, 1vw, 16px);
+  margin-top: clamp(14px, 2vh, 22px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .reset-hint {
+  font-size: clamp(0.88rem, 1.3vw, 1.05rem);
+  margin-top: clamp(10px, 1.5vh, 16px);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .entry-error {
+  font-size: clamp(0.88rem, 1.35vw, 1.05rem);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .mad-back-btn {
+  font-size: clamp(0.88rem, 1.2vw, 1.05rem);
+  padding: 0.5rem 1rem;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .countdown-badge {
+  width: clamp(28px, 3.2vw, 38px);
+  height: clamp(28px, 3.2vw, 38px);
+  font-size: clamp(0.85rem, 1.25vw, 1rem);
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .fullscreen-btn {
+  padding: 10px;
+}
+
+.manual-attendance-design-root:is(:fullscreen, .is-fullscreen) .fullscreen-btn svg {
+  width: clamp(22px, 2.4vw, 28px);
+  height: clamp(22px, 2.4vw, 28px);
+}
+
+/* Fullscreen control */
+.manual-attendance-design-root .fullscreen-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #2e7d52;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.25s ease, transform 0.25s ease, color 0.2s ease;
+}
+.manual-attendance-design-root .fullscreen-btn:hover {
+  background: rgba(46,125,82,0.08);
+  transform: scale(1.06);
+}
+.manual-attendance-design-root .fullscreen-btn svg {
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+/* Two equal columns — compact gap in normal view */
+.manual-attendance-design-root .main-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(10px, 2vw, 18px);
+  width: 100%;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .manual-attendance-design-root .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .manual-attendance-design-root .mad-content {
+    padding: 8px 14px 28px;
+  }
+}
+
+/* ===== Cards — compact default (non-fullscreen) ===== */
+.manual-attendance-design-root .card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px 16px 18px;
+  min-height: clamp(240px, 36vh, 400px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.manual-attendance-design-root .card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 4px;
+  width: 100%;
+  text-align: left;
+  align-self: flex-start;
+  letter-spacing: -0.15px;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+/* Entry body */
+.manual-attendance-design-root .entry-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  width: 100%;
+}
+
+.manual-attendance-design-root .kbd-icon {
+  width: 56px;
+  height: 56px;
+  background: #edf7f1;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.manual-attendance-design-root .icon-kbd {
+  width: 28px;
+  height: 28px;
+}
+
+.manual-attendance-design-root .entry-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+}
+
+.manual-attendance-design-root .emp-input {
+  width: 100%;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1.5px solid #e0e4ea;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  color: #333;
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, transform 0.2s ease;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+.manual-attendance-design-root .emp-input::placeholder {
+  color: #b0b8c4;
+  font-family: inherit;
+  letter-spacing: 0;
+}
+.manual-attendance-design-root .emp-input:focus {
+  border-color: #2e7d52;
+  box-shadow: 0 0 0 4px rgba(46,125,82,0.12);
+  background: #fff;
+}
+.manual-attendance-design-root .emp-input:disabled {
+  background: #f4f4f5;
+  color: #aaa;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.manual-attendance-design-root .emp-input.input-error {
+  border-color: #e05252;
+  box-shadow: 0 0 0 4px rgba(224,82,82,0.13);
+  animation: mad-shake 0.35s ease;
+}
+@keyframes mad-shake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-6px); }
+  40%  { transform: translateX(6px); }
+  60%  { transform: translateX(-4px); }
+  80%  { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+
+.manual-attendance-design-root .entry-hint {
+  font-size: 12px;
+  color: #8a9099;
+  max-width: 100%;
+  line-height: 1.5;
+  transition: opacity 0.3s ease;
+}
+
+.manual-attendance-design-root kbd {
+  display: inline-block;
+  background: #e8ede9;
+  color: #2e7d52;
+  border: 1px solid #c4d8cb;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: inherit;
+  font-size: 0.85em;
+  font-weight: 600;
+  line-height: 1.45;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  transition: background 0.2s ease;
+}
+
+.manual-attendance-design-root .entry-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #e05252;
+  font-weight: 500;
+  animation: mad-fadeIn 0.25s ease;
+}
+@keyframes mad-fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Info bodies — reveal animation driven by .mad-panel-reveal (JS) */
+.manual-attendance-design-root .info-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 6px;
+  width: 100%;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.manual-attendance-design-root .hidden { display: none !important; }
+
+.manual-attendance-design-root #filledState:not(.hidden).mad-panel-reveal {
+  animation: mad-panel-reveal 0.45s ease forwards;
+}
+
+@keyframes mad-panel-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.manual-attendance-design-root #emptyState:not(.hidden).mad-panel-reveal {
+  animation: mad-panel-reveal 0.35s ease forwards;
+}
+
+.manual-attendance-design-root .avatar-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.manual-attendance-design-root .avatar-circle.empty  { background: #ebebeb; }
+.manual-attendance-design-root .avatar-circle.filled { background: #edf7f1; }
+
+.manual-attendance-design-root .icon-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.manual-attendance-design-root .waiting-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  margin-top: 2px;
+}
+.manual-attendance-design-root .waiting-sub {
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: center;
+  max-width: 220px;
+  line-height: 1.45;
+}
+
+.manual-attendance-design-root .emp-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  margin-top: 4px;
+}
+.manual-attendance-design-root .emp-id-display {
+  font-size: 12px;
+  color: #888;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 6px;
+}
+
+.manual-attendance-design-root .info-rows {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+.manual-attendance-design-root .info-row {
+  background: #f5f7fa;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: background 0.2s ease;
+}
+.manual-attendance-design-root .info-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.manual-attendance-design-root .icon-row {
+  width: 14px;
+  height: 14px;
+}
+.manual-attendance-design-root .info-label {
+  display: block;
+  font-size: 10px;
+  color: #9aa0aa;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.manual-attendance-design-root .info-value {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #222;
+}
+
+/* Confirmation banner */
+.manual-attendance-design-root .confirmation-banner {
+  margin-top: 10px;
+  width: 100%;
+  background: #2e7d52;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 12px 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+.manual-attendance-design-root .confirmation-banner.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.manual-attendance-design-root .confirmation-banner svg { flex-shrink: 0; }
+.manual-attendance-design-root .confirmation-banner > span:nth-child(2) { flex: 1; }
+
+.manual-attendance-design-root .countdown-badge {
+  background: rgba(255,255,255,0.25);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: transform 0.35s ease;
+}
+
+.manual-attendance-design-root .reset-hint {
+  font-size: 12px;
+  color: #9aa0aa;
+  margin-top: 8px;
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+.manual-attendance-design-root kbd.kbd-dark {
+  background: #e4e8ed;
+  color: #555;
+  border-color: #ccc;
+  font-size: 0.88em;
+}
+
+/* Mobile QR scanner mode (embedded in capture.php) */
+.manual-attendance-design-root .mad-scanner-grid {
+  align-items: stretch;
+}
+
+.manual-attendance-design-root .mad-scanner-grid.mad-single-column {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Mobile QR mode: white canvas, larger/zoomed presentation */
+.manual-attendance-design-root.mobile-qr-mode-root .mad-content {
+  background: #ffffff;
+  border-radius: 0;
+  max-width: min(1180px, 98vw);
+  min-height: min(560px, 72vh);
+  padding: 14px clamp(14px, 2.8vw, 28px) 18px;
+}
+
+.manual-attendance-design-root.mobile-qr-mode-root .card {
+  min-height: min(520px, 68vh);
+  padding: clamp(18px, 3vh, 28px) clamp(16px, 2.4vw, 28px) clamp(18px, 3vh, 30px);
+}
+
+.manual-attendance-design-root.mobile-qr-mode-root .card-title {
+  font-size: 1.15rem;
+}
+
+.manual-attendance-design-root.mobile-qr-mode-root .waiting-text {
+  font-size: 1rem;
+}
+
+.manual-attendance-design-root.mobile-qr-mode-root .waiting-sub {
+  font-size: 0.9rem;
+  max-width: 420px;
+}
+
+/* When capture card itself enters fullscreen for Mobile QR mode */
+:fullscreen .manual-attendance-design-root.mobile-qr-mode-root .mad-content,
+:-webkit-full-screen .manual-attendance-design-root.mobile-qr-mode-root .mad-content {
+  max-width: min(1550px, calc(100vw - 18px));
+  max-width: min(1550px, calc(100dvw - 18px));
+  width: 100%;
+  min-height: calc(100vh - 78px);
+  min-height: calc(100dvh - 78px);
+  padding: 16px clamp(18px, 3vw, 34px) 22px;
+  background: #ffffff;
+  border-radius: 0;
+}
+
+:fullscreen .manual-attendance-design-root.mobile-qr-mode-root .card,
+:-webkit-full-screen .manual-attendance-design-root.mobile-qr-mode-root .card {
+  min-height: min(84vh, 980px);
+  min-height: min(84dvh, 980px);
+  border-radius: 16px;
+  padding: clamp(26px, 4vh, 42px) clamp(24px, 3.3vw, 42px);
+  box-shadow: 0 6px 26px rgba(15, 23, 42, 0.09), 0 18px 48px rgba(15, 23, 42, 0.08);
+}
+
+:fullscreen .manual-attendance-design-root.mobile-qr-mode-root .card-title,
+:-webkit-full-screen .manual-attendance-design-root.mobile-qr-mode-root .card-title {
+  font-size: clamp(1.4rem, 2.7vmin, 2rem);
+  margin-bottom: clamp(10px, 1.8vh, 18px);
+}
+
+.manual-attendance-design-root .mad-scanner-live-wrap {
+  position: relative;
+  width: 100%;
+  margin-top: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0f172a;
+  aspect-ratio: 4 / 3;
+  border: 2px solid #e2e8f0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.manual-attendance-design-root .mad-scanner-live-wrap.detected-flash {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.manual-attendance-design-root .mad-scanner-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.manual-attendance-design-root .mad-scanner-target {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.manual-attendance-design-root .mad-scanner-target::before {
+  content: "";
+  width: min(62vw, 210px);
+  height: min(62vw, 210px);
+  border: 3px solid rgba(34, 197, 94, 0.9);
+  border-radius: 14px;
+  box-shadow: 0 0 0 9999px rgba(2, 6, 23, 0.28);
+}
+
+.manual-attendance-design-root .mad-scanner-status-row {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.manual-attendance-design-root .mad-scan-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.manual-attendance-design-root .mad-scan-pill.is-waiting {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.manual-attendance-design-root .mad-scan-pill.is-detected {
+  background: #fde68a;
+  color: #92400e;
+}
+
+.manual-attendance-design-root .mad-scan-pill.is-processing {
+  background: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.manual-attendance-design-root .mad-scan-pill.is-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.manual-attendance-design-root .mad-scan-pill.is-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.manual-attendance-design-root .mad-scan-note {
+  font-size: 12px;
+  color: #64748b;
+}

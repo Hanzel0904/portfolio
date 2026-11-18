@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit RIS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        form {
+            max-width: 600px;
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], input[type="date"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+
+    .button-container {
+      display: flex;
+      justify-content: flex-end; 
+      margin-top: 10px;       
+    }
+
+    button[type="submit"] {
+      padding: 10px 20px;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .close-btn {
+      position: absolute;
+      display: flex;
+      top: 2.5rem;
+      right: 2.8rem;
+      background: transparent;
+      border: none;
+      color: #dc3545 !important;    
+      font-size: 2rem; 
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .close-btn:hover {
+      color: #fff !important; 
+    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+
+    <center> <h3>Edit Requested Central Supply</h3> </center>
+    <form method="POST" action="#" onsubmit="return false;">
+        <input type="hidden" name="id" value="">
+        <input type="hidden" name="type" value="central">
+
+        <label for="itemName">Item Name:</label>
+        <input type="text" name="itemName" value="" required>
+
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" value="" required>
+
+        <label for="itemType">Type:</label>
+        <input type="text" name="itemType" value="">
+
+        <label for="requested_date">Requested Date:</label>
+        <input type="date" name="requested_date" value="">
+    <div class="button-container">
+        <button type="submit" name="submit">Save</button>
+    </div>
+    </form>
+
+
+
+
+    <center><h3>Edit Requested PLP</h3></center>
+    <form method="POST" action="#" onsubmit="return false;">
+        <input type="hidden" name="id" value="">
+        <input type="hidden" name="type" value="plp">
+
+        <label for="itemName">Item Name:</label>
+        <input type="text" name="itemName" value="" required>
+
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" value="" required>
+
+        <label for="department">Department:</label>
+        <input type="text" name="department" value="">
+
+        <label for="itemType">Type:</label>
+        <input type="text" name="itemType" value="">
+
+        <label for="requester_name">Requester Name:</label>
+        <input type="text" name="requester_name" value="" readonly>
+
+        <label for="requested_date">Requested Date:</label>
+        <input type="date" name="requested_date" value="">
+
+        <div class="button-container">
+            <button type="submit" name="submit">Save</button>
+        </div>
+    </form>
+
+
+
+
+    <center><h3>Edit Delivered Central Supply</h3></center>
+    <form method="POST" action="#" onsubmit="return false;">
+        <input type="hidden" name="id" value="">
+        <input type="hidden" name="type" value="central">
+        <input type="hidden" name="category" value="delivered">
+        
+        <label for="itemName">Item Name:</label>
+        <input type="text" name="itemName" value="" readonly>
+        
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+        
+        <label for="unitMeasure">Unit Measure:</label>
+        <input type="text" name="unitMeasure" value="" required>
+        
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" value="" required>
+        
+        <label for="itemType">Type:</label>
+        <input type="text" name="itemType" value="" readonly>
+        
+        <label for="delivered_date">Delivered Date:</label>
+        <input type="date" name="delivered_date" value="">
+        
+        <button type="submit" name="submit">Save</button>
+    </form>
+
+
+
+    <center><h3>Edit Delivered PLP</h3></center>
+    <form method="POST" action="#" onsubmit="return false;">
+        <input type="hidden" name="id" value="">
+        <input type="hidden" name="type" value="plp">
+        <input type="hidden" name="category" value="delivered">
+        
+        <label for="itemName">Item Name:</label>
+        <input type="text" name="itemName" value="" readonly>
+        
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+        
+        <label for="unitMeasure">Unit Measure:</label>
+        <input type="text" name="unitMeasure" value="" required>
+        
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" value="" required>
+        
+        <label for="department">Department:</label>
+        <input type="text" name="department" value="" readonly>
+        
+        <label for="itemType">Type:</label>
+        <input type="text" name="itemType" value="" readonly>
+        
+        <label for="delivered_date">Delivered Date:</label>
+        <input type="date" name="delivered_date" value="">
+        
+        <button type="submit" name="submit">Save</button>
+    </form>
+
+
+<script>
+
+function saveAndClose() {
+    const saveSuccessful = true; // Placeholder for actual success check
+
+    if (saveSuccessful) {
+        window.close();
+    }
+}
+</script>
+</body>
+</html>

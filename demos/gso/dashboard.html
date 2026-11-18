@@ -1,108 +1,589 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="css/dashb-gso.css">
-  <link rel="stylesheet" href="dashboard.css">
-  <script src="https://unpkg.com/feather-icons"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>PLP GSO Supply Tracking and Monitoring System</title>
+    <link rel="stylesheet" href="dashb-gso.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --light-color: #f0f9ff;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius-sm: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            --transition-speed: 0.3s;
+        }
+
+        .main-content {
+            padding: 20px;
+            margin-left: 10px;
+            transition: margin-left 0.3s;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: white;
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+        }
+
+        .dashboard-container {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 20px;
+            height: 600px;
+            width: 97%;
+        }
+
+        .chart-container canvas {
+            width: 97% !important;
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .section-header h3 {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        .section-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            border-bottom: 2px solid transparent;
+            transition: all var(--transition-speed);
+        }
+
+        .section-tab:hover {
+            color: var(--primary-color);
+        }
+
+        .section-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background-color: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+        }
+
+        .search-btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #1e3a8a;
+        }
+
+        .status-title {
+            background-color: var(--light-color);
+            padding: 15px 20px;
+            margin-top: 30px;
+            border-radius: var(--radius-md);
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-left: 5px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 15px;
+        }
+
+        .table-container {
+            width: 97%;
+            overflow-x: auto;
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        tr:hover {
+            background-color: #f0f9ff;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-delivered {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-outofstock {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .no-records {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-light);
+            font-style: italic;
+            background-color: #f9fafb;
+            border-radius: var(--radius-md);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-top: 40px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: fit-content;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #2563eb;
+        }
+
+        .logout-btn {
+            padding: 10px 15px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-form {
+                width: 100%;
+            }
+            
+            .chart-container {
+                width: 100%;
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="sidebar">
-  <h3>Department Portal</h3>
-  <div class="user-info">
-    <div class="user-name">Demo account</div>
-    <div class="user-role">User</div>
-    <div class="dept-info">Sample office</div>
-  </div>
-  <ul>
-    <li><a href="dashboard.html"><i data-feather="home"></i><span> Dashboard</span></a></li>
-    <li><a href="index.html"><i data-feather="log-out"></i><span> Logout</span></a></li>
-  </ul>
-</div>
-<div class="main-content">
-  <div class="dashboard-header">
-    <h1>Dashboard Overview</h1>
-    <p>Welcome back, <strong>Demo account</strong> | Department: <strong>Sample office</strong></p>
-  </div>
-  <div class="summary-cards">
-    <div class="summary-card pending" onclick="showSection('pending')">
-      <i class="fas fa-clock card-icon"></i>
-      <div class="card-title">Pending Requests</div>
-      <div class="card-value">2</div>
-      <a href="javascript:void(0)" class="card-link">View Details</a>
+<div class="sidebar"><h3>GSO Portal</h3><div class="user-info"><div class="user-name">Demo account</div><div class="dept-info">Sample office</div></div><ul><li><a href="dashboard.html"><span>Dashboard</span></a></li><li><a href="inventory.html"><span>Inventory</span></a></li><li><a href="RIS.html"><span>RIS</span></a></li><li><a href="report.html"><span>Report</span></a></li><li><a href="history.html"><span>History</span></a></li><li><a href="add_item.html"><span>Add item</span></a></li><li><a href="add_PLP.html"><span>PLP request</span></a></li><li><a href="add_CS.html"><span>Central supply</span></a></li><li><a href="settings.html"><span>Settings</span></a></li><li><a href="manage_users.html"><span>Users</span></a></li><li><a href="index.html"><span>Logout</span></a></li></ul></div>
+
+    <div class="main-content">
+        <header>
+            <h1>PLP GSO Supply Tracking and Monitoring System</h1>
+            <form method="GET" action="#" class="search-form" onsubmit="return false;">
+                <input type="hidden" name="type" value="">
+                
+                    <input type="hidden" name="status" value="">
+                
+                <input type="text" id="searchBar" name="search" placeholder="Search supplies..." value="">
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+            <a href="?logout=1" class="logout-btn" onclick="return confirm('Are you sure you want to log out?');">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </header>
+
+        
+            <button onclick="window.location.href='dashboard.html'" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+
+            <div class="section-tabs">
+                <div class="section-tab " 
+                        onclick="switchType('central', '')">
+                    <i class="fas fa-box"></i> Central Supply
+                </div>
+                <div class="section-tab " 
+                        onclick="switchType('plp', '')">
+                    <i class="fas fa-university"></i> PLP Supply
+                </div>
+            </div>
+            
+            <div class="dashboard-container">
+                <div class="status-title">
+                    <i class="fas fa-"></i> 
+                    
+                    <span style="font-size: 0.85rem; margin-left: 10px; font-weight: normal;">
+                        Search results for: ""
+                    </span>
+                    
+                </div>
+                
+                <div class="table-container">
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                            
+                                <th>Department</th>
+                            
+                            <th></th>
+                            <th>Item Name</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            
+                                <tr>
+                                
+                                    <td></td>
+                                
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                </tr>
+                            
+                            
+                            <tr>
+                                <td colspan="" class="no-records">
+                                No records found.
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                            <th>RIS #</th>
+                            <th>Date Requested</th>
+                            
+                                <th>Date Delivered</th>
+                            
+                            
+                                <th>Department</th>
+                            
+                            <th></th>
+                            <th>Item Name</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            
+                                <tr>
+                                <td></td>
+                                <td></td>
+                                
+                                <td></td>
+                                
+                                
+                                <td></td>
+                                
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="status-badge ">
+                                    <i class="fas fa-"></i> 
+                                    
+                                    </span>
+                                </td>
+                                </tr>
+                            
+                            
+                            <tr>
+                                <td colspan="" class="no-records">
+                                No records found.
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        
+            <div class="dashboard-container">
+                <div class="section-header">
+                    <h2>Dashboard Overview</h2>
+                    
+                    <h3>Central Supply</h3>
+                </div>
+                
+                <div class="summary-cards">
+                    <div class="summary-card" onclick="redirectWithParams('pending', 'central')">
+                        <div class="card-title">Pending Requests</div>
+                        <div class="card-value"></div>
+                    </div>
+                    
+                    <div class="summary-card" onclick="redirectWithParams('delivered', 'central')">
+                        <div class="card-title">Delivered Items</div>
+                        <div class="card-value"></div>
+                    </div>
+                    
+                    <div class="summary-card" onclick="redirectWithParams('remaining', 'central')">
+                        <div class="card-title">Remaining Stock</div>
+                        <div class="card-value"></div>
+                    </div>
+                    
+                    <div class="summary-card" onclick="redirectWithParams('out_of_stock', 'central')">
+                        <div class="card-title">Out of Stock</div>
+                        <div class="card-value"></div>
+                    </div>
+                </div>
+                
+                <div class="section-header">
+                    <h3>Pamantasan ng Lungsod ng Pasig</h3>
+                </div>
+                
+                <div class="summary-cards">
+                    <div class="summary-card" onclick="redirectWithParams('pending', 'plp')">
+                        <div class="card-title">Pending Requests</div>
+                        <div class="card-value"></div>
+                    </div>
+                    
+                    <div class="summary-card" onclick="redirectWithParams('delivered', 'plp')">
+                        <div class="card-title">Delivered Items</div>
+                        <div class="card-value"></div>
+                    </div>
+                    
+                    <div class="summary-card" onclick="redirectWithParams('remaining', 'plp')">
+                        <div class="card-title">Remaining Stock</div>
+                        <div class="card-value"></div>
+                    </div>
+                    
+                    <div class="summary-card" onclick="redirectWithParams('out_of_stock', 'plp')">
+                        <div class="card-title">Out of Stock</div>
+                        <div class="card-value"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <center>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </center>
+        
+        
+        <footer>
+            <p>&copy; 2025 General Services Supply Tracking System. All rights reserved.</p>
+        </footer>
     </div>
-    <div class="summary-card delivered" onclick="showSection('delivered')">
-      <i class="fas fa-check-circle card-icon"></i>
-      <div class="card-title">Delivered Requests</div>
-      <div class="card-value">1</div>
-      <a href="javascript:void(0)" class="card-link">View Details</a>
-    </div>
-    <div class="summary-card out-of-stock" onclick="showSection('out-of-stock')">
-      <i class="fas fa-times-circle card-icon"></i>
-      <div class="card-title">Out of Stock</div>
-      <div class="card-value">1</div>
-      <a href="javascript:void(0)" class="card-link">View Details</a>
-    </div>
-  </div>
-  <div id="pendingSection" class="status-section">
-    <div class="section-header">
-      <h2><i class="fas fa-clock"></i> Pending Requests</h2>
-      <button class="back-btn" onclick="hideSections()" type="button"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
-    </div>
-    <table>
-      <thead>
-        <tr><th>RIS No</th><th>Item</th><th>Description</th><th>Quantity</th><th>Requested Date</th><th>Status</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>RIS-1042</td><td>Bond paper, A4</td><td>For office printing</td><td>2</td><td>Nov 18, 2026</td><td><span class="status-badge badge-pending">PENDING</span></td></tr>
-        <tr><td>RIS-1044</td><td>Ballpen, black</td><td>Counter supply</td><td>1</td><td>Nov 18, 2026</td><td><span class="status-badge badge-pending">PENDING</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div id="deliveredSection" class="status-section">
-    <div class="section-header">
-      <h2><i class="fas fa-check-circle"></i> Delivered Requests</h2>
-      <button class="back-btn" onclick="hideSections()" type="button"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
-    </div>
-    <table>
-      <thead>
-        <tr><th>RIS No</th><th>Item</th><th>Description</th><th>Quantity</th><th>Delivered Date</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>RIS-1038</td><td>Folder, long</td><td>Records filing</td><td>3</td><td>Nov 17, 2026</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div id="outOfStockSection" class="status-section">
-    <div class="section-header">
-      <h2><i class="fas fa-times-circle"></i> Out of Stock Items</h2>
-      <button class="back-btn" onclick="hideSections()" type="button"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
-    </div>
-    <table>
-      <thead>
-        <tr><th>RIS No</th><th>Item</th><th>Description</th><th>Quantity</th><th>Requested Date</th><th>Status</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>RIS-1031</td><td>Alcohol, 500 ml</td><td>Sanitation</td><td>4</td><td>Nov 16, 2026</td><td><span class="status-badge badge-out-of-stock">OUT OF STOCK</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-<script>
-  function showSection(section) {
-    document.querySelectorAll(".status-section").forEach(function (sec) { sec.classList.remove("active"); });
-    var id = section === "pending" ? "pendingSection" : section === "delivered" ? "deliveredSection" : "outOfStockSection";
-    document.getElementById(id).classList.add("active");
-    document.querySelector(".summary-cards").style.display = "none";
-  }
-  function hideSections() {
-    document.querySelectorAll(".status-section").forEach(function (sec) { sec.classList.remove("active"); });
-    document.querySelector(".summary-cards").style.display = "grid";
-  }
-  if (window.feather) feather.replace();
-</script>
+
+    <script>
+        function redirectWithParams(status, type) {
+            const search = document.getElementById('searchBar')?.value || '';
+            let url = `dashboard.php?status=${status}&type=${type}`;
+            if (search) {
+                url += `&search=${encodeURIComponent(search)}`;
+            }
+            window.location.href = url;
+        }
+
+        function switchType(newType, status) {
+            const search = document.getElementById('searchBar')?.value || '';
+            let url = `dashboard.php?status=${status}&type=${newType}`;
+            if (search) {
+                url += `&search=${encodeURIComponent(search)}`;
+            }
+            window.location.href = url;
+        }
+
+        // Chart initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('statusChart')?.getContext('2d');
+            if (ctx) {
+                const statusChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Requested Central', 'Delivered Central', 'Out of Stock Central', 'Requested PLP', 'Delivered PLP', 'Out of Stock PLP'],
+                        datasets: [{
+                            label: 'Requests Summary',
+                            data: [
+                                ,
+                                ,
+                                ,
+                                ,
+                                ,
+                                
+                            ],
+                            backgroundColor: [
+                                '#f59e0b', '#10b981','#ef4444', 
+                                '#f59e0b','#10b981', '#ef4444'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Supply Request Summary'
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

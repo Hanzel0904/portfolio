@@ -1,0 +1,1300 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Attendance Records — PLP Smart Attendance</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/records.css" />
+  <link rel="stylesheet" href="css/action_feedback_modal.css" />
+  <style>
+    body.modal-open { overflow: hidden; }
+    .pdf-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.38);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .pdf-overlay.open { display: flex; }
+    .pdf-modal {
+      background: #fff;
+      border-radius: 12px;
+      width: 100%;
+      max-width: min(1240px, 96vw);
+      height: 96vh;
+      max-height: 96vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .pdf-modal-header,
+    .pdf-modal-footer {
+      padding: 14px 18px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .pdf-modal-footer {
+      border-top: 1px solid #e5e7eb;
+      border-bottom: none;
+      justify-content: flex-end;
+    }
+    .pdf-modal-title { font-size: 16px; font-weight: 600; }
+    .pdf-close-btn {
+      border: none;
+      background: transparent;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      color: #6b7280;
+    }
+    .pdf-modal-body {
+      padding: 14px 18px;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .pdf-layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 1fr) minmax(340px, 1.2fr);
+      gap: 14px;
+      align-items: stretch;
+      height: 100%;
+    }
+    .pdf-config-col { min-width: 0; overflow: auto; min-height: 0; }
+    .pdf-preview-col {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .pdf-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .pdf-field label {
+      display: block;
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    .pdf-field input {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+    .pdf-preview-wrap {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: auto;
+      flex: 1;
+      min-height: 0;
+      max-height: none;
+      background: #fff;
+    }
+    .pdf-preview {
+      padding: 14px;
+      min-width: 0;
+      color: #111827;
+      font-family: Arial, sans-serif;
+    }
+    .pdf-preview h3 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+    .pdf-preview .meta {
+      margin: 0 0 12px;
+      font-size: 12px;
+      color: #374151;
+    }
+    .pdf-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .pdf-table th, .pdf-table td {
+      border: 1px solid #d1d5db;
+      padding: 6px 8px;
+      text-align: left;
+    }
+    .pdf-table th {
+      background: #f3f4f6;
+      font-weight: 700;
+    }
+    .pdf-section-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin: 8px 0 6px; }
+    .pdf-section-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .pdf-mini-actions { display:flex; align-items:center; gap:6px; }
+    .pdf-mini-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:28px;
+      height:28px;
+      border-radius:8px;
+      border:1px solid #e5e7eb;
+      background:#fff;
+      color:#374151;
+      cursor:pointer;
+      padding:0;
+    }
+    .pdf-mini-btn:disabled { opacity:0.45; cursor:not-allowed; }
+    .pdf-mini-btn svg { width:16px; height:16px; }
+    .pdf-mini-btn--wide { width:auto; padding:0 10px; gap:6px; }
+    .pdf-mini-btn--wide span { font-size:12px; font-weight:700; letter-spacing:0.01em; }
+    .pdf-logo-row { display: flex; gap: 10px; align-items: flex-start; }
+    .pdf-logo-slot { flex: 1; }
+    .pdf-logo-preview-box { border: 1px solid #e5e7eb; border-radius: 8px; background: #f9fafb; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #6b7280; overflow: hidden; }
+    .pdf-logo-preview-box img { max-height: 56px; max-width: 100%; object-fit: contain; }
+    .pdf-upload-btn { border: 1px solid #d1d5db; background: #f9fafb; color: #111827; padding: 5px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; margin-top: 5px; display: inline-block; }
+    .doc-preview-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin: 12px 0 6px; }
+    #doc-inner { background: #fff; color: #111; font-family: Arial, sans-serif; padding: 16px 20px; font-size: 11.5px; width: 100%; box-sizing: border-box; }
+    .doc-sheet { width: 100%; border-collapse: collapse; }
+    .doc-sheet td { padding: 0; border: 0; vertical-align: top; }
+    .doc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .doc-logos-left { display: flex; align-items: center; gap: 3px; height: 52px; }
+    .doc-logos-left img { height: 52px; width: auto; display: block; object-fit: contain; }
+    .doc-logo-placeholder { height: 52px; width: 52px; background: #e8edf0; border: 1px dashed #aab; display: flex; align-items: center; justify-content: center; font-size: 7px; color: #7a8a99; text-align: center; flex-shrink: 0; }
+    .doc-right-info { text-align: right; }
+    .doc-right-city { font-size: 10.5px; font-weight: bold; color: #003366; letter-spacing: 0.04em; border-bottom: 1px solid #003366; padding-bottom: 2px; margin-bottom: 3px; text-transform: uppercase; }
+    .doc-right-dept { font-size: 11px; font-weight: bold; color: #111; }
+    .doc-right-addr { font-size: 9.5px; color: #444; margin-top: 3px; line-height: 1.6; }
+    .doc-divider { border: none; border-top: 1.5px solid #003366; margin: 7px 0; }
+    .doc-ceremony-title { text-align: center; font-size: 14.5px; font-weight: bold; color: #111; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .doc-date-line { text-align: center; font-size: 11.5px; margin-bottom: 3px; }
+    .doc-office-line { font-size: 11.5px; font-weight: bold; margin-bottom: 3px; }
+    .doc-instr { font-size: 10px; color: #333; font-style: italic; margin-bottom: 8px; }
+    .doc-att-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .doc-att-table:not(.flag-range-grid) th { background: #003366; color: #fff; padding: 6px 10px; text-align: center; border: 0.5px solid #002244; font-size: 10.5px; }
+    .doc-att-table th.left { text-align: left; }
+    .doc-att-table td { padding: 5px 10px; border: 0.5px solid #bbb; }
+    .doc-att-table td.center { text-align: center; }
+    .doc-att-table:not(.flag-range-grid) tr:nth-child(even) td { background: #f0f4ff; }
+    .doc-footer-txt { margin-top: 10px; font-size: 10px; color: #333; line-height: 1.8; }
+    .doc-sig-area { margin-top: 34px; }
+    .doc-sig-line { width: 220px; color: #333; }
+    .doc-sig-name {
+      border-bottom: 1px solid #333;
+      min-height: 16px;
+      padding: 0 2px 2px;
+      font-size: 10.5px;
+      text-align: center;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .doc-sig-caption {
+      margin-top: 3px;
+      font-size: 9.5px;
+      text-align: center;
+      font-style: italic;
+      line-height: 1.3;
+    }
+    @media (max-width: 1100px) {
+      .pdf-layout { grid-template-columns: 1fr; }
+      .pdf-preview-wrap { max-height: 42vh; }
+    }
+    .doc-note { font-size: 9px; color: #555; font-style: italic; margin-top: 12px; }
+    .rep-filter-disabled select:disabled { opacity: 0.65; cursor: not-allowed; background: #f3f4f6; }
+    .rep-filter-hint { font-size: 11px; font-weight: 400; color: #6b7280; text-transform: none; letter-spacing: 0; }
+    .flag-range-grid { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 6px; }
+    .flag-range-grid th, .flag-range-grid td { border: 0.5px solid #333; padding: 4px 6px; text-align: center; vertical-align: middle; }
+    .flag-range-grid th.name-col, .flag-range-grid td.name-col { text-align: left; min-width: 140px; }
+    .flag-range-grid th.col-no, .flag-range-grid td.col-no { width: 36px; text-align: center; }
+    .flag-range-grid thead th.month-row-th,
+    .flag-range-grid thead th.col-no,
+    .flag-range-grid thead th.name-col { background: #003366 !important; color: #fff !important; font-weight: 700; font-size: 10px; }
+    .flag-range-grid thead th.col-flag-raising { background: #1565c0 !important; color: #fff !important; border-color: #0d47a1 !important; font-weight: 700; font-size: 10px; }
+    .flag-range-grid thead th.col-flag-retreat { background: #e65100 !important; color: #fff !important; border-color: #bf360c !important; font-weight: 700; font-size: 10px; }
+    .flag-range-grid tbody td.col-flag-raising { background: #e3f2fd !important; }
+    .flag-range-grid tbody td.col-flag-retreat { background: #fff3e0 !important; }
+    .flag-range-grid tbody tr:nth-child(even) td:not(.col-flag-raising):not(.col-flag-retreat) { background: #f0f4ff; }
+    .flag-range-grid tbody tr:nth-child(even) td.col-flag-raising { background: #bbdefb !important; }
+    .flag-range-grid tbody tr:nth-child(even) td.col-flag-retreat { background: #ffe0b2 !important; }
+    .flag-range-legend { margin-top: 14px; padding: 10px 12px; border: 0.5px solid #cbd5e1; border-radius: 6px; background: #f8fafc; font-size: 11px; color: #1e293b; }
+    .flag-range-legend-label { font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; font-size: 10px; color: #475569; }
+    .flag-range-legend-items { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; }
+    .flag-range-legend-item { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 11px; }
+    .flag-range-legend-swatch { display: inline-block; width: 28px; height: 16px; border-radius: 3px; border: 0.5px solid #64748b; flex-shrink: 0; }
+    .flag-range-legend-swatch.col-flag-raising { background: #1565c0 !important; border-color: #0d47a1 !important; }
+    .flag-range-legend-swatch.col-flag-retreat { background: #e65100 !important; border-color: #bf360c !important; }
+    .flag-range-legend-text--raising { color: #0d47a1 !important; }
+    .flag-range-legend-text--retreat { color: #bf360c !important; }
+  </style>
+</head>
+<body class="reports-page">
+
+<header class="plp-header" role="banner">
+  <a href="dashboard.html" class="plp-logo-wrap">
+    <div class="plp-logo-icon"><img src="assets/logo.png" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
+    <div class="plp-logo-text"><span class="plp-logo-title">PLP Smart Attendance</span><span class="plp-logo-sub">Demo</span></div>
+  </a>
+  <nav class="plp-nav">
+    <a class="plp-nav-link" href="dashboard.html"><span>Dashboard</span></a>
+    <a class="plp-nav-link" href="employee_registration.html"><span>Register</span></a>
+    <a class="plp-nav-link" href="records.html"><span>Records</span></a>
+    <a class="plp-nav-link" href="employee_management.html"><span>Employees</span></a>
+    <a class="plp-nav-link" href="capture.html"><span>Capture</span></a>
+    <a class="plp-nav-link" href="analytics.html"><span>Analytics</span></a>
+    <a class="plp-nav-link" href="audit_monitoring.html"><span>Audit</span></a>
+    <a class="plp-nav-link" href="system_settings.html"><span>Settings</span></a>
+    <a class="plp-nav-link" href="scanner.html"><span>Scanner</span></a><a class="plp-nav-link" href="manualAttendanceDesign.html"><span>Manual</span></a><a class="plp-nav-link" href="fullscreen.html"><span>Ceremony</span></a><a class="plp-nav-link" href="mobileQr_fullscreen.html"><span>Mobile QR</span></a>
+    <a class="plp-nav-link" href="index.html"><span>Logout</span></a>
+  </nav>
+</header>
+
+
+
+
+<div class="reports-container">
+
+  <h1>Attendance Records</h1>
+  <p class="subtitle">Generate and export flag ceremony attendance for <span class="date-badge"></span>. Ceremony filter is fixed to flag ceremonies in range mode.Generate and export detailed ceremony attendance records <span class="date-badge"></span></p>
+
+  <form method="get" action="#" autocomplete="off" id="filter-form" class="rep-card" data-reopen-date-panel="" onsubmit="return false;">
+    <h3>Report configuration</h3>
+
+    <div class="rep-filters">
+      <div class="rep-filter-group rep-filter-search">
+        <label for="search-q">Search</label>
+        <div class="rep-input-icon">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input type="search" id="search-q" name="q" value="" placeholder="Search by ID, name, dept, position, ceremony, status...">
+        </div>
+      </div>
+      <div class="rep-filter-group rep-date-range-wrap">
+        <span class="rep-filter-label" id="records-date-range-label">Date</span>
+        <button type="button" class="rep-date-range-trigger" id="records-date-range-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="records-date-range-panel" aria-labelledby="records-date-range-label">
+          <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+          <span class="rep-date-range-summary"></span>
+        </button>
+        <div class="rep-date-range-panel" id="records-date-range-panel" role="region" aria-labelledby="records-date-range-label" hidden>
+          <input type="hidden" name="show_end_date" id="show-end-date-value" value="" />
+          <div class="rep-date-range-fields">
+            <div class="rep-date-range-field">
+              <label for="date-from-picker">Date</label>
+              <div class="rep-input-icon">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                <input type="date" id="date-from-picker" name="date_from" value="">
+              </div>
+            </div>
+            <div class="rep-date-range-field rep-date-range-enable-wrap">
+              <label class="rep-inline-checkbox">
+                <input type="checkbox" id="rep-enable-date-range"  />
+                <span>Use date range (different end date)</span>
+              </label>
+            </div>
+            <div class="rep-date-range-field rep-date-to-row" id="rep-date-to-row" >
+              <label for="date-to-picker">To</label>
+              <div class="rep-input-icon">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                <input type="date" id="date-to-picker" name="date_to" value="">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rep-filter-group">
+        <label for="ceremony-select">Ceremony <span class="rep-filter-hint">(disabled in date range)</span></label>
+        <div class="rep-input-icon">
+          <i class="fa-solid fa-flag" aria-hidden="true"></i>
+          <input type="hidden" name="ceremony" value="0" />
+          <select id="ceremony-select" aria-label="Ceremony filter">
+            
+            <option value="0" selected>Flag ceremonies</option>
+            
+            <option value="0" >All Ceremonies</option>
+            
+              
+              <option value="" >
+                
+              </option>
+            
+            
+              
+                
+                <option value="" >
+                  
+                </option>
+              
+            
+            
+          </select>
+        </div>
+      </div>
+      <div class="rep-filter-group">
+        <label for="dept-select">Department</label>
+        <div class="rep-input-icon">
+          <i class="fa-solid fa-building" aria-hidden="true"></i>
+          <select id="dept-select" name="department" aria-label="Department filter">
+            <option value="0">All Departments</option>
+            
+              
+              <option value=""  style="">
+                
+              </option>
+            
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="rep-actions">
+      <button type="button" class="rep-btn rep-btn-primary" id="openPdfModalBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor" aria-hidden="true"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+        Download PDF
+      </button>
+      <a href="" class="rep-btn rep-btn-secondary" id="downloadCsvBtn">Download CSV</a>
+    </div>
+  </form>
+
+  
+
+  <div class="rep-table-card">
+    <h3>Flag ceremony logs</h3>
+    <div class="rep-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Employee ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Ceremony</th>
+            <th>Time in</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr><td colspan="8" class="rep-empty">No flag ceremony logs in this range. Only Flag Raising and Flag Retreat attendance are shown here.</td></tr>
+          
+            
+              
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  
+                    <span class="rep-badge rep-badge-ceremony"></span>
+                  
+                    —
+                  
+                </td>
+                <td></td>
+                <td><span class="rep-badge "></span></td>
+              </tr>
+            
+          
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="rep-pagination">
+      <span class="rep-pagination-info">
+        Showing – of 
+      </span>
+      
+      <nav class="rep-pagination-nav" aria-label="Report pages">
+        
+          <a href="" class="rep-page-link">Previous</a>
+        
+        
+          
+            <span class="rep-page-current" aria-current="page"></span>
+          
+            <a href="" class="rep-page-link"></a>
+          
+        
+        
+          <a href="" class="rep-page-link">Next</a>
+        
+      </nav>
+      
+    </div>
+    
+  </div>
+
+  
+
+  <div class="rep-stats">
+    <div class="rep-stat-card">
+      <div class="rep-stat-info">
+        <h4>Total employees</h4>
+        <div class="value"></div>
+        <span class="hint">Unique employees</span>
+      </div>
+      <span class="rep-stat-icon employees" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
+    </div>
+    <div class="rep-stat-card">
+      <div class="rep-stat-info">
+        <h4>Present</h4>
+        <div class="value"></div>
+        <span class="hint">Includes late</span>
+      </div>
+      <span class="rep-stat-icon timein" aria-hidden="true"><i class="fa-solid fa-arrow-trend-up"></i></span>
+    </div>
+    <div class="rep-stat-card">
+      <div class="rep-stat-info">
+        <h4>Absent</h4>
+        <div class="value"></div>
+        <span class="hint"></span>
+      </div>
+      <span class="rep-stat-icon timeout" aria-hidden="true"><i class="fa-solid fa-arrow-trend-down"></i></span>
+    </div>
+  </div>
+
+  <div class="rep-table-card">
+    <h3>Attendance status</h3>
+    <div class="rep-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Employee ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Ceremony</th>
+            
+              <th>Time In</th>
+              <th>Time Out</th>
+            
+              <th>Time In</th>
+            
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td colspan="" class="rep-empty">No attendance records found for .</td>
+            </tr>
+          
+            
+              
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  
+                    <span class="rep-badge rep-badge-ceremony"></span>
+                  
+                </td>
+                
+                  <td></td>
+                  <td></td>
+                
+                  <td></td>
+                
+                <td><span class="rep-badge "></span></td>
+              </tr>
+            
+          
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="rep-pagination">
+      <span class="rep-pagination-info">
+        Showing – of 
+      </span>
+      <nav class="rep-pagination-nav" aria-label="Report pages">
+        
+          <a href="" class="rep-page-link">Previous</a>
+        
+        
+          
+            <span class="rep-page-current" aria-current="page"></span>
+          
+            <a href="" class="rep-page-link"></a>
+          
+        
+        
+          <a href="" class="rep-page-link">Next</a>
+        
+      </nav>
+    </div>
+    
+  </div>
+
+  
+
+</div>
+
+
+
+<div class="pdf-overlay" id="pdfModalOverlay" aria-hidden="true">
+  <div class="pdf-modal" role="dialog" aria-modal="true" aria-labelledby="pdfModalTitle">
+    <div class="pdf-modal-header">
+      <div class="pdf-modal-title" id="pdfModalTitle">PDF export preview</div>
+      <button type="button" class="pdf-close-btn" id="closePdfModalBtn" aria-label="Close">&times;</button>
+    </div>
+    <div class="pdf-modal-body">
+      <div class="pdf-layout">
+        <div class="pdf-config-col">
+      <div class="pdf-section-row">
+        <div class="pdf-section-label">Left logos (3)</div>
+        <div class="pdf-mini-actions" aria-label="Logo history">
+          <button type="button" class="pdf-mini-btn" id="pdfLogoUndoBtn" title="Undo" aria-label="Undo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 9H5V5"></path>
+              <path d="M5 9c2.2-2.7 5.3-4 8.5-4A8.5 8.5 0 0 1 22 13.5"></path>
+            </svg>
+          </button>
+          <button type="button" class="pdf-mini-btn" id="pdfLogoRedoBtn" title="Redo" aria-label="Redo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M15 9h4V5"></path>
+              <path d="M19 9c-2.2-2.7-5.3-4-8.5-4A8.5 8.5 0 0 0 2 13.5"></path>
+            </svg>
+          </button>
+          <button type="button" class="pdf-mini-btn pdf-mini-btn--wide" id="pdfLogoResetBtn" title="Back to default logos" aria-label="Back to default logos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+              <path d="M3 4v5h5"></path>
+            </svg>
+            <span>Default</span>
+          </button>
+        </div>
+      </div>
+      <div class="pdf-logo-row">
+        <div class="pdf-logo-slot">
+          <div class="pdf-field"><label for="f-l1">Logo 1</label></div>
+          <div class="pdf-logo-preview-box" id="prev-l1"><img src="assets/pasig_seal.png" alt="Logo 1" /></div>
+          <input type="file" id="f-l1" accept="image/*" style="display:none" />
+          <div style="display:flex;gap:8px;align-items:center;margin-top:5px">
+            <label class="pdf-upload-btn" for="f-l1">Upload</label>
+            <button type="button" class="pdf-upload-btn" id="rm-l1">Remove</button>
+          </div>
+        </div>
+        <div class="pdf-logo-slot">
+          <div class="pdf-field"><label for="f-l2">Logo 2</label></div>
+          <div class="pdf-logo-preview-box" id="prev-l2"><img src="assets/pasig_logo.png" alt="Logo 2" /></div>
+          <input type="file" id="f-l2" accept="image/*" style="display:none" />
+          <div style="display:flex;gap:8px;align-items:center;margin-top:5px">
+            <label class="pdf-upload-btn" for="f-l2">Upload</label>
+            <button type="button" class="pdf-upload-btn" id="rm-l2">Remove</button>
+          </div>
+        </div>
+        <div class="pdf-logo-slot">
+          <div class="pdf-field"><label for="f-l3">Logo 3</label></div>
+          <div class="pdf-logo-preview-box" id="prev-l3"><img src="assets/logo.png" alt="Logo 3" /></div>
+          <input type="file" id="f-l3" accept="image/*" style="display:none" />
+          <div style="display:flex;gap:8px;align-items:center;margin-top:5px">
+            <label class="pdf-upload-btn" for="f-l3">Upload</label>
+            <button type="button" class="pdf-upload-btn" id="rm-l3">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pdf-section-label">Right side header info</div>
+      <div class="pdf-fields">
+        <div class="pdf-field"><label for="city-name">City / LGU name</label><input id="city-name" value="PAMAHALAAN NG LUNGSOD NG PASIG"></div>
+        <div class="pdf-field"><label for="department-name">Department</label><input id="department-name" value="Office of the Human Resource Development"></div>
+        <div class="pdf-field"><label for="address-line">Address</label><input id="address-line" value="Alkalde Jose St. Kapasigan Pasig City, Philippines 1600"></div>
+        <div class="pdf-field"><label for="landline-line">Landline</label><input id="landline-line" value="628-1014 Loc. 106"></div>
+        <div class="pdf-field"><label for="email-line">Email</label><input id="email-line" value="hrd@plpasig.edu.ph"></div>
+        <div class="pdf-field"><label for="office-name">Office (attendance)</label><input id="office-name" value=""></div>
+        <div class="pdf-field"><label for="doc-date">Date</label><input id="doc-date" type="date" value=""></div>
+        <div class="pdf-field"><label for="recorded-by">Recorded by</label><input id="recorded-by" value="HRD Personnel"></div>
+        <div class="pdf-field"><label for="head-of-office-name">Head of Office (Printed Name)</label><input id="head-of-office-name" value=""></div>
+      </div>
+        </div>
+        <div class="pdf-preview-col">
+          <div class="doc-preview-label">Document preview</div>
+          <div class="pdf-preview-wrap"><div id="doc-inner"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pdf-modal-footer">
+      <button type="button" class="rep-btn rep-btn-secondary" id="cancelPdfModalBtn">Cancel</button>
+      <button type="button" class="rep-btn rep-btn-primary" id="downloadPdfBtn">Download PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const form = document.getElementById('filter-form');
+  if (!form) return;
+
+  function saveFocusState(el) {
+    if (!el || !el.id) return;
+    try {
+      const pos = (typeof el.selectionStart === 'number') ? el.selectionStart : String(el.value || '').length;
+      sessionStorage.setItem('plp_focus_restore', JSON.stringify({ id: el.id, pos, t: Date.now() }));
+    } catch (e) {}
+  }
+  function restoreFocusState() {
+    try {
+      const raw = sessionStorage.getItem('plp_focus_restore');
+      if (!raw) return;
+      const st = JSON.parse(raw);
+      if (!st || !st.id) return;
+      if (st.t && (Date.now() - st.t) > 15000) return;
+      const el = document.getElementById(st.id);
+      if (!el) return;
+      sessionStorage.removeItem('plp_focus_restore');
+      setTimeout(function () {
+        try {
+          el.focus();
+          const p = (typeof st.pos === 'number') ? st.pos : String(el.value || '').length;
+          el.setSelectionRange(p, p);
+        } catch (e) {}
+      }, 0);
+    } catch (e) {}
+  }
+  restoreFocusState();
+
+  const dateFromPicker = document.getElementById('date-from-picker');
+  const dateToPicker = document.getElementById('date-to-picker');
+  const dateRangeSummary = document.querySelector('#records-date-range-trigger .rep-date-range-summary');
+  const enableRangeEl = document.getElementById('rep-enable-date-range');
+  const dateToRow = document.getElementById('rep-date-to-row');
+  const showEndDateHidden = document.getElementById('show-end-date-value');
+  const ceremonySelect = document.getElementById('ceremony-select');
+  const deptSelect = document.getElementById('dept-select');
+
+  function formatYmdLong(ymd) {
+    if (!ymd || !/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return ymd || '';
+    var p = ymd.split('-');
+    var dt = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+    if (isNaN(dt.getTime())) return ymd;
+    return dt.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function formatDateRangeSummary(df, dt) {
+    if (!df || !dt || df === dt) return formatYmdLong(df || '');
+    var p1 = df.split('-');
+    var p2 = dt.split('-');
+    if (p1.length !== 3 || p2.length !== 3) return formatYmdLong(df);
+    var y1 = parseInt(p1[0], 10), m1 = parseInt(p1[1], 10) - 1, d1 = parseInt(p1[2], 10);
+    var y2 = parseInt(p2[0], 10), m2 = parseInt(p2[1], 10) - 1, d2 = parseInt(p2[2], 10);
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    if (y1 === y2 && m1 === m2) {
+      return months[m1] + ' ' + d1 + '-' + d2 + ', ' + y1;
+    }
+    if (y1 === y2) {
+      return months[m1] + ' ' + d1 + ' - ' + months[m2] + ' ' + d2 + ', ' + y1;
+    }
+    return months[m1] + ' ' + d1 + ', ' + y1 + ' - ' + months[m2] + ' ' + d2 + ', ' + y2;
+  }
+
+  function syncToWithFrom() {
+    if (dateFromPicker && dateToPicker && enableRangeEl && !enableRangeEl.checked) {
+      dateToPicker.value = dateFromPicker.value;
+    }
+  }
+
+  function syncCeremonyDisabledState() {
+    if (!ceremonySelect || !enableRangeEl || !dateFromPicker || !dateToPicker) return;
+    var rangeActive = enableRangeEl.checked && dateFromPicker.value !== '' && dateToPicker.value !== '' && dateFromPicker.value !== dateToPicker.value;
+    ceremonySelect.disabled = rangeActive;
+    ceremonySelect.setAttribute('aria-disabled', rangeActive ? 'true' : 'false');
+    if (rangeActive) {
+      ceremonySelect.value = '0';
+    }
+  }
+
+  function refreshDatePanelState() {
+    if (!enableRangeEl) return;
+    var hasEndRange = enableRangeEl.checked;
+    if (showEndDateHidden) {
+      showEndDateHidden.value = hasEndRange ? '1' : '0';
+    }
+    if (dateToRow) dateToRow.hidden = !hasEndRange;
+    syncToWithFrom();
+    syncCeremonyDisabledState();
+    if (dateRangeSummary && dateFromPicker) {
+      var df = dateFromPicker.value || '';
+      var dt = dateToPicker ? (dateToPicker.value || '') : df;
+      if (!enableRangeEl.checked || df === dt) {
+        dateRangeSummary.textContent = formatYmdLong(df);
+      } else {
+        dateRangeSummary.textContent = formatDateRangeSummary(df, dt);
+      }
+    }
+  }
+
+  if (dateFromPicker) {
+    dateFromPicker.addEventListener('change', function () {
+      refreshDatePanelState();
+      form.submit();
+    });
+  }
+  if (dateToPicker) {
+    dateToPicker.addEventListener('change', function () {
+      refreshDatePanelState();
+      form.submit();
+    });
+  }
+
+  if (enableRangeEl) {
+    enableRangeEl.addEventListener('change', function () {
+      refreshDatePanelState();
+      form.submit();
+    });
+  }
+
+  form.addEventListener('submit', function () {
+    if (enableRangeEl && !enableRangeEl.checked) {
+      syncToWithFrom();
+    }
+    if (showEndDateHidden && enableRangeEl) {
+      showEndDateHidden.value = enableRangeEl.checked ? '1' : '0';
+    }
+    syncCeremonyDisabledState();
+    if (ceremonySelect && enableRangeEl && dateFromPicker && dateToPicker
+        && enableRangeEl.checked && dateFromPicker.value !== dateToPicker.value) {
+      ceremonySelect.value = '0';
+    }
+  });
+
+  refreshDatePanelState();
+
+  (function initRecordsDateRangeDropdown() {
+    const wrap = document.querySelector('#filter-form .rep-date-range-wrap');
+    const trigger = document.getElementById('records-date-range-trigger');
+    const panel = document.getElementById('records-date-range-panel');
+    if (!wrap || !trigger || !panel) return;
+    function closePanel() {
+      panel.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+    function openPanel() {
+      panel.hidden = false;
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (panel.hidden) {
+        openPanel();
+      } else {
+        closePanel();
+      }
+    });
+    document.addEventListener('click', function (e) {
+      if (panel.hidden) return;
+      if (wrap.contains(e.target)) return;
+      closePanel();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.hidden) {
+        closePanel();
+        trigger.focus();
+      }
+    });
+    var filterForm = document.getElementById('filter-form');
+    if (filterForm && filterForm.getAttribute('data-reopen-date-panel') === '1') {
+      openPanel();
+    }
+  })();
+
+  if (ceremonySelect) {
+    ceremonySelect.addEventListener('change', function () {
+      // When going back to "All Ceremonies", reset department to "All Departments"
+      // to avoid carrying over a forced department from a dept-scoped schedule.
+      if ((ceremonySelect.value || '') === '0' && deptSelect) {
+        deptSelect.value = '0';
+      }
+      form.submit();
+    });
+  }
+  if (deptSelect) {
+    deptSelect.addEventListener('change', function () {
+      form.submit();
+    });
+  }
+
+  const q = form.querySelector('input[name="q"]');
+  if (q) {
+    let t = null;
+    q.addEventListener('input', function () {
+      clearTimeout(t);
+      t = setTimeout(function () {
+        saveFocusState(q);
+        form.submit();
+      }, 650);
+    });
+  }
+
+  
+  const pdfXmlBase64 = ;
+  function decodeBase64Utf8(base64) {
+    const bin = atob(base64);
+    try {
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return new TextDecoder('utf-8').decode(bytes);
+    } catch (e) {
+      // Fallback for older engines.
+      return decodeURIComponent(Array.prototype.map.call(bin, function (ch) {
+        return '%' + ('00' + ch.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+    }
+  }
+  function parsePdfRowsFromXml(base64Xml) {
+    if (!base64Xml) return [];
+    try {
+      const xmlStr = decodeBase64Utf8(base64Xml);
+      const doc = new DOMParser().parseFromString(xmlStr, 'application/xml');
+      if (doc.querySelector('parsererror')) return [];
+      return Array.from(doc.querySelectorAll('pdf_records > record')).map(function (node, idx) {
+        const text = function (tag) {
+          const el = node.querySelector(tag);
+          return el ? (el.textContent || '') : '';
+        };
+        const presentRaw = String(text('present')).toLowerCase();
+        return {
+          no: Number(text('no')) || (idx + 1),
+          employee_id: text('employee_id'),
+          name: text('name'),
+          date: text('date'),
+          time: text('time'),
+          status: text('status'),
+          present: presentRaw === '1' || presentRaw === 'true',
+          remark: text('remark')
+        };
+      });
+    } catch (e) {
+      return [];
+    }
+  }
+  const pdfRows = parsePdfRowsFromXml(pdfXmlBase64);
+  const dateLabel = ;
+  const selectedCeremonyLabel = ;
+  // (removed) Records deck modal data
+
+  const overlay = document.getElementById('pdfModalOverlay');
+  const openBtn = document.getElementById('openPdfModalBtn');
+  const csvBtn = document.getElementById('downloadCsvBtn');
+  const closeBtn = document.getElementById('closePdfModalBtn');
+  const cancelBtn = document.getElementById('cancelPdfModalBtn');
+  const downloadBtn = document.getElementById('downloadPdfBtn');
+  const recordsForceAbsentPayload = {
+    date: ,
+    ceremony: ,
+    department: 
+  };
+  const logos = {
+    l1: 'assets/pasig_seal.png',
+    l2: 'assets/pasig_logo.png',
+    l3: 'assets/logo.png'
+  };
+  const defaultLogos = { l1: logos.l1, l2: logos.l2, l3: logos.l3 };
+  const LOGO_STORE_KEY = 'plp_records_pdf_logos_v1';
+  const undoBtn = document.getElementById('pdfLogoUndoBtn');
+  const redoBtn = document.getElementById('pdfLogoRedoBtn');
+  const resetBtn = document.getElementById('pdfLogoResetBtn');
+  let logoHistory = [];
+  let logoHistoryIdx = -1;
+
+  function esc(s) {
+    return String(s ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function logoEl(key, label) {
+    if (logos[key]) return '<img src="' + logos[key] + '" alt="' + esc(label) + '" />';
+    return '<div class="doc-logo-placeholder">' + esc(label) + '</div>';
+  }
+
+  function cloneLogos() {
+    return { l1: String(logos.l1 || ''), l2: String(logos.l2 || ''), l3: String(logos.l3 || '') };
+  }
+
+  function savePersistedLogos() {
+    try {
+      localStorage.setItem(LOGO_STORE_KEY, JSON.stringify(cloneLogos()));
+    } catch (e) {
+      // ignore quota/private mode
+    }
+  }
+
+  function loadPersistedLogos() {
+    try {
+      const raw = localStorage.getItem(LOGO_STORE_KEY);
+      if (!raw) return null;
+      const obj = JSON.parse(raw);
+      if (!obj || typeof obj !== 'object') return null;
+      return {
+        l1: String(obj.l1 || ''),
+        l2: String(obj.l2 || ''),
+        l3: String(obj.l3 || ''),
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function applyLogos(state) {
+    if (!state) return;
+    logos.l1 = String(state.l1 || '');
+    logos.l2 = String(state.l2 || '');
+    logos.l3 = String(state.l3 || '');
+    ['l1', 'l2', 'l3'].forEach(function (key, idx) {
+      const prev = document.getElementById('prev-' + key);
+      if (!prev) return;
+      if (logos[key]) prev.innerHTML = '<img src="' + logos[key] + '" />';
+      else prev.innerHTML = '<div class="doc-logo-placeholder">LOGO ' + (idx + 1) + '</div>';
+    });
+    renderPdfPreview();
+  }
+
+  function syncLogoHistoryButtons() {
+    if (undoBtn) undoBtn.disabled = !(logoHistoryIdx > 0);
+    if (redoBtn) redoBtn.disabled = !(logoHistoryIdx >= 0 && logoHistoryIdx < (logoHistory.length - 1));
+  }
+
+  function pushLogoHistory() {
+    const snap = cloneLogos();
+    // drop redo tail if we branch
+    if (logoHistoryIdx < logoHistory.length - 1) {
+      logoHistory = logoHistory.slice(0, logoHistoryIdx + 1);
+    }
+    logoHistory.push(snap);
+    logoHistoryIdx = logoHistory.length - 1;
+    syncLogoHistoryButtons();
+    savePersistedLogos();
+  }
+
+  function renderPdfPreview() {
+    const target = document.getElementById('doc-inner');
+    if (!target) return;
+    const city = (document.getElementById('city-name') || {}).value || '';
+    const dept = (document.getElementById('department-name') || {}).value || '';
+    const addr = (document.getElementById('address-line') || {}).value || '';
+    const landline = (document.getElementById('landline-line') || {}).value || '';
+    const email = (document.getElementById('email-line') || {}).value || '';
+    const office = (document.getElementById('office-name') || {}).value || '';
+    const docDate = (document.getElementById('doc-date') || {}).value || '';
+    const rec = (document.getElementById('recorded-by') || {}).value || '';
+    const headOfOfficeName = (document.getElementById('head-of-office-name') || {}).value || '';
+
+    const rowsHtml = (pdfRows || []).map(function (r, idx) {
+      const presentMark = r.present ? '✓' : '';
+      const absentLateMark = r.remark || '';
+      return '<tr>' +
+        '<td class="center">' + (r.no || (idx + 1)) + '</td>' +
+        '<td>' + esc(r.name || '') + '</td>' +
+        '<td class="center"><strong>' + presentMark + '</strong></td>' +
+        '<td class="center"><strong>' + absentLateMark + '</strong></td>' +
+        '</tr>';
+    }).join('');
+
+    const tableHead = '<tr><th style="width:36px">No.</th><th class="left">Name of Employee</th><th style="width:110px">PRESENT</th><th style="width:130px">ABSENT/ LATE</th></tr>';
+
+    // IMPORTANT:
+    // For browser printing, the most reliable "repeat header on every page" technique is
+    // using a TABLE with THEAD set to `display: table-header-group` in print CSS.
+    // This avoids fixed-position overlap/duplication issues.
+    const headerHtml =
+      '<div class="doc-header">' +
+        '<div class="doc-logos-left">' + logoEl('l1', 'LOGO 1') + logoEl('l2', 'LOGO 2') + logoEl('l3', 'LOGO 3') + '</div>' +
+        '<div class="doc-right-info"><div class="doc-right-city">' + esc(city) + '</div><div class="doc-right-dept">' + esc(dept) + '</div><div class="doc-right-addr">&#9679; ' + esc(addr) + '<br>&#9742; ' + esc(landline) + ' &nbsp;|&nbsp; &#9993; ' + esc(email) + '</div></div>' +
+      '</div>' +
+      '<hr class="doc-divider" />' +
+      '<div class="doc-ceremony-title">ATTENDANCE FOR ' + esc(selectedCeremonyLabel).toUpperCase() + '</div>' +
+      '<div class="doc-date-line"><strong>DATE:</strong> ' + esc(docDate || dateLabel) + '</div>' +
+      '<div class="doc-office-line">NAME OF OFFICE: <strong>' + esc(office) + '</strong></div>' +
+      '<div class="doc-instr">Please put a check (✓) in the opposite box if present; if absent write <strong>A</strong> and if late write <strong>L</strong>.</div>';
+
+    const bodyHtml =
+      '<table class="doc-att-table"><thead>' + tableHead + '</thead><tbody>' + (rowsHtml || '<tr><td colspan="4">No records found.</td></tr>') + '</tbody></table>' +
+      '<div class="doc-footer-txt">Recorded by ' + esc(rec) + '<br>Attendance checked/monitored by:</div>' +
+      '<div class="doc-sig-area"><div class="doc-sig-line"><div class="doc-sig-name">' + esc(headOfOfficeName) + '</div><div class="doc-sig-caption">Signature Over Printed Name<br>Head of Office</div></div></div>' +
+      '<div class="doc-note">* All erasures / corrections shall be countersigned by the HRD Head</div>';
+
+    target.innerHTML =
+      '<table class="doc-sheet" role="presentation" aria-hidden="true">' +
+        '<thead><tr><td>' + headerHtml + '</td></tr></thead>' +
+        '<tbody><tr><td>' + bodyHtml + '</td></tr></tbody>' +
+      '</table>';
+  }
+
+  function openPdfModal() {
+    if (!overlay) return;
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    // Initialize logo history from last saved state; fall back to defaults.
+    logoHistory = [];
+    logoHistoryIdx = -1;
+    const saved = loadPersistedLogos();
+    applyLogos(saved || defaultLogos);
+    pushLogoHistory();
+    renderPdfPreview();
+  }
+
+  function closePdfModal() {
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+  }
+
+  // (removed) Records deck modal
+
+  async function markPendingAsAbsentForCurrentFilter() {
+    try {
+      const res = await fetch('ajax/records_force_absent.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(recordsForceAbsentPayload)
+      });
+      if (!res.ok) return false;
+      const data = await res.json();
+      return !!(data && data.success);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function applyPendingToAbsentOnCurrentPage() {
+    const pendingBadges = document.querySelectorAll('.rep-badge-status-pending');
+    pendingBadges.forEach(function (badge) {
+      badge.classList.remove('rep-badge-status-pending');
+      badge.classList.add('rep-badge-status-out');
+      badge.textContent = 'Absent';
+    });
+    const hintNode = document.querySelector('.rep-stat-card:nth-child(3) .hint');
+    if (hintNode && /Pending until event ends/i.test(String(hintNode.textContent || ''))) {
+      hintNode.textContent = 'Not logged';
+    }
+  }
+
+  async function downloadPdf() {
+    await markPendingAsAbsentForCurrentFilter();
+    applyPendingToAbsentOnCurrentPage();
+    renderPdfPreview();
+    const content = (document.getElementById('doc-inner') || {}).innerHTML || '';
+    const localStyles = Array.from(document.querySelectorAll('style'))
+      .map(function (s) { return s.outerHTML; })
+      .join('');
+    const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title></title>' +
+      localStyles +
+      '<style>' +
+      'html,body,*{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}' +
+      // Use @page margins so spacing is identical on every page.
+      'body{margin:0;padding:0;background:#fff;color:#111;}' +
+      '#doc-inner{padding:0;font-size:13.5px !important;}' +
+      '.doc-right-city{font-size:12.5px !important;}' +
+      '.doc-right-dept{font-size:13px !important;}' +
+      '.doc-right-addr{font-size:11.5px !important;}' +
+      '.doc-ceremony-title{font-size:18px !important;}' +
+      '.doc-date-line,.doc-office-line{font-size:13.5px !important;}' +
+      '.doc-instr{font-size:11.8px !important;}' +
+      '.doc-att-table{font-size:13px !important;}' +
+      '.doc-att-table th{font-size:12px !important;padding:8px 10px !important;}' +
+      '.doc-att-table td{padding:7px 10px !important;}' +
+      '.doc-footer-txt{font-size:11.8px !important;}' +
+      '.doc-sig-name{font-size:12px !important;}' +
+      '.doc-sig-caption{font-size:11px !important;}' +
+      '.doc-note{font-size:10.5px !important;}' +
+      '.doc-att-table th{background:#003366 !important;color:#fff !important;border:0.5px solid #002244 !important;}' +
+      '.doc-att-table tr:nth-child(even) td{background:#f0f4ff !important;}' +
+      '.doc-divider{border-top:1.5px solid #003366 !important;}' +
+      '.doc-right-city{color:#003366 !important;border-bottom:1px solid #003366 !important;}' +
+      // Print: repeat header on every page via THEAD.
+      '.doc-sheet{width:100%;border-collapse:collapse;}' +
+      '.doc-sheet td{padding:0;border:0;vertical-align:top;}' +
+      '@media print{.doc-sheet thead{display:table-header-group;} .doc-sheet tfoot{display:table-footer-group;} .doc-sheet thead, .doc-sheet tr{break-inside:avoid;}}' +
+      '@page{size:auto;margin:20px;}' +
+      '</style>' +
+      '</head><body><div id="doc-inner">' + content + '</div></body></html>';
+
+    const printFrame = document.createElement('iframe');
+    printFrame.style.position = 'fixed';
+    printFrame.style.right = '0';
+    printFrame.style.bottom = '0';
+    printFrame.style.width = '0';
+    printFrame.style.height = '0';
+    printFrame.style.border = '0';
+    printFrame.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(printFrame);
+
+    const cleanup = function () {
+      setTimeout(function () {
+        if (printFrame.parentNode) {
+          printFrame.parentNode.removeChild(printFrame);
+        }
+      }, 300);
+    };
+
+    const doc = printFrame.contentWindow && printFrame.contentWindow.document;
+    if (!doc || !printFrame.contentWindow) {
+      cleanup();
+      return;
+    }
+    doc.open();
+    doc.write(html);
+    doc.close();
+    setTimeout(function () {
+      try {
+        printFrame.contentWindow.focus();
+        printFrame.contentWindow.print();
+      } finally {
+        cleanup();
+      }
+    }, 200);
+  }
+
+  async function downloadCsvWithFeedback(e) {
+    if (e) e.preventDefault();
+    if (!csvBtn) return;
+    const url = csvBtn.getAttribute('href');
+    if (!url) return;
+    try {
+      const res = await fetch(url, { method: 'GET', credentials: 'same-origin' });
+      if (!res.ok) {
+        throw new Error('Failed to download CSV file.');
+      }
+      const blob = await res.blob();
+      const link = document.createElement('a');
+      const objUrl = URL.createObjectURL(blob);
+      link.href = objUrl;
+      link.download = 'attendance_records_.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objUrl);
+      if (window.ActionFeedback && typeof window.ActionFeedback.show === 'function') {
+        window.ActionFeedback.show({
+          type: 'success',
+          title: 'Download Complete',
+          message: 'The CSV file has been successfully downloaded.'
+        });
+      }
+    } catch (err) {
+      if (window.ActionFeedback && typeof window.ActionFeedback.show === 'function') {
+        window.ActionFeedback.show({
+          type: 'error',
+          title: 'Action Failed',
+          message: 'Something went wrong. Please try again.'
+        });
+      }
+    }
+  }
+
+  if (openBtn) openBtn.addEventListener('click', openPdfModal);
+  if (csvBtn) csvBtn.addEventListener('click', downloadCsvWithFeedback);
+  if (closeBtn) closeBtn.addEventListener('click', closePdfModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closePdfModal);
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', function () {
+      downloadPdf();
+    });
+  }
+  if (overlay) {
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) closePdfModal();
+    });
+  }
+  ['city-name','department-name','address-line','landline-line','email-line','office-name','doc-date','recorded-by','head-of-office-name'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', renderPdfPreview);
+  });
+
+  // Remove logo buttons (clears the logo data)
+  ['l1', 'l2', 'l3'].forEach(function (key) {
+    const btn = document.getElementById('rm-' + key);
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      logos[key] = '';
+      const prev = document.getElementById('prev-' + key);
+      if (prev) prev.innerHTML = '<div class="doc-logo-placeholder">LOGO ' + key.slice(1) + '</div>';
+      pushLogoHistory();
+      renderPdfPreview();
+    });
+  });
+
+  if (undoBtn) {
+    undoBtn.addEventListener('click', function () {
+      if (logoHistoryIdx <= 0) return;
+      logoHistoryIdx -= 1;
+      applyLogos(logoHistory[logoHistoryIdx]);
+      syncLogoHistoryButtons();
+      savePersistedLogos();
+    });
+  }
+  if (redoBtn) {
+    redoBtn.addEventListener('click', function () {
+      if (logoHistoryIdx < 0 || logoHistoryIdx >= logoHistory.length - 1) return;
+      logoHistoryIdx += 1;
+      applyLogos(logoHistory[logoHistoryIdx]);
+      syncLogoHistoryButtons();
+      savePersistedLogos();
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      applyLogos(defaultLogos);
+      logoHistory = [];
+      logoHistoryIdx = -1;
+      pushLogoHistory();
+      savePersistedLogos();
+    });
+  }
+  ['f-l1','f-l2','f-l3'].forEach(function (id, idx) {
+    const key = 'l' + (idx + 1);
+    const input = document.getElementById(id);
+    if (!input) return;
+    input.addEventListener('change', function (event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        logos[key] = e.target.result;
+        const prev = document.getElementById('prev-' + key);
+        if (prev) prev.innerHTML = '<img src="' + logos[key] + '" />';
+        pushLogoHistory();
+        renderPdfPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // Ensure default logos are reflected in preview render.
+  ['l1', 'l2', 'l3'].forEach(function (key) {
+    const prev = document.getElementById('prev-' + key);
+    if (prev && logos[key]) {
+      prev.innerHTML = '<img src="' + logos[key] + '" />';
+    }
+  });
+  
+})();
+</script>
+
+<script>
+window.PLP_RANGE_PDF_GRID = ;
+</script>
+<script src="js/records_range_pdf_grid.js"></script>
+
+<script src="js/action_feedback_modal.js"></script>
+
+</body>
+</html>

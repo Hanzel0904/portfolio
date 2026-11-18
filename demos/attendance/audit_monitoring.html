@@ -1,0 +1,281 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Audit &amp; Monitoring — PLP Smart Attendance</title>
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/audit_monitoring.css" />
+</head>
+<body class="reports-page">
+
+<header class="plp-header" role="banner">
+  <a href="dashboard.html" class="plp-logo-wrap">
+    <div class="plp-logo-icon"><img src="assets/logo.png" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
+    <div class="plp-logo-text"><span class="plp-logo-title">PLP Smart Attendance</span><span class="plp-logo-sub">Demo</span></div>
+  </a>
+  <nav class="plp-nav">
+    <a class="plp-nav-link" href="dashboard.html"><span>Dashboard</span></a>
+    <a class="plp-nav-link" href="employee_registration.html"><span>Register</span></a>
+    <a class="plp-nav-link" href="records.html"><span>Records</span></a>
+    <a class="plp-nav-link" href="employee_management.html"><span>Employees</span></a>
+    <a class="plp-nav-link" href="capture.html"><span>Capture</span></a>
+    <a class="plp-nav-link" href="analytics.html"><span>Analytics</span></a>
+    <a class="plp-nav-link" href="audit_monitoring.html"><span>Audit</span></a>
+    <a class="plp-nav-link" href="system_settings.html"><span>Settings</span></a>
+    <a class="plp-nav-link" href="scanner.html"><span>Scanner</span></a><a class="plp-nav-link" href="manualAttendanceDesign.html"><span>Manual</span></a><a class="plp-nav-link" href="fullscreen.html"><span>Ceremony</span></a><a class="plp-nav-link" href="mobileQr_fullscreen.html"><span>Mobile QR</span></a>
+    <a class="plp-nav-link" href="index.html"><span>Logout</span></a>
+  </nav>
+</header>
+
+  
+  <main class="aud-shell">
+    <div class="aud-header">
+      <div>
+        <h1>Audit &amp; Monitoring</h1>
+        <p class="aud-sub">Track edits/deletes, detect unauthorized changes, and keep history.</p>
+      </div>
+    </div>
+
+    <form class="aud-filters" id="audFilters" method="get" action="#" onsubmit="return false;">
+      <div class="aud-field aud-field--search">
+        <label for="q">Search</label>
+        <input id="q" name="q" value="" placeholder="Search all: action, module, details, route, date/time..." />
+      </div>
+      <div class="aud-field aud-field--action">
+        <label for="action">Action</label>
+        <select id="action" name="action">
+          <option value="">All</option>
+          <option value="edit" >Edit</option>
+          <option value="delete" >Delete</option>
+          <option value="add" >Add</option>
+        </select>
+      </div>
+      <div class="aud-field aud-field--module">
+        <label for="entity">Entity</label>
+        <select id="entity" name="entity">
+          <option value="">All</option>
+          
+            <option value="" ></option>
+          
+        </select>
+      </div>
+      <div class="aud-field aud-field--date">
+        <label for="date">Date</label>
+        <input id="date" name="date" type="date" value="" />
+      </div>
+      <div class="aud-actions">
+        <a class="aud-btn secondary" href="">Clear</a>
+      </div>
+    </form>
+
+    <div class="aud-table">
+      <h3 class="aud-table-title">Audit logs</h3>
+      <div class="aud-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:110px">Action</th>
+            <th style="width:220px">Module</th>
+            <th style="width:190px">Date/Time</th>
+            <th style="width:220px">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+        
+          <tr><td colspan="4" style="padding:16px;color:#6b7280;">No audit logs found.</td></tr>
+        
+          
+            
+            <tr>
+              <td><span class="aud-pill "></span></td>
+              <td>
+                <div><strong></strong></div>
+              </td>
+              <td></td>
+              <td>
+                <details class="aud-details">
+                  <summary class="aud-view-btn">View</summary>
+                  <div class="aud-details-body"
+                    data-route=""
+                    data-old=""
+                    data-new=""
+                  >
+                    <div class="aud-details-sub aud-meta"></div>
+                    <div class="aud-changes-wrap">
+                      <table class="aud-changes">
+                        <thead>
+                          <tr>
+                            <th>Field</th>
+                            <th>From</th>
+                            <th>To</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </details>
+              </td>
+            </tr>
+          
+        
+        </tbody>
+      </table>
+      </div>
+
+      <div class="aud-pagination">
+        <span class="aud-pagination-info">
+          Showing – of 
+        </span>
+        <span class="aud-pagination-nav">
+          <a class="aud-page-link" href="">Previous</a>
+          <span class="aud-page-current"></span>
+          
+            <a class="aud-page-link" href="">Next</a>
+          
+        </span>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function pretty(v) {
+      if (v === null || v === undefined) return '—';
+      if (typeof v === 'string') {
+        var s = v.trim();
+        return s === '' ? '—' : s;
+      }
+      try { return JSON.stringify(v); } catch (e) { return String(v); }
+    }
+
+    function buildChanges(oldObj, newObj) {
+      var out = [];
+      var keys = {};
+      if (oldObj && typeof oldObj === 'object') {
+        Object.keys(oldObj).forEach(function (k) { keys[k] = true; });
+      }
+      if (newObj && typeof newObj === 'object') {
+        Object.keys(newObj).forEach(function (k) { keys[k] = true; });
+      }
+      var list = Object.keys(keys);
+      list.sort();
+      list.forEach(function (k) {
+        var a = oldObj && typeof oldObj === 'object' ? oldObj[k] : undefined;
+        var b = newObj && typeof newObj === 'object' ? newObj[k] : undefined;
+        var pa = pretty(a);
+        var pb = pretty(b);
+        if (pa !== pb) out.push([k, pa, pb]);
+      });
+      return out;
+    }
+
+    function renderDetails(detailsEl) {
+      if (!detailsEl) return;
+      var body = detailsEl.querySelector('.aud-details-body');
+      if (!body) return;
+      if (body.getAttribute('data-rendered') === '1') return;
+
+      var route = body.getAttribute('data-route') || '';
+      var oldRaw = body.getAttribute('data-old') || '';
+      var newRaw = body.getAttribute('data-new') || '';
+
+      var sub = body.querySelector('.aud-details-sub');
+      if (sub) sub.textContent = route ? ('Route: ' + route) : '';
+
+      var oldObj = null, newObj = null;
+      try { oldObj = oldRaw ? JSON.parse(oldRaw) : null; } catch (e) { oldObj = null; }
+      try { newObj = newRaw ? JSON.parse(newRaw) : null; } catch (e) { newObj = null; }
+
+      var tbody = body.querySelector('.aud-changes tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      var rows = buildChanges(oldObj, newObj);
+      if (rows.length === 0) {
+        var tr0 = document.createElement('tr');
+        var td0 = document.createElement('td');
+        td0.colSpan = 3;
+        td0.textContent = 'No visible field changes.';
+        td0.style.color = '#6b7280';
+        td0.style.padding = '12px';
+        tr0.appendChild(td0);
+        tbody.appendChild(tr0);
+      } else {
+        rows.forEach(function (r) {
+          var tr = document.createElement('tr');
+          r.forEach(function (cell, idx) {
+            var td = document.createElement('td');
+            td.textContent = cell;
+            if (idx === 0) td.style.fontWeight = '700';
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      }
+
+      body.setAttribute('data-rendered', '1');
+    }
+
+    (function () {
+      var form = document.getElementById('audFilters');
+      if (!form) return;
+
+      var q = document.getElementById('q');
+      var action = document.getElementById('action');
+      var entity = document.getElementById('entity');
+      var date = document.getElementById('date');
+
+      // Remove pagination when filters change.
+      function clearPageParam() {
+        var page = form.querySelector('input[name="page"]');
+        if (page) page.parentNode.removeChild(page);
+      }
+
+      var t = null;
+      function scheduleSubmit() {
+        clearPageParam();
+        if (t) window.clearTimeout(t);
+        t = window.setTimeout(function () {
+          form.submit();
+        }, 350);
+      }
+
+      if (q) q.addEventListener('input', scheduleSubmit);
+      if (action) action.addEventListener('change', scheduleSubmit);
+      if (entity) entity.addEventListener('change', scheduleSubmit);
+      if (date) date.addEventListener('change', scheduleSubmit);
+
+      function restoreSearchFocusIfTyping() {
+        if (!q) return;
+        var hasQuery = (q.value || '').trim() !== '';
+        if (!hasQuery) return;
+        window.setTimeout(function () {
+          try {
+            q.focus({ preventScroll: true });
+          } catch (e) {
+            q.focus();
+          }
+          try {
+            var len = q.value.length;
+            q.setSelectionRange(len, len);
+          } catch (e) {}
+        }, 0);
+      }
+
+      // When auto-applying (page reload), keep focus if user is searching.
+      window.addEventListener('load', restoreSearchFocusIfTyping);
+      window.addEventListener('pageshow', restoreSearchFocusIfTyping);
+
+      document.addEventListener('toggle', function (e) {
+        var t = e.target;
+        if (!t || !t.classList || !t.classList.contains('aud-details')) return;
+        if (t.open) {
+          renderDetails(t);
+        }
+      }, true);
+    })();
+  </script>
+</body>
+</html>
+

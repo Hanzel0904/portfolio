@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PLP GSO Supply Tracking System</title>
+    <link rel="stylesheet" href="dashb-gso.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .filter-select {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .filter-select form {
+            display: flex;
+            align-items: center;
+        }
+
+        select {
+            padding: 8px 12px;
+            font-size: 16px;
+            margin-left: 10px;
+            border-radius: 4px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            color: #1e40af !important;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            width: 97%;
+        }
+
+        /* Header bar */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-bar h2 {
+            margin: 0;
+        }
+
+        .logout-btn {
+            background-color: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        /* Table Container */
+        .table-container {
+            width: 97%;
+            overflow-x: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background: #e9ecef;
+            border-color: #ced4da;
+            color: #6c757d;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        td a i {
+            margin-right: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        td a i:hover {
+            transform: scale(1.1);
+        }
+
+        .search-container {
+            margin: 20px 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container input {
+            padding: 12px 15px;
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-container input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .search-container input::placeholder {
+            color: #999;
+        }
+
+        .tab-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .tab-link {
+            padding: 12px 20px;
+            margin: 0 2px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            font-weight: bold;
+            color: #444;
+            transition: background-color 0.3s;
+        }
+
+        .tab-link:hover {
+            background-color: #e9e9e9;
+        }
+
+        .tab-link.active {
+            background-color: #0056b3;
+            color: white;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .no-results-message {
+            padding: 20px;
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .view-items-icon { /* Style for the eye icon */
+            cursor: pointer;
+            color: #007bff; /* Blue color, typically used for links */
+        }
+
+        .view-items-icon:hover {
+            color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* Styles for the items table */
+        #itemsTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        #itemsTable th,
+        #itemsTable td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        #itemsTable th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+
+        #itemsTable tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        #itemsTableCaption {
+            padding: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+        .add-btn {
+    display: inline-block !important;
+    padding: 10px 20px !important;
+    background-color: #0056b3 !important;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: background-color 0.3s ease, transform 0.2s ease !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    border: none !important;
+}
+
+.add-btn:hover {
+    background-color: #0056b3 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+
+    </style>
+</head>
+<body>
+<div class="sidebar"><h3>Super Admin</h3><div class="user-info"><div class="user-name">Demo account</div><div class="dept-info">Sample office</div></div><ul><li><a href="super_admin_dashboard.html"><span>Dashboard</span></a></li><li><a href="super_admin_inventory.html"><span>Inventory</span></a></li><li><a href="super_admin_ris.html"><span>RIS</span></a></li><li><a href="super_admin_report.html"><span>Report</span></a></li><li><a href="super_admin_history.html"><span>History</span></a></li><li><a href="super_admin_settings.html"><span>Settings</span></a></li><li><a href="manage_users.html"><span>Users</span></a></li><li><a href="admin_login.html"><span>Logout</span></a></li></ul></div>
+
+<div class="main-content">
+
+    <section id="risCentral">
+        <header>
+            <h1>PLP GSO Supply Tracking and Monitoring System</h1>
+            <a href="?logout=1" class="logout-btn" onclick="return confirm('Are you sure you want to log out?');">
+      <i class="fas fa-sign-out-alt"></i> Logout 
+    </a>
+        </header>
+
+        
+
+        <div class="search-container">
+            <input type="text" id="centralSearchInput"
+                   placeholder="Search for anything (RIS #, item name, type, etc.)..." />
+        </div>
+
+        <div class="tab-container">
+            <ul class="tabs">
+                <li class="tab-link active" onclick="openTab('requestedCentralTab')">Requested Central Supply</li>
+                <li class="tab-link" onclick="openTab('deliveredCentralTab')">Delivered Central Supply</li>
+            </ul>
+
+            <div id="requestedCentralTab" class="tab-content active">
+                <div class="header-bar">
+                    <h2>Requested Central Supply</h2>
+                    <a href="add_CS.html" class="add-btn">Add Req_CS</a>
+                </div>
+                <div class="table-container">
+                    <table id="requestedCentralTable">
+                        <thead>
+                        <tr>
+                            <th>RIS #</th>
+                            <th>Date Requested</th>
+                            <th>View</th> </tr>
+                        </thead>
+                        <tbody>
+                        
+                            
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <i class="fas fa-eye view-items-icon"
+                                           onclick="viewItems('', '', 'central', 'requested')">
+                                        </i>
+                                    </td> </tr>
+                            
+                        
+                            <tr>
+                                <td colspan="3">No central supply requests found.</td>
+                            </tr>
+                        
+                        </tbody>
+                    </table>
+                    <div id="noResultsCentralRequested" class="no-results-message" style="display: none;">No matching records
+                        found
+                    </div>
+                    <div id="itemsContainer" style="display: none; margin-top: 20px;">
+                        <table id="itemsTable">
+                            <caption id="itemsTableCaption">Items for RIS Number</caption>
+                            <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="deliveredCentralTab" class="tab-content">
+                <div class="header-bar">
+                    <h2>Received Central Supply</h2>
+                </div>
+                <div class="table-container">
+                    <table id="deliveredCentralTable">
+                        <thead>
+                        <tr>
+                            <th>RIS #</th>
+                            <th>Date Delivered</th>
+                            <th>View</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        
+                            
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <i class="fas fa-eye view-items-icon"
+                                           onclick="viewItems('', '', 'central', 'delivered')">
+                                        </i>
+                                    </td>
+                                </tr>
+                            
+                        
+                            <tr>
+                                <td colspan="3">No central supply deliveries found.</td>
+                            </tr>
+                        
+                        </tbody>
+                    </table>
+                    <div id="noResultsCentralDelivered" class="no-results-message" style="display: none;">No matching records
+                        found
+                    </div>
+                    <div id="itemsContainer" style="display: none; margin-top: 20px;">
+                        <table id="itemsTable">
+                            <caption id="itemsTableCaption">Items for RIS Number</caption>
+                            <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="risPLP">
+        <header>
+            <h1>PLP GSO Supply Tracking and Monitoring System</h1>
+            <a href="?logout=1" class="logout-btn"
+               onclick="return confirm('Are you sure you want to log out?');">Logout </a>
+        </header>
+
+        <div class="filter-select">
+            
+                <form method="GET" action="#" onsubmit="return false;">
+                    <input type="hidden" name="type" value="plp">
+                    <label for="filter-plp" style="margin-right: 8px;">
+                        Department:
+                    </label>
+                    <select name="filter" id="filter-plp" onchange="this.form.submit()">
+                        <option value="All">All</option>
+                        
+                            <option value="" >
+                                
+                            </option>
+                        
+                    </select>
+                </form>
+            
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="plpSearchInput"
+                   placeholder="Search for anything (RIS #, department, item name, etc.)..." />
+        </div>
+
+        <div class="tab-container">
+            <ul class="tabs">
+                <li class="tab-link active" onclick="openTab('requestedPLPTab')">Requested PLP</li>
+                <li class="tab-link" onclick="openTab('deliveredPLPTab')">Delivered PLP</li>
+            </ul>
+
+            <div id="requestedPLPTab" class="tab-content active">
+                <div class="header-bar">
+                    <h2>Requested PLP</h2>
+                    <a href="add_PLP.html" class="add-btn">Add Req_PLP</a>
+                </div>
+                <div class="table-container">
+                    <table id="requestedPLPTable">
+                        <thead>
+                        <tr>
+                            <th>RIS #</th>
+                            <th>Date Requested</th>
+                            <th>Department</th>
+                            <th>Requester Name</th>
+                            <th>View</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        
+                            
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <i class="fas fa-eye view-items-icon"
+                                           onclick="viewItems('', '', 'plp', 'requested')">
+                                        </i>
+                                    </td>
+                                </tr>
+                            
+                        
+                            <tr>
+                                <td colspan="3">No PLP requests found.</td>
+                            </tr>
+                        
+                        </tbody>
+                    </table>
+                    <div id="noResultsPLPRequested" class="no-results-message" style="display: none;">No matching records found
+                    </div>
+                    <div id="itemsContainer" style="display: none; margin-top: 20px;">
+                        <table id="itemsTable">
+                            <caption id="itemsTableCaption">Items for RIS Number</caption>
+                            <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="deliveredPLPTab" class="tab-content">
+                <div class="header-bar">
+                    <h2>Delivered PLP</h2>
+                </div>
+                <div class="table-container">
+                    <table id="deliveredPLPTable">
+                        <thead>
+                        <tr>
+                            <th>RIS #</th>
+                            <th>Date Delivered</th>
+                            <th>Department</th>
+                            <th>Received By</th>
+                            <th>View</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        
+                            
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <i class="fas fa-eye view-items-icon"
+                                           onclick="viewItems('', '', 'plp', 'delivered')">
+                                        </i>
+                                    </td>
+                                </tr>
+                            
+                        
+                            <tr>
+                                <td colspan="3">No PLP deliveries found.</td>
+                            </tr>
+                        
+                        </tbody>
+                    </table>
+                    <div id="noResultsPLPDelivered" class="no-results-message" style="display: none;">No matching records
+                        found
+                    </div>
+                    <div id="itemsContainer" style="display: none; margin-top: 20px;">
+                        <table id="itemsTable">
+                            <caption id="itemsTableCaption">Items for RIS Number</caption>
+                            <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+
+
+<script>
+    feather.replace();
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type') || 'central'; // DEFAULT TO CENTRAL if notprovided
+
+        // Hide both sections initially
+        document.getElementById('risCentral').style.display = 'none';
+        document.getElementById('risPLP').style.display = 'none';
+
+        // Show the appropriate section based on type
+        if (type === 'central') {
+            document.getElementById('risCentral').style.display = 'block';
+        } else if (type === 'plp') {
+            document.getElementById('risPLP').style.display = 'block';
+        }
+
+        // Initialize search functionality
+        initializeSearch();
+    });
+
+    // Tab functionality
+    function openTab(tabId) {
+        // Get the parent section based on the tab ID
+        let sectionId = tabId.includes('Central') ? 'risCentral' : 'risPLP';
+        let section = document.getElementById(sectionId);
+
+        // Hide all tab content in this section
+        const tabContents = section.getElementsByClassName('tab-content');
+        for (let i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove('active');
+        }
+
+        // Remove active class from all tab links in this section
+        const tabLinks = section.getElementsByClassName('tab-link');
+        for (let i = 0; i < tabLinks.length; i++) {
+            tabLinks[i].classList.remove('active');
+        }
+
+        // Show the specific tab content
+        document.getElementById(tabId).classList.add('active');
+
+        // Add active class to the clicked tab link
+        event.currentTarget.classList.add('active');
+    }
+
+    // Search functionality
+    function initializeSearch() {
+    // Central search
+    const centralSearchInput = document.getElementById('centralSearchInput');
+    if (centralSearchInput) {
+        centralSearchInput.addEventListener('keyup', function () {
+            const searchValue = this.value.toLowerCase();
+            // Search in the currently active tab in central section
+            searchActiveTable('risCentral', searchValue);
+        });
+    }
+    
+    // PLP search
+    const plpSearchInput = document.getElementById('plpSearchInput');
+    if (plpSearchInput) {
+        plpSearchInput.addEventListener('keyup', function () {
+            const searchValue = this.value.toLowerCase();
+            // Search in the currently active tab in PLP section
+            searchActiveTable('risPLP', searchValue);
+        });
+    }
+}
+
+// Enhanced search function that works with the currently active/visible table
+function searchActiveTable(sectionId, searchValue) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    
+    // Find the active tab content
+    const activeTabContent = section.querySelector('.tab-content.active');
+    if (!activeTabContent) return;
+    
+    // Check if items view is currently displayed
+    const itemsContainer = activeTabContent.querySelector('#itemsContainer');
+    const itemsTable = activeTabContent.querySelector('#itemsTable');
+    
+    if (itemsContainer && itemsContainer.style.display !== 'none' && itemsTable) {
+        // Search in items table
+        searchInTable(itemsTable, searchValue);
+    } else {
+        // Search in main RIS table
+        const mainTable = activeTabContent.querySelector('table');
+        if (mainTable) {
+            searchInTable(mainTable, searchValue);
+        }
+    }
+}
+
+// Generic search function that works with any table
+function searchInTable(table, searchValue) {
+    if (!table) return;
+    
+    const tbody = table.querySelector('tbody');
+    if (!tbody) return;
+    
+    const rows = tbody.getElementsByTagName('tr');
+    let found = false;
+    
+    // Search through all rows
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        
+        // Skip loading indicators and other non-data rows
+        if (row.id === 'itemsLoadingIndicator' || row.classList.contains('loading-row')) {
+            continue;
+        }
+        
+        const cells = row.getElementsByTagName('td');
+        let rowMatch = false;
+        
+        // Search through all cells in the row
+        for (let j = 0; j < cells.length; j++) {
+            const cellText = cells[j].textContent || cells[j].innerText;
+            if (cellText.toLowerCase().indexOf(searchValue) > -1) {
+                rowMatch = true;
+                break;
+            }
+        }
+        
+        // Show/hide row based on match
+        if (rowMatch || searchValue === '') {
+            row.style.display = '';
+            found = true;
+        } else {
+            row.style.display = 'none';
+        }
+    }
+    
+    // Handle "no results" message for the specific table
+    handleNoResultsMessage(table, found, searchValue);
+}
+
+// Handle no results message
+function handleNoResultsMessage(table, found, searchValue) {
+    // Remove existing no results message
+    const existingMessage = table.querySelector('.no-results-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // Add no results message if needed
+    if (!found && searchValue !== '') {
+        const tbody = table.querySelector('tbody');
+        const noResultsRow = document.createElement('tr');
+        noResultsRow.className = 'no-results-message';
+        noResultsRow.innerHTML = `
+            <td colspan="100%" style="text-align: center; padding: 20px; font-style: italic; color: #666;">
+                No results found for "${searchValue}"
+            </td>
+        `;
+        tbody.appendChild(noResultsRow);
+    }
+}
+
+// Enhanced filter functionality for main tables
+function applyFilter(sectionId, filterValue) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    
+    // Apply filter to both requested and delivered tabs
+    const tabContents = section.querySelectorAll('.tab-content');
+    
+    tabContents.forEach(tabContent => {
+        const table = tabContent.querySelector('table');
+        if (!table) return;
+        
+        const tbody = table.querySelector('tbody');
+        if (!tbody) return;
+        
+        const rows = tbody.getElementsByTagName('tr');
+        let found = false;
+        
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            let shouldShow = true;
+            
+            if (filterValue && filterValue !== 'All') {
+                // For central supply, filter by type
+                if (sectionId === 'risCentral') {
+                    // Assuming type is in a specific column - adjust index as needed
+                    const typeCell = row.cells[1]; // Adjust this index based on your table structure
+                    if (typeCell) {
+                        const typeText = typeCell.textContent || typeCell.innerText;
+                        shouldShow = typeText.toLowerCase().includes(filterValue.toLowerCase());
+                    }
+                }
+                // For PLP, filter by department
+                else if (sectionId === 'risPLP') {
+                    // Assuming department is in a specific column - adjust index as needed
+                    const deptCell = row.cells[2]; // Adjust this index based on your table structure
+                    if (deptCell) {
+                        const deptText = deptCell.textContent || deptCell.innerText;
+                        shouldShow = deptText.toLowerCase().includes(filterValue.toLowerCase());
+                    }
+                }
+            }
+            
+            if (shouldShow) {
+                row.style.display = '';
+                found = true;
+            } else {
+                row.style.display = 'none';
+            }
+        }
+        
+        // Handle no results message for filter
+        handleNoResultsMessage(table, found, filterValue !== 'All' ? filterValue : '');
+    });
+}
+
+    
+    
+ function editRISItem(id, type, category) {
+    if (!id || !type || !category) {
+        alert('Missing required parameters for editing item.');
+        return;
+    }
+    
+    // Construct the edit URL with all necessary parameters
+    const editUrl = `edit_ris.php?id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}&category=${encodeURIComponent(category)}`;
+    
+    // Open in a popup window
+    const popupWidth = 500;
+    const popupHeight = 665;
+    const left = (window.innerWidth - popupWidth) / 2;
+    const top = (window.innerHeight - popupHeight) / 2;
+    
+    const editWindow = window.open(
+        editUrl,
+        'EditRISItem',
+        `width=${popupWidth},height=${popupHeight},top=${top},left=${left},resizable=yes,scrollbars=yes`
+    );
+    
+    // Refresh parent window when popup closes (checks every 500ms)
+    const checkPopupClosed = setInterval(() => {
+        if (editWindow.closed) {
+            clearInterval(checkPopupClosed);
+            // Refresh current content to show updated data
+            if (typeof viewItems === 'function' && window.activeRisNo && window.activeRisDate) {
+                // If viewing items, refresh the items view
+                viewItems(window.activeRisNo, window.activeRisDate, type, category);
+            } else {
+                // Otherwise reload the page to refresh the RIS list
+                location.reload();
+            }
+        }
+    }, 500);
+}
+
+/**
+ * Deletes a specific RIS item after confirmation
+ * @param {number} id - The ID of the item to delete
+ * @param {string} type - The type of RIS ('central' or 'plp')
+ * @param {string} category - The category ('requested' or 'delivered')
+ * @param {string} itemName - Optional item name for confirmation message
+ */
+function deleteRISItem(id, type, category, itemName = '') {
+    if (!id || !type || !category) {
+        alert('Missing required parameters for deleting item.');
+        return;
+    }
+    
+    // Create a more detailed confirmation message if itemName is provided
+    const confirmMessage = itemName ? 
+        `Are you sure you want to delete "${itemName}"?` : 
+        `Are you sure you want to delete item with ID: ${id}?`;
+    
+    if (!confirm(confirmMessage)) {
+        return; // User canceled the operation
+    }
+    
+    // Show loading indicator
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.id = 'deleteLoadingIndicator';
+    loadingIndicator.innerHTML = 'Deleting...';
+    loadingIndicator.style.position = 'fixed';
+    loadingIndicator.style.top = '50%';
+    loadingIndicator.style.left = '50%';
+    loadingIndicator.style.transform = 'translate(-50%, -50%)';
+    loadingIndicator.style.padding = '10px 20px';
+    loadingIndicator.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    loadingIndicator.style.color = 'white';
+    loadingIndicator.style.borderRadius = '5px';
+    loadingIndicator.style.zIndex = '9999';
+    document.body.appendChild(loadingIndicator);
+    
+    // Construct the delete URL
+    const deleteUrl = `delete_ris.php?id=${encodeURIComponent(id)}&category=${encodeURIComponent(category)}&type=${encodeURIComponent(type)}`;
+    
+    // Execute the delete operation
+    fetch(deleteUrl, {
+        method: 'GET',
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        // Remove loading indicator
+        document.body.removeChild(loadingIndicator);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(text => {
+        // Check if response contains error message
+        if (text.toLowerCase().includes('error')) {
+            console.error('Delete operation failed:', text);
+            alert('Failed to delete item. Please try again later.');
+        } else {
+            // Success - now we need to update the UI
+            alert('Item deleted successfully!');
+            
+            // If we're in item view mode, refresh the items or go back to RIS list
+            if (typeof viewItems === 'function' && window.activeRisNo && window.activeRisDate) {
+                // Check if there are still items left after deletion
+                const currentRow = document.querySelector(`tr[data-id="${id}"]`);
+                if (currentRow) {
+                    currentRow.remove(); // Remove the row from the table
+                    
+                    // If no rows left, go back to RIS list
+                    const remainingRows = document.querySelectorAll('#itemsTableBody tr');
+                    if (remainingRows.length === 0) {
+                        const backButton = document.getElementById('backToRISButton');
+                        if (backButton) {
+                            backButton.click(); // Simulate back button click
+                        } else {
+                            location.reload(); // Fallback: reload the page
+                        }
+                    }
+                } else {
+                    // If row not found in DOM, refresh the items view
+                    viewItems(window.activeRisNo, window.activeRisDate, type, category);
+                }
+            } else {
+                // We're in RIS list view - just reload the page
+                location.reload();
+            }
+        }
+    })
+    .catch(error => {
+        // Remove loading indicator if still present
+        const indicator = document.getElementById('deleteLoadingIndicator');
+        if (indicator) {
+            document.body.removeChild(indicator);
+        }
+        
+        console.error('Error during delete operation:', error);
+        alert('An error occurred while trying to delete the item. Please check your connection and try again.');
+    });
+}
+
+/**
+ * Function to integrate these operations into the viewItems function
+ * This should be called from within the viewItems function when building the action cell
+ * @param {HTMLElement} actionCell - The cell where action buttons should be added
+ * @param {Object} item - The item data object
+ * @param {string} type - The type of RIS ('central' or 'plp')
+ * @param {string} category - The category ('requested' or 'delivered')
+ */
+function setupItemActions(actionCell, item, type, category) {
+    if (!actionCell || !item || !type || !category) {
+        console.error('Missing required parameters for setting up item actions');
+        return;
+    }
+    
+    // Create Edit button/icon
+    const editIcon = document.createElement('img');
+    editIcon.src = 'icons/edit.png';
+    editIcon.alt = 'Edit';
+    editIcon.title = 'Edit Item';
+    editIcon.style.cursor = 'pointer';
+    editIcon.style.marginRight = '8px';
+    editIcon.style.width = '20px';
+    editIcon.style.height = '20px';
+    
+    // Set up edit click handler
+    editIcon.onclick = () => {
+        editRISItem(item.id, type, category);
+    };
+    
+    actionCell.appendChild(editIcon);
+    
+    // Only add delete button for requested items or if user has appropriate permissions
+    if (category === 'requested' || userHasDeletePermission()) {
+        const deleteIcon = document.createElement('img');
+        deleteIcon.src = 'icons/delete.png';
+        deleteIcon.alt = 'Delete';
+        deleteIcon.title = 'Delete Item';
+        deleteIcon.style.cursor = 'pointer';
+        deleteIcon.style.width = '20px';
+        deleteIcon.style.height = '20px';
+        
+        // Set up delete click handler
+        deleteIcon.onclick = () => {
+            deleteRISItem(item.id, type, category, item.itemName);
+        };
+        
+        actionCell.appendChild(deleteIcon);
+    }
+}
+
+/**
+ * Check if current user has permission to delete items
+ * This can be customized based on your application's role system
+ * @returns {boolean} True if user can delete, false otherwise
+ */
+function userHasDeletePermission() {
+    // This is a placeholder - implement based on your user roles
+    // For example, check a global variable set during page load
+    if (typeof currentUserRole !== 'undefined') {
+        return ['admin', 'super_admin', 'manager'].includes(currentUserRole);
+    }
+    
+    // Default: allow deletion on requested items only (handled by the category check in setupItemActions)
+    return false;
+}
+
+/**
+ * Enhanced version of the viewItems function
+ * This integrates the edit and delete functionality with your existing code
+ */
+
+function viewItems(risNo, date, type, category) {
+    // Store active RIS info for refresh operations
+    window.activeRisNo = risNo;
+    window.activeRisDate = date;
+    
+    // Get the correct items container based on which tab is currently active
+    let sectionId;
+    if (type === 'central') {
+        sectionId = 'risCentral';
+    } else {
+        sectionId = 'risPLP';
+    }
+
+    // Get the active tab in the current section
+    const section = document.getElementById(sectionId);
+    const activeTab = section.querySelector('.tab-content.active');
+
+    // Get the table container within the active tab
+    const tableContainer = activeTab.querySelector('.table-container');
+
+    // Find the items container within this table container
+    const itemsContainer = tableContainer.querySelector('#itemsContainer');
+    const itemsTable = tableContainer.querySelector('#itemsTable');
+    const itemsTableBody = itemsTable.querySelector('tbody');
+    const itemsTableCaption = tableContainer.querySelector('#itemsTableCaption');
+
+    
+
+    // Clear previous table data
+    itemsTableBody.innerHTML = '';
+
+    // Format the date label based on category
+    const dateLabel = category === 'requested' ? 'Requested Date:' : 'Delivered Date:';
+
+    // Update caption with RIS number and appropriate date label
+    itemsTableCaption.innerHTML = `Items for RIS Number ${risNo} <br> ${dateLabel} ${date}`;
+    
+
+    // Create container for buttons if it doesn't exist
+let buttonContainer = tableContainer.querySelector('#risButtonsContainer');
+if (!buttonContainer) {
+    buttonContainer = document.createElement('div');
+    buttonContainer.id = 'risButtonsContainer';
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.justifyContent = 'space-between';
+    buttonContainer.style.marginBottom = '15px';
+    tableContainer.insertBefore(buttonContainer, itemsContainer);
+}
+
+// Create back button if it doesn't exist
+let backButton = buttonContainer.querySelector('#backToRISButton');
+if (!backButton) {
+    backButton = document.createElement('button');
+    backButton.id = 'backToRISButton';
+    backButton.textContent = 'Back to RIS List';
+    backButton.className = 'back-button';
+    buttonContainer.appendChild(backButton);
+}
+
+// Back button click behavior
+backButton.onclick = function () {
+    itemsContainer.style.display = 'none';
+    const originalTable = activeTab.querySelector('table');
+    originalTable.style.display = '';
+    this.style.display = 'none';
+    
+    // Hide print button when going back to list
+    const printButton = tableContainer.querySelector('#printRISButton');
+    if (printButton) printButton.style.display = 'none';
+    
+    const deliverButton = tableContainer.querySelector('#deliverItemsButton');
+    if (deliverButton) deliverButton.style.display = 'none';
+};
+
+// Create print button if it doesn't exist
+let printButton = buttonContainer.querySelector('#printRISButton');
+if (!printButton) {
+    printButton = document.createElement('button');
+    printButton.id = 'printRISButton';
+    printButton.innerHTML = '<i class="fas fa-print" style="padding-right:3px; padding-left:3px;"></i> Print Request';
+    printButton.className = 'print-button';
+    buttonContainer.appendChild(printButton);
+}
+
+    
+    printButton.onclick = function () {
+    const clonedTable = itemsTable.cloneNode(true);
+
+    // Remove unwanted columns from clonedTable
+    const thead = clonedTable.querySelector('thead');
+    const tbody = clonedTable.querySelector('tbody');
+
+    if (thead && tbody) {
+        const headerRow = thead.querySelector('tr');
+        const dataRows = tbody.querySelectorAll('tr');
+
+        if (headerRow) {
+            const headersToRemove = ['status', 'delivered quantity', 'action', 'available stock'];
+            const headerCells = Array.from(headerRow.querySelectorAll('th')).map(th => th.textContent.toLowerCase());
+            const indicesToRemove = headersToRemove.map(header => headerCells.indexOf(header)).filter(index => index > -1).sort((a, b) => b - a);
+
+            indicesToRemove.forEach(index => {
+                if (headerRow.children[index]) {
+                    headerRow.removeChild(headerRow.children[index]);
+                }
+            });
+
+            dataRows.forEach(row => {
+                indicesToRemove.forEach(index => {
+                    if (row.children[index]) {
+                        row.removeChild(row.children[index]);
+                    }
+                });
+            });
+        }
+    }
+
+    // Set the ID for the table to apply the CSS
+    clonedTable.id = 'printTable';
+
+    // Open a new window for printing
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print RIS</title>
+            <style>
+                #printTable {
+                width: 100%;
+                border-collapse: collapse;
+                font-family: Arial, sans-serif;
+                table-layout: fixed;
+            }
+            #printTable th, #printTable td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+                word-wrap: break-word;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #printTable th {
+                background-color: #f0f0f0;
+                white-space: nowrap;
+            }
+            #printTable tbody tr:nth-child(odd) {
+                background-color: #f9f9f9;
+            }
+            #printTable tbody tr:nth-child(even) {
+                background-color: #fff;
+            }
+            /* Optional: Give more control to widths */
+            #printTable th:nth-child(1), #printTable td:nth-child(1) { width: 25%; }
+            #printTable th:nth-child(2), #printTable td:nth-child(2) { width: 25%; }
+            #printTable th:nth-child(3), #printTable td:nth-child(3) { width: 25%; }
+            #printTable th:nth-child(4), #printTable td:nth-child(4) { width: 25%; }
+            #printTable th:nth-child(5), #printTable td:nth-child(5) { width: 25%; }
+
+            </style>
+        </head>
+        <body>
+            ${clonedTable.outerHTML}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+};
+
+
+
+
+
+
+
+    // Show loading indicator
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.id = 'itemsLoadingIndicator';
+    loadingIndicator.innerHTML = 'Loading items...';
+    loadingIndicator.style.textAlign = 'center';
+    loadingIndicator.style.padding = '20px';
+    loadingIndicator.style.fontStyle = 'italic';
+    itemsTableBody.appendChild(loadingIndicator);
+
+    // Fetch items from the database
+    fetch(`get_ris_items.php?risNo=${encodeURIComponent(risNo)}&date=${encodeURIComponent(date)}&type=${encodeURIComponent(type)}&category=${encodeURIComponent(category)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Remove loading indicator
+            itemsTableBody.innerHTML = '';
+            
+            if (data.length > 0) {
+                // Check if all items are already delivered/out of stock or if ANY items are pending
+                let allItemsProcessed = true;
+                let anyItemsProcessed = false;
+                let anyNonZeroQuantity = false;
+
+                if (category === 'requested') {
+                    allItemsProcessed = data.every(item =>
+                        item.status === 'DELIVERED' || item.status === 'OUT OF STOCK'
+                    );
+
+                    anyItemsProcessed = data.some(item =>
+                        item.status === 'DELIVERED' || item.status === 'OUT OF STOCK'
+                    );
+
+                    // Check if any item has quantity > 0
+                    anyNonZeroQuantity = data.some(item =>
+                        (parseInt(item.quantity) > 0)
+                    );
+                }
+
+                // Hide the original table
+                const originalTable = activeTab.querySelector('table');
+                originalTable.style.display = 'none';
+
+                // Show back button
+                backButton.style.display = 'block';
+
+                // First, update the table header based on the first item's keys
+                const itemsTableHead = itemsTable.querySelector('thead');
+                const headerRow = document.createElement('tr');
+
+                // Get all keys from the first item
+                const keys = Object.keys(data[0]);
+                
+                // Define columns to hide
+                const columnsToHide = ['id', 'risNo', 'department', 'requester_name', 'received_by'];
+                // Function to check if a column should be hidden
+                const shouldHideColumn = (key) => {
+                    // Hide exact matches and any column containing 'date'
+                    return columnsToHide.includes(key) || key.toLowerCase().includes('date');
+                };
+
+                const infoDiv = document.createElement('div');
+                infoDiv.style.textAlign = 'left';
+                infoDiv.style.marginTop = '10px';
+
+                
+            
+                       let dept = data[0].department || 'N/A';
+let personName;
+
+if (category === 'requested') {
+    personName = data[0].requester_name || 'N/A';
+} else if (category === 'delivered') {
+    personName = data[0].received_by || 'N/A';  // change this key to your actual receiver field
+} else {
+    personName = 'N/A';
+}
+
+let personLabel = (category === 'requested') ? 'Requested by' : 
+                  (category === 'delivered') ? 'Received by' : 'Person';
+
+infoDiv.innerHTML = `
+    <strong>Department:</strong> ${dept}<br>
+    <strong>${personLabel}:</strong> ${personName}<br><br>
+`;
+
+itemsTableCaption.appendChild(infoDiv);
+
+
+                // Create header cells for visible columns only
+                keys.forEach(key => {
+                    // Skip columns that should be hidden
+                    if (shouldHideColumn(key)) {
+                        return;
+                    }
+                    
+                    const th = document.createElement('th');
+                    // Format the header text - replace underscores with spaces and capitalize words
+                    const formattedKey = key.replace(/_/g, ' ')
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                    th.textContent = formattedKey;
+                    headerRow.appendChild(th);
+                });
+
+                // Add available stock column if viewing requested PLP items
+                if (category === 'requested' && type === 'plp') {
+                    const availableStockHeader = document.createElement('th');
+                    availableStockHeader.textContent = 'Available Stock';
+                    availableStockHeader.id = 'availableStockHeader';
+                    
+                    // Insert before the Delivered Quantity header if it exists
+                    const deliveredQtyHeader = headerRow.querySelector('#deliveredQtyHeader');
+                    if (deliveredQtyHeader) {
+                        headerRow.insertBefore(availableStockHeader, deliveredQtyHeader);
+                    } else {
+                        headerRow.appendChild(availableStockHeader);
+                    }
+                }
+
+                // Add delivered quantity column if viewing requested items that aren't delivered
+                if (category === 'requested') {
+                    // Check if all items are already delivered
+                    const allItemsDelivered = data.every(item => 
+                        item.status === 'DELIVERED' || item.status === 'OUT OF STOCK'
+                    );
+                    
+                    // Only show the Delivered Quantity column if there are items that aren't delivered yet
+                    if (!allItemsDelivered) {
+                        const deliveredQtyHeader = document.createElement('th');
+                        deliveredQtyHeader.textContent = 'Delivered Quantity';
+                        deliveredQtyHeader.id = 'deliveredQtyHeader';
+                        headerRow.appendChild(deliveredQtyHeader);
+                    }
+                }
+
+                // Add Action column for requested and delivered categories
+                if (category === 'requested' || category === 'delivered') {
+                    const actionHeader = document.createElement('th');
+                    actionHeader.textContent = 'Action';
+                    headerRow.appendChild(actionHeader);
+                }
+
+                // Clear existing header and add new one
+                itemsTableHead.innerHTML = '';
+                itemsTableHead.appendChild(headerRow);
+
+                // Populate the items table
+                data.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.dataset.id = item.id; // Add data attribute for easy row identification
+                    
+                    // Add cells for each property, skipping hidden columns
+                    keys.forEach(key => {
+                        // Skip columns that should be hidden
+                        if (shouldHideColumn(key)) {
+                            return;
+                        }
+                        
+                        const cell = document.createElement('td');
+                        cell.textContent = item[key] || '';
+
+                        // Format certain types of data
+                        if (key.toLowerCase().includes('date')) {
+                            // Format date: assume YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format
+                            const dateVal = new Date(item[key]);
+                            if (!isNaN(dateVal)) {
+                                cell.textContent = dateVal.toLocaleDateString();
+                            }
+                        } else if (key === 'status') {
+                            // Add a class based on status for potential styling
+                            cell.classList.add(`status-${item[key]?.toLowerCase().replace(/\s+/g, '-')}`);
+
+                            // Apply some styling based on status
+                            if (item[key] === 'DELIVERED') {
+                                cell.style.color = 'green';
+                                cell.style.fontWeight = 'bold';
+                            } else if (item[key] === 'OUT OF STOCK') {
+                                cell.style.color = 'red';
+                                cell.style.fontWeight = 'bold';
+                            }
+                        }
+                        
+                        row.appendChild(cell);
+                    });
+
+                    // Add available stock cell for requested PLP items
+                    if (category === 'requested' && type === 'plp') {
+                        const availableStockCell = document.createElement('td');
+                        availableStockCell.id = `availableStock-${item.id}`;
+                        availableStockCell.textContent = 'Loading...';
+                        availableStockCell.dataset.itemNo = item.itemNo || '';
+                        
+                        // Insert the cell before the delivered quantity cell
+                        if (item.status !== 'DELIVERED' && item.status !== 'OUT OF STOCK') {
+                            // Find where to insert the stock cell (before delivered qty input if it exists)
+                            const deliveredQtyIndex = row.cells.length;
+                            row.insertBefore(availableStockCell, row.cells[deliveredQtyIndex] || null);
+                        } else {
+                            row.appendChild(availableStockCell);
+                        }
+
+                        // Build the stock lookup URL based on available item information
+                        let stockUrl = `get_item_stock.php?type=${encodeURIComponent(item.type)}&itemName=${encodeURIComponent(item.itemName)}&description=${encodeURIComponent(item.description)}`;
+                        let hasValidParams = false;
+
+                        // Add itemNo if available (primary identifier)
+                        if (item.itemNo && item.itemNo.trim() !== '') {
+                            stockUrl += `itemNo=${encodeURIComponent(item.itemNo.trim())}`;
+                            hasValidParams = true;
+                        } else {
+                            // If no itemNo, use combination of other available parameters
+                            let paramsAdded = false;
+                            
+                            // Always include type parameter
+                            stockUrl += `type=${encodeURIComponent(type || '')}`;
+                            
+                            // Add itemName if available
+                            if (item.itemName && item.itemName.trim() !== '') {
+                                stockUrl += `&itemName=${encodeURIComponent(item.itemName.trim())}`;
+                                paramsAdded = true;
+                            }
+                            
+                            // Add description if available
+                            if (item.description && item.description.trim() !== '') {
+                                stockUrl += `&description=${encodeURIComponent(item.description.trim())}`;
+                                paramsAdded = true;
+                            }
+                            
+                            hasValidParams = paramsAdded;
+                        }
+                        
+                        if (hasValidParams) {
+                            fetch(stockUrl)
+                                .then(response => response.json())
+                                .then(stockData => {
+                                    const stockCell = document.getElementById(`availableStock-${item.id}`);
+                                    if (stockCell) {
+                                        // Handle potential error response
+                                        if (stockData.error) {
+                                            stockCell.textContent = '0';
+                                            stockCell.style.color = 'red';
+                                            console.error('Stock lookup error:', stockData.error);
+                                        } else {
+                                            stockCell.textContent = stockData.quantity || '0';
+                                            
+                                            // Add visual indicator for stock level
+                                            const stockLevel = parseInt(stockData.quantity) || 0;
+                                            if (stockLevel === 0) {
+                                                stockCell.style.color = 'red';
+                                                stockCell.style.fontWeight = 'bold';
+                                            } else if (stockLevel < 10) { // Low stock threshold
+                                                stockCell.style.color = 'orange';
+                                                stockCell.style.fontWeight = 'bold';
+                                            } else {
+                                                stockCell.style.color = 'green';
+                                            }
+                                        }
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching stock:', error);
+                                    const stockCell = document.getElementById(`availableStock-${item.id}`);
+                                    if (stockCell) {
+                                        stockCell.textContent = '0';
+                                        stockCell.style.color = 'red';
+                                    }
+                                });
+                        } else {
+                            // Not enough information to query stock
+                            const stockCell = document.getElementById(`availableStock-${item.id}`);
+                            if (stockCell) {
+                                stockCell.textContent = 'N/A';
+                                stockCell.style.color = 'gray';
+                                console.warn('Not enough information to query stock for item:', item);
+                            }
+                        }
+                    }
+
+                    // Add delivered quantity input field for requested items that aren't delivered
+                    if (category === 'requested' && item.status !== 'DELIVERED' && item.status !== 'OUT OF STOCK') {
+                        // Check if we should display the delivered quantity column
+                        const deliveredQtyHeader = document.getElementById('deliveredQtyHeader');
+                        if (deliveredQtyHeader) {
+                           deliveredQtyHeader.style.width = '130px';  // Set header width here
+    
+                            const deliveredQtyCell = document.createElement('td');
+                            deliveredQtyCell.style.width = '130px'; 
+                            const input = document.createElement('input');
+                            input.type = 'number';
+                            input.min = '0';
+                            
+                            // Always set max to the requested quantity
+                            input.max = item.quantity;
+                            
+                            // Default to 0 
+                            input.value = '0';
+                            
+                            input.className = 'delivered-qty-input';
+                            input.dataset.itemIndex = index;
+                            input.dataset.originalQuantity = item.quantity; // Store the original requested quantity
+                            input.dataset.itemId = item.id; // Store the item ID
+                            input.style.width = '100%';
+                            input.style.boxSizing = 'border-box';
+                            input.style.padding = '0';
+                            input.style.margin = '0';
+                            input.style.border = 'none'; 
+                            input.style.fontSize = 'inherit';
+                            input.style.textAlign = 'center';
+                            deliveredQtyCell.appendChild(input);
+                            
+                            // Add event listener for input change
+                            input.addEventListener('change', function() {
+                                const value = parseInt(this.value) || 0;
+
+                                // If value is 0, show a confirmation dialog
+                                if (value === 0) {
+                                    if (confirm('Setting quantity to 0 will mark this item as OUT OF STOCK. Continue?')) {
+                                        // Visual feedback - highlight the row
+                                        row.style.backgroundColor = '#ffebee'; // Light red background
+
+                                        // Find the status cell if it exists and update it visually
+                                        const statusCellIndex = keys.filter(k => !columnsToHide.includes(k)).indexOf('status');
+                                        if (statusCellIndex !== -1) {
+                                            const statusCell = row.cells[statusCellIndex];
+                                            statusCell.textContent = 'OUT OF STOCK (pending)';
+                                            statusCell.style.color = 'red';
+                                            statusCell.style.fontWeight = 'bold';
+                                        }
+                                    } else {
+                                        // User canceled, reset to 0
+                                        this.value = '0';
+                                    }
+                                } else {
+                                    // Reset row styling if quantity is not 0
+                                    row.style.backgroundColor = '';
+
+                                    // Reset status cell display if it exists
+                                    const visibleKeys = keys.filter(k => !shouldHideColumn(k));
+                                    const statusCellIndex = visibleKeys.indexOf('status');
+                                    if (statusCellIndex !== -1) {
+                                        const statusCell = row.cells[statusCellIndex];
+                                        statusCell.textContent = item.status || '';
+                                        statusCell.style.color = '';
+                                        statusCell.style.fontWeight = '';
+                                    }
+                                }
+                            });
+                            
+                            row.appendChild(deliveredQtyCell);
+                        }
+                    } else if (category === 'requested' && (item.status === 'DELIVERED' || item.status === 'OUT OF STOCK')) {
+                        // For delivered or out of stock items, add a hidden input with the data
+                        // but don't create a visible cell (to maintain proper table structure)
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.className = 'delivered-qty-input';
+                        hiddenInput.value = item.delivered_quantity || '0';
+                        hiddenInput.dataset.itemIndex = index;
+                        hiddenInput.dataset.originalQuantity = item.quantity;
+                        hiddenInput.dataset.itemId = item.id;
+                        
+                        // Append to the row, not in a cell (since we're not showing the column)
+                        row.appendChild(hiddenInput);
+                    }
+
+                    // Add Action cell with edit and delete functionality
+                    if (category === 'requested' || category === 'delivered') {
+                        const actionCell = document.createElement('td');
+                        setupItemActions(actionCell, item, type, category);
+                        row.appendChild(actionCell);
+                    }
+                    
+                    itemsTableBody.appendChild(row);
+                });
+
+                // Add deliver button for requested items
+                if (category === 'requested') {
+                    // Create deliver button if it doesn't exist
+                    let deliverButton = tableContainer.querySelector('#deliverItemsButton');
+                    if (!deliverButton) {
+                        deliverButton = document.createElement('button');
+                        deliverButton.id = 'deliverItemsButton';
+                        deliverButton.textContent = 'Mark as Delivered';
+                        deliverButton.className = 'deliver-button';
+                        deliverButton.style.marginTop = '20px';
+                        deliverButton.style.backgroundColor = '#4CAF50';
+                        deliverButton.style.color = 'white';
+                        deliverButton.style.padding = '10px 15px';
+                        deliverButton.style.border = 'none';
+                        deliverButton.style.borderRadius = '4px';
+                        deliverButton.style.cursor = 'pointer';
+                        deliverButton.style.fontSize = '16px';
+
+                        // Add the deliver button after the items table
+                        itemsContainer.appendChild(deliverButton);
+                    } else {
+                        deliverButton.style.display = 'block';
+                    }
+
+                    // Check if we need to query the server for the RIS status
+                    fetch(`check_ris_status.php?risNo=${encodeURIComponent(risNo)}&type=${encodeURIComponent(type)}`)
+                        .then(response => response.json())
+                        .then(statusData => {
+                            if (statusData.fullyProcessed) {
+                                deliverButton.disabled = true;
+                                deliverButton.style.backgroundColor = '#e9ecef';
+                                deliverButton.style.borderColor = '#ced4da';
+                                deliverButton.style.color = '#6c757d';
+                                deliverButton.style.cursor = 'not-allowed';
+                                deliverButton.textContent = 'All Items Processed';
+
+                            } else if (allItemsProcessed) {
+                                deliverButton.disabled = true;
+                                deliverButton.style.backgroundColor = '#e9ecef';
+                                deliverButton.style.borderColor = '#ced4da';
+                                deliverButton.style.color = '#6c757d';
+                                deliverButton.style.cursor = 'not-allowed';
+                                deliverButton.textContent = 'All Items Processed';
+
+                            } else if (!anyNonZeroQuantity) {
+                                deliverButton.disabled = true;
+                                deliverButton.style.backgroundColor = '#e9ecef';
+                                deliverButton.style.borderColor = '#ced4da';
+                                deliverButton.style.color = '#6c757d';
+                                deliverButton.style.cursor = 'not-allowed';
+                                deliverButton.textContent = 'No Items to Deliver';
+
+                            } else if (anyItemsProcessed) {
+                                deliverButton.disabled = false;
+                                deliverButton.style.backgroundColor = '#FFA500'; // Orange
+                                deliverButton.style.color = 'white';
+                                deliverButton.style.cursor = 'pointer';
+                                deliverButton.textContent = 'Process Remaining Items';
+                            } else {
+                                deliverButton.disabled = false;
+                                deliverButton.style.backgroundColor = '#4CAF50';
+                                deliverButton.style.color = 'white';
+                                deliverButton.style.cursor = 'pointer';
+                                deliverButton.textContent = 'Mark as Delivered';
+                            }
+                        })
+                        .catch(() => {
+                            if (allItemsProcessed) {
+                                deliverButton.disabled = true;
+                                deliverButton.style.backgroundColor = '#e9ecef';
+                                deliverButton.style.borderColor = '#ced4da';
+                                deliverButton.style.color = '#6c757d';
+                                deliverButton.style.cursor = 'not-allowed';
+                                deliverButton.textContent = 'All Items Processed';
+                            } else if (!anyNonZeroQuantity) {
+                                deliverButton.disabled = true;
+                                deliverButton.style.backgroundColor = '#e9ecef';
+                                deliverButton.style.borderColor = '#ced4da';
+                                deliverButton.style.color = '#6c757d';
+                                deliverButton.style.cursor = 'not-allowed';
+                                deliverButton.textContent = 'No Items to Deliver';
+                            } else {
+                                deliverButton.disabled = false;
+                                deliverButton.style.backgroundColor = '#4CAF50';
+                                deliverButton.style.color = 'white';
+                                deliverButton.style.cursor = 'pointer';
+                                deliverButton.textContent = 'Mark as Delivered';
+                            }
+                        });
+
+                    deliverButton.onclick = function() {
+                      if (this.disabled) return;
+
+                      // Get the department from data already loaded
+                      const dept = data[0].department || 'Unknown';
+
+                      // Create the popup dialog
+                      const popup = document.createElement('div');
+                      popup.className = 'receiver-popup';
+                      popup.style.position = 'fixed';
+                      popup.style.left = '50%';
+                      popup.style.top = '50%';
+                      popup.style.transform = 'translate(-50%, -50%)';
+                      popup.style.backgroundColor = 'white';
+                      popup.style.padding = '20px';
+                      popup.style.borderRadius = '5px';
+                      popup.style.boxShadow = '0 0 10px rgba(0,0,0,0.3)';
+                      popup.style.zIndex = '1000';
+                      popup.style.minWidth = '300px';
+
+                      // Create the header
+                      const header = document.createElement('h3');
+                      header.textContent = 'Select Receiver';
+                      header.style.marginTop = '0';
+                      header.style.borderBottom = '1px solid #ddd';
+                      header.style.paddingBottom = '10px';
+                      popup.appendChild(header);
+
+                      // Create loading indicator
+                      const loadingText = document.createElement('p');
+                      loadingText.textContent = 'Loading users...';
+                      loadingText.id = 'loading-users';
+                      loadingText.style.fontStyle = 'italic';
+                      popup.appendChild(loadingText);
+
+                      // Create select dropdown (initially hidden)
+                      const selectContainer = document.createElement('div');
+                      selectContainer.style.marginBottom = '15px';
+                      selectContainer.style.display = 'none';
+
+                      const selectLabel = document.createElement('label');
+                      selectLabel.textContent = 'Receiver: ';
+                      selectLabel.style.display = 'block';
+                      selectLabel.style.marginBottom = '5px';
+                      selectLabel.style.fontWeight = 'bold';
+                      selectContainer.appendChild(selectLabel);
+
+                      const select = document.createElement('select');
+                      select.id = 'receiver-select';
+                      select.style.width = '100%';
+                      select.style.padding = '8px';
+                      select.style.borderRadius = '4px';
+                      select.style.border = '1px solid #ddd';
+                      selectContainer.appendChild(select);
+
+                      popup.appendChild(selectContainer);
+
+                      // Create buttons
+                      const buttonContainer = document.createElement('div');
+                      buttonContainer.style.textAlign = 'right';
+                      buttonContainer.style.marginTop = '20px';
+
+                      const cancelButton = document.createElement('button');
+                      cancelButton.textContent = 'Cancel';
+                      cancelButton.style.padding = '8px 15px';
+                      cancelButton.style.marginRight = '10px';
+                      cancelButton.style.border = '1px solid #ddd';
+                      cancelButton.style.borderRadius = '4px';
+                      cancelButton.style.backgroundColor = '#f1f1f1';
+                      cancelButton.style.cursor = 'pointer';
+                      buttonContainer.appendChild(cancelButton);
+
+                      const confirmButton = document.createElement('button');
+                      confirmButton.textContent = 'Confirm';
+                      confirmButton.style.padding = '8px 15px';
+                      confirmButton.style.border = 'none';
+                      confirmButton.style.borderRadius = '4px';
+                      confirmButton.style.backgroundColor = '#4CAF50';
+                      confirmButton.style.color = 'white';
+                      confirmButton.style.cursor = 'pointer';
+                      confirmButton.disabled = true;
+                      confirmButton.style.opacity = '0.6';
+                      buttonContainer.appendChild(confirmButton);
+
+                      popup.appendChild(buttonContainer);
+
+                      // Create overlay
+                      const overlay = document.createElement('div');
+                      overlay.style.position = 'fixed';
+                      overlay.style.top = '0';
+                      overlay.style.left = '0';
+                      overlay.style.width = '100%';
+                      overlay.style.height = '100%';
+                      overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                      overlay.style.zIndex = '999';
+
+                      // Add to document
+                      document.body.appendChild(overlay);
+                      document.body.appendChild(popup);
+
+                      // Close popup when cancel is clicked
+                      cancelButton.onclick = function() {
+                          document.body.removeChild(popup);
+                          document.body.removeChild(overlay);
+                      };
+
+                      // Fetch users from the same department
+                      fetch(`get_department_users.php?department=${encodeURIComponent(dept)}`)
+    .then(response => {
+        // First check for the response status
+        if (!response.ok) {
+            // Get the response text for more detailed error information
+            return response.text().then(text => {
+                throw new Error(`HTTP error ${response.status}: ${text}`);
+            });
+        }
+        // If response is OK, parse as JSON
+        return response.json();
+    })
+    .then(users => {
+        // Hide loading, show select
+        document.getElementById('loading-users').style.display = 'none';
+        selectContainer.style.display = 'block';
+        
+        console.log("Users loaded:", users); // Debug: Log the users data
+        
+        // Populate dropdown
+        if (!Array.isArray(users) || users.length === 0) {
+            console.log("No users found or invalid response format");
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'No users found in this department';
+            select.appendChild(option);
+        } else {
+            // Add default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '-- Select Receiver --';
+            select.appendChild(defaultOption);
+            
+            // Add users
+            users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.username;
+                option.textContent = `${user.fname} ${user.lname}`;
+                option.dataset.fullName = `${user.fname} ${user.lname}`;
+                select.appendChild(option);
+            });
+
+            // Enable/disable confirm button based on selection
+            select.onchange = function() {
+                confirmButton.disabled = !this.value;
+                confirmButton.style.opacity = this.value ? '1' : '0.6';
+            };
+        }
+    })
+    .catch(error => {
+        console.error("Failed to fetch users:", error);
+        document.getElementById('loading-users').textContent = 'Error loading users: ' + error.message;
+        document.getElementById('loading-users').style.color = 'red';
+    });
+
+                      // Process delivery when confirm is clicked
+                      confirmButton.onclick = function() {
+                          if (this.disabled) return;
+                          
+                          const selectedValue = document.getElementById('receiver-select').value;
+                          if (!selectedValue) {
+                              alert('Please select a receiver');
+                              return;
+                          }
+                          
+                          // Get the selected receiver's full name
+                          const selectedOption = document.getElementById('receiver-select').options[document.getElementById('receiver-select').selectedIndex];
+                          const receiverName = selectedOption.dataset.fullName;
+
+                          // Close the popup
+                          document.body.removeChild(popup);
+                          document.body.removeChild(overlay);
+
+                          // Disable the deliver button during processing
+                          deliverButton.disabled = true;
+                          deliverButton.style.backgroundColor = '#e9ecef';
+                          deliverButton.style.borderColor = '#ced4da';
+                          deliverButton.style.color = '#6c757d';
+                          deliverButton.style.cursor = 'not-allowed';
+                          deliverButton.textContent = 'Processing...';
+
+                          const deliveryData = {
+                              risNo: risNo,
+                              date: date,
+                              type: type,
+                              receiverUsername: selectedValue,
+                              receiverName: receiverName,
+                              items: []
+                          };
+
+                          const qtyInputs = tableContainer.querySelectorAll('.delivered-qty-input');
+                          let hasItemsToDeliver = false;
+
+                          qtyInputs.forEach(input => {
+                              if (input.disabled) return;
+
+                              const index = parseInt(input.dataset.itemIndex);
+                              const itemId = input.dataset.itemId;
+                              const originalQuantity = input.dataset.originalQuantity;
+                              const deliveredQty = parseInt(input.value) || 0;
+
+                              deliveryData.items.push({
+                                  ...data[index],
+                                  id: itemId,
+                                  originalQuantity: originalQuantity,
+                                  deliveredQuantity: deliveredQty
+                              });
+
+                              if (deliveredQty > 0) {
+                                  hasItemsToDeliver = true;
+                              }
+                          });
+
+                          if (deliveryData.items.length === 0) {
+                              alert('No items to process. All items are already delivered or out of stock.');
+                              deliverButton.disabled = false;
+                              deliverButton.style.backgroundColor = '#4CAF50';
+                              deliverButton.style.color = 'white';
+                              deliverButton.style.cursor = 'pointer';
+                              deliverButton.textContent = 'Mark as Delivered';
+                              return;
+                          }
+
+                          if (!hasItemsToDeliver) {
+                              if (!confirm('All items have quantity 0. They will be marked as OUT OF STOCK. Continue?')) {
+                                  deliverButton.disabled = false;
+                                  deliverButton.style.backgroundColor = '#4CAF50';
+                                  deliverButton.style.color = 'white';
+                                  deliverButton.style.cursor = 'pointer';
+                                  deliverButton.textContent = 'Mark as Delivered';
+                                  return;
+                              }
+                          }
+
+                          if (confirm('Are you sure you want to process these items? Items with quantity 0 will be marked as OUT OF STOCK.')) {
+    fetch('process_delivery.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(deliveryData)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert('Items successfully processed!');
+            deliverButton.disabled = true;
+            deliverButton.style.backgroundColor = '#e9ecef';
+            deliverButton.style.borderColor = '#ced4da';
+            deliverButton.style.color = '#6c757d';
+            deliverButton.style.cursor = 'not-allowed';
+            deliverButton.textContent = 'Items Processed';
+
+            window.location.reload();
+        } else {
+            alert('Error: ' + (result.message || 'Failed to process delivery.'));
+            deliverButton.disabled = false;
+            deliverButton.style.backgroundColor = '#4CAF50';
+            deliverButton.style.color = 'white';
+            deliverButton.style.cursor = 'pointer';
+            deliverButton.textContent = 'Mark as Delivered';
+        }
+    })
+    .catch(error => {
+        alert('Network or server error: ' + error.message);
+        deliverButton.disabled = false;
+        deliverButton.style.backgroundColor = '#4CAF50';
+        deliverButton.style.color = 'white';
+        deliverButton.style.cursor = 'pointer';
+        deliverButton.textContent = 'Mark as Delivered';
+    });
+
+                          } else {
+                              deliverButton.disabled = false;
+                              deliverButton.style.backgroundColor = '#4CAF50';
+                              deliverButton.style.color = 'white';
+                              deliverButton.style.cursor = 'pointer';
+                              deliverButton.textContent = 'Mark as Delivered';
+                          }
+                      };
+                  };
+                }
+
+                // Show the items container
+                itemsContainer.style.display = 'block';
+            } else {
+                alert('No items found for this RIS #.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching items:', error);
+            itemsTableBody.innerHTML = `<tr><td colspan="100%" style="text-align:center; color:red;">Failed to fetch items: ${error.message}</td></tr>`;
+            alert('Failed to fetch items.');
+        });
+}
+</script>
+
+</body>
+</html>

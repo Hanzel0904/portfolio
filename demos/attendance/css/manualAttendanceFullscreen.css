@@ -1,0 +1,286 @@
+/**
+ * Manual Attendance — dedicated fullscreen page only.
+ * Visual shell matches fullscreen.php / fullscreen.css; markup stays from manualAttendanceDesign.php.
+ */
+
+/* Header — larger type for kiosk / distance viewing */
+body.manual-attendance-fullscreen-page header .header-title {
+  font-family: 'Arimo', sans-serif;
+  font-size: 17px !important;
+  line-height: 1 !important;
+  letter-spacing: 0.5px;
+  font-weight: 700 !important;
+}
+
+body.manual-attendance-fullscreen-page header .badge-flag {
+  font-family: 'Arimo', sans-serif;
+  font-size: 12px !important;
+  padding: 4px 12px !important;
+  font-weight: 600;
+}
+
+body.manual-attendance-fullscreen-page .header-right {
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+
+body.manual-attendance-fullscreen-page .header-right #elapsedTimer {
+  font-family: 'Arimo', sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  white-space: nowrap;
+}
+
+/* main: one child (.manual-attendance-design-root) fills the grid area */
+body.manual-attendance-fullscreen-page main {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 0;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Arimo', sans-serif;
+  color: var(--text);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .mad-toolbar {
+  display: none !important;
+}
+
+/* Two columns inside the panel: same proportions as fullscreen main */
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .mad-content {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 20px;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  background: transparent !important;
+  justify-content: initial !important;
+  align-items: stretch !important;
+}
+
+/* Let the two .card elements participate in .mad-content grid */
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .main-grid {
+  display: contents !important;
+}
+
+/* Left column ≈ .panel-left */
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .main-grid > .card:first-child {
+  min-height: 0 !important;
+  height: 100%;
+  margin: 0;
+  box-shadow: none;
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Right column ≈ .info-card */
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .main-grid > .card:last-child {
+  min-height: 0 !important;
+  height: 100%;
+  margin: 0;
+  box-shadow: none;
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 2px solid var(--green);
+  padding: 20px;
+  overflow: hidden;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 16px;
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .entry-body {
+  flex: 1;
+  min-height: 0;
+  gap: 14px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .kbd-icon {
+  width: clamp(88px, 12vmin, 140px);
+  height: clamp(88px, 12vmin, 140px);
+  background: var(--green-light);
+  border-radius: 12px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .icon-kbd {
+  width: clamp(40px, 5.5vmin, 58px);
+  height: clamp(40px, 5.5vmin, 58px);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .icon-kbd,
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .icon-kbd line,
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .icon-kbd rect {
+  stroke: var(--green);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .entry-label {
+  font-size: clamp(18px, 2.1vmin, 26px);
+  color: var(--text);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .emp-input {
+  font-size: clamp(18px, 2vmin, 26px);
+  min-height: clamp(56px, 7.5vh, 88px);
+  padding: 14px 20px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .emp-input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px rgba(24, 119, 65, 0.15);
+  background: var(--white);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .emp-input.input-error {
+  border-color: #e05252;
+  box-shadow: 0 0 0 4px rgba(224, 82, 82, 0.13);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .entry-hint,
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .entry-msg {
+  font-size: clamp(15px, 1.75vmin, 19px);
+  color: var(--text-muted);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .entry-hint kbd {
+  font-size: 0.95em;
+  padding: 3px 10px;
+  border-color: rgba(24, 119, 65, 0.35);
+  color: var(--green);
+  background: var(--green-light);
+}
+
+/* Employee panel — align with fullscreen info-card rhythm */
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .avatar-circle {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 0;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .avatar-circle.empty {
+  background: var(--green-light);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .avatar-circle.filled {
+  background: var(--green-light);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .icon-avatar {
+  width: 40px;
+  height: 40px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .waiting-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .waiting-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  max-width: 320px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .emp-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .emp-id-display {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .info-row {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 8px 10px;
+  align-items: center;
+  gap: 10px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .icon-row {
+  width: 22px;
+  height: 22px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .info-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .info-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .info-rows {
+  gap: 6px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root #filledState.info-body {
+  justify-content: flex-start;
+  padding-top: 4px;
+  overflow: hidden;
+  min-height: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .confirmation-banner {
+  background: var(--green);
+  border-radius: 8px;
+  font-size: 13px;
+  padding: 9px 12px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .countdown-badge {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .reset-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+body.manual-attendance-fullscreen-page .manual-attendance-design-root .reset-hint kbd.kbd-dark {
+  font-size: 0.95em;
+  padding: 3px 10px;
+}

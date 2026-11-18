@@ -1,0 +1,1733 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PLP Smart Attendance Monitoring - Capture</title>
+  <link rel="stylesheet" href="css/capture.css" />
+  <link rel="stylesheet" href="css/manualAttendanceDesign.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <!-- Offline icon sprite -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;">
+    <defs>
+      <path id="ico-dashboard" d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
+      <path id="ico-register" d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-2.2 0-6 1.1-6 3.3V18h12v-1.7c0-2.2-3.8-3.3-6-3.3zm5-9h1V4h2v1h1v2h-1v1h-2V7h-1V5z"/>
+      <path id="ico-records" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm0 2l4 4h-4V4zM6 20V4h2v4h8v2H6v10zm0-6h8v2H6v-2zm0 4h5v2H6v-2z"/>
+      <path id="ico-bars" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+      <path id="ico-user" d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/>
+      <path id="ico-users" d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3zm-8 0c1.7 0 3-1.3 3-3S9.7 5 8 5 5 6.3 5 8s1.3 3 3 3zm0 2c-2.2 0-6 1.1-6 3.3V18h12v-1.7c0-2.2-3.8-3.3-6-3.3zm8 0c-.3 0-.6 0-.9.1.6.9.9 1.9.9 2.9V18h6v-1.7c0-2.2-3.8-3.3-6-3.3z"/>
+      <path id="ico-check" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.4-1.4L10 14.2l7.6-7.6L19 8l-9 9z"/>
+      <path id="ico-video" d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+      <path id="ico-video-off" d="M21 6.5l-4 4V7c0-.55-.45-1-1-1H9.82L21 17.18V6.5zM3.27 2L2 3.27 4.73 6H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.21 0 .39-.08.54-.18L19.73 21 21 19.73 3.27 2z"/>
+      <path id="ico-flag" d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z"/>
+      <path id="ico-camera" d="M12 15.2c1.4 0 2.5-1.1 2.5-2.5s-1.1-2.5-2.5-2.5-2.5 1.1-2.5 2.5 1.1 2.5 2.5 2.5zM18 4H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H6V6h2v2.5c0 .6.4 1 1 1s1-.4 1-1V6h6v12z"/>
+      <path id="ico-fullscreen" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+    </defs>
+  </svg>
+</head>
+<body>
+
+<header class="plp-header" role="banner">
+  <a href="dashboard.html" class="plp-logo-wrap">
+    <div class="plp-logo-icon"><img src="assets/logo.png" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
+    <div class="plp-logo-text"><span class="plp-logo-title">PLP Smart Attendance</span><span class="plp-logo-sub">Demo</span></div>
+  </a>
+  <nav class="plp-nav">
+    <a class="plp-nav-link" href="dashboard.html"><span>Dashboard</span></a>
+    <a class="plp-nav-link" href="employee_registration.html"><span>Register</span></a>
+    <a class="plp-nav-link" href="records.html"><span>Records</span></a>
+    <a class="plp-nav-link" href="employee_management.html"><span>Employees</span></a>
+    <a class="plp-nav-link" href="capture.html"><span>Capture</span></a>
+    <a class="plp-nav-link" href="analytics.html"><span>Analytics</span></a>
+    <a class="plp-nav-link" href="audit_monitoring.html"><span>Audit</span></a>
+    <a class="plp-nav-link" href="system_settings.html"><span>Settings</span></a>
+    <a class="plp-nav-link" href="scanner.html"><span>Scanner</span></a><a class="plp-nav-link" href="manualAttendanceDesign.html"><span>Manual</span></a><a class="plp-nav-link" href="fullscreen.html"><span>Ceremony</span></a><a class="plp-nav-link" href="mobileQr_fullscreen.html"><span>Mobile QR</span></a>
+    <a class="plp-nav-link" href="index.html"><span>Logout</span></a>
+  </nav>
+</header>
+
+  
+
+  <main class="capture-content">
+    <!-- Left column -->
+    <aside class="capture-sidebar">
+      <div class="capture-card">
+        <div class="capture-card-header-row">
+          <div class="capture-card-icon-wrap capture-card-icon-admin">
+            <svg class="capture-card-icon-svg" viewBox="0 0 24 24"><use href="#ico-users"/></svg>
+          </div>
+          <div class="capture-card-header-text">
+            <span class="capture-card-label">System Admin</span>
+            <h3 class="capture-card-title">Admin</h3>
+          </div>
+        </div>
+        <div class="main-controls">
+          <span class="main-controls-label">MAIN CONTROLS</span>
+          <div class="main-controls-btns">
+            <div class="mode-segment" role="radiogroup" aria-label="Attendance mode">
+              <button
+                type="button"
+                class="mode-seg-btn"
+                id="btnModeCamera"
+                role="radio"
+                aria-checked="true"
+              >
+                Camera
+              </button>
+              <button
+                type="button"
+                class="mode-seg-btn"
+                id="btnManual"
+                role="radio"
+                aria-checked="false"
+              >
+                Manual
+              </button>
+              <button
+                type="button"
+                class="mode-seg-btn"
+                id="btnMobileQr"
+                role="radio"
+                aria-checked="false"
+              >
+                Mobile QR
+              </button>
+            </div>
+
+            <button type="button" class="btn-start" id="btnStart">
+              <svg viewBox="0 0 24 24"><use href="#ico-video"/></svg>
+              START
+            </button>
+            <button type="button" class="btn-stop" id="btnStop" disabled>
+              <svg viewBox="0 0 24 24"><use href="#ico-video-off"/></svg>
+              STOP
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="capture-card">
+        <div class="capture-card-header-row">
+          <div class="capture-card-icon-wrap capture-card-icon-flag">
+            <svg class="capture-card-icon-svg" viewBox="0 0 24 24"><use href="#ico-flag"/></svg>
+          </div>
+          <h3 class="capture-card-title capture-card-title-flag">Event</h3>
+        </div>
+        <div class="ceremony-details-box">
+          <div class="ceremony-details-left">
+            <span class="ceremony-day" id="ceremonyDay">Monday</span>
+            <span class="ceremony-type" id="ceremonyType">Flag Raising Ceremony</span>
+          </div>
+          <span class="ceremony-time" id="ceremonyTime">08:00 AM</span>
+        </div>
+        <div class="capture-notice" id="captureNotice" role="status" aria-live="polite" style="display:none"></div>
+      </div>
+    </aside>
+
+    <!-- Center column -->
+    <section class="capture-main">
+      <div class="capture-card capture-card-large" id="captureMainCard">
+        <div class="capture-main-header" id="captureMainHeader">
+          <div>
+            <h2 class="capture-main-title" id="captureHeaderTitle">Attendance Capture</h2>
+            <p class="capture-main-subtitle" id="captureHeaderSubtitle">Live Camera Feed &amp; Real-Time Monitoring</p>
+          </div>
+          <div class="capture-header-right">
+            <button type="button" class="btn-fullscreen" id="btnContextFullscreen" title="Full screen" aria-label="Open full screen">
+              <svg viewBox="0 0 24 24"><use href="#ico-fullscreen"/></svg>
+            </button>
+            <div class="capture-timer">
+              <svg viewBox="0 0 24 24"><use href="#ico-camera"/></svg>
+              <span id="elapsedTimer">00:00:00</span>
+            </div>
+          </div>
+        </div>
+        <div id="cameraModeView">
+          <div class="capture-fs-left">
+            <div class="camera-area" id="cameraArea">
+              <div class="camera-offline" id="cameraPlaceholder">
+                <svg class="camera-offline-icon" viewBox="0 0 24 24"><use href="#ico-video-off"/></svg>
+                <span class="camera-offline-text">Camera Offline</span>
+                <span class="camera-offline-hint">Click &lsquo;Start System&rsquo; to activate camera feed</span>
+              </div>
+              <video id="cameraFeed" autoplay playsinline style="display:none;"></video>
+              <canvas id="overlayCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+              <canvas id="captureCanvas" style="position:absolute;left:-9999px;visibility:hidden;" aria-hidden="true"></canvas>
+            </div>
+            <div class="capture-footer">
+              <div class="capture-footer-left">
+                <svg class="icon-check" viewBox="0 0 24 24"><use href="#ico-check"/></svg>
+                <span class="status-enabled">Auto-detect: Enabled</span>
+              </div>
+              <div class="capture-footer-right">
+                <svg class="icon-users" viewBox="0 0 24 24"><use href="#ico-users"/></svg>
+                
+              </div>
+            </div>
+          </div>
+
+          <!-- Embedded employee info panel shown only when captureMainCard is fullscreen (camera mode). -->
+          <div id="cameraFsInfoPanel" class="camera-fs-info-panel" hidden>
+            <div class="camera-fs-state camera-fs-state-waiting" id="cameraFsStateWaiting">
+              <div class="camera-fs-avatar-circle">
+                <img src="assets/icons/icon-person.png" alt="person">
+              </div>
+              <div class="camera-fs-waiting-text">
+                Waiting for employees recognition...<br>
+                Position in front of the camera
+              </div>
+            </div>
+
+            <div class="camera-fs-state camera-fs-state-detected" id="cameraFsStateDetected" hidden>
+              <div class="camera-fs-attendance-banner">
+                <div class="camera-fs-attendance-label">
+                  <img src="assets/icons/icon-check-circle.png" alt="check">
+                  Attendance Recorded!
+                </div>
+                <span class="camera-fs-badge camera-fs-badge--timein" id="cameraFsAttendanceTypeBadge">Time in</span>
+              </div>
+
+              <div class="camera-fs-emp-avatar">
+                <div class="camera-fs-emp-avatar-circle">
+                  <img src="assets/icons/icon-person.png" alt="person">
+                </div>
+                <div class="camera-fs-emp-name" id="cameraFsEmpName">Maria Santos</div>
+                <div class="camera-fs-emp-id" id="cameraFsEmpId">EMP2024001</div>
+              </div>
+
+              <div class="camera-fs-info-rows">
+                <div class="camera-fs-info-row">
+                  <img class="camera-fs-row-icon" src="assets/icons/icon-department.png" alt="department">
+                  <div class="camera-fs-info-row-text">
+                    <label>Department</label>
+                    <span id="cameraFsEmpDepartment">College of Engineering</span>
+                  </div>
+                </div>
+
+                <div class="camera-fs-info-row">
+                  <img class="camera-fs-row-icon" src="assets/icons/icon-position.png" alt="position">
+                  <div class="camera-fs-info-row-text">
+                    <label>Position</label>
+                    <span id="cameraFsEmpPosition">Professor</span>
+                  </div>
+                </div>
+
+                <div class="camera-fs-info-row camera-fs-info-row--highlighted">
+                  <img class="camera-fs-row-icon" src="assets/icons/icon-clock.png" alt="time">
+                  <div class="camera-fs-info-row-text">
+                    <label>Time Recorded</label>
+                    <span id="cameraFsTimeRecorded">--:-- --</span>
+                  </div>
+                </div>
+
+                <div class="camera-fs-info-row">
+                  <img class="camera-fs-row-icon" src="assets/icons/icon-calendar.png" alt="date">
+                  <div class="camera-fs-info-row-text">
+                    <label>Date</label>
+                    <span id="cameraFsDateRecorded">--</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="manualModeView" class="manual-mode-panel" hidden></div>
+      </div>
+    </section>
+
+    <!-- Right column -->
+    <aside class="capture-sidebar capture-sidebar-right">
+      <div class="capture-card">
+        <div class="capture-card-header-detections">
+          <h3>Recent Detections</h3>
+          <span class="detections-badge"></span>
+        </div>
+        <ul class="detections-list" id="detectionsList">
+          <!-- Populated from ajax/recent_detections.php -->
+        </ul>
+      </div>
+
+      <div class="capture-card">
+        <h3>Today&rsquo;s Statistics</h3>
+        <div class="stats-list">
+          <div class="stats-row">
+            <span>Total Detections</span>
+            <strong id="totalDetections">8</strong>
+          </div>
+          <div class="stats-row stats-row-green">
+            <span>Registered</span>
+            <strong id="registeredCount">200</strong>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Bottom step cards -->
+  <section class="steps-section">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h4>Position Yourself</h4>
+      <p>Stand in front of the camera</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h4>Wait for Recognition</h4>
+      <p>System will automatically detect and verify your identity</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h4>Attendance Recorded</h4>
+      <p>Your attendance will be logged automatically</p>
+    </div>
+  </section>
+
+  <script src="js/manualAttendanceDesign.js"></script>
+  <script>
+    const btnStart = document.getElementById('btnStart');
+    const btnStop = document.getElementById('btnStop');
+    const btnCameraMode = document.getElementById('btnModeCamera');
+    const btnManual = document.getElementById('btnManual');
+    const btnMobileQr = document.getElementById('btnMobileQr');
+    const captureMainCard = document.getElementById('captureMainCard');
+    const captureHeaderTitle = document.getElementById('captureHeaderTitle');
+    const captureHeaderSubtitle = document.getElementById('captureHeaderSubtitle');
+    const btnContextFullscreen = document.getElementById('btnContextFullscreen');
+    const cameraModeView = document.getElementById('cameraModeView');
+    const cameraFsInfoPanel = document.getElementById('cameraFsInfoPanel');
+    const cameraFsStateWaiting = document.getElementById('cameraFsStateWaiting');
+    const cameraFsStateDetected = document.getElementById('cameraFsStateDetected');
+    const cameraFsAttendanceTypeBadge = document.getElementById('cameraFsAttendanceTypeBadge');
+    const cameraFsEmpName = document.getElementById('cameraFsEmpName');
+    const cameraFsEmpId = document.getElementById('cameraFsEmpId');
+    const cameraFsEmpDepartment = document.getElementById('cameraFsEmpDepartment');
+    const cameraFsEmpPosition = document.getElementById('cameraFsEmpPosition');
+    const cameraFsTimeRecorded = document.getElementById('cameraFsTimeRecorded');
+    const cameraFsDateRecorded = document.getElementById('cameraFsDateRecorded');
+    const manualModeView = document.getElementById('manualModeView');
+    const cameraFeed = document.getElementById('cameraFeed');
+    const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+    const captureCanvas = document.getElementById('captureCanvas');
+    const overlayCanvas = document.getElementById('overlayCanvas');
+    let stream = null;
+    let timerInterval = null;
+    let startTime = null;
+    let recognitionInterval = null;
+    let qrInterval = null;
+    let poseInterval = null;
+    let isRecognizing = false;
+    let isQrScanning = false;
+    let isPoseRunning = false;
+    let isLocalFaceRunning = false;
+    let localFaceInterval = null;
+    let localFaceDetector = null;
+    let localFaceMissStreak = 0;
+    let lastQrValue = null;
+    let lastQrTs = 0;
+    let lastFaceBox = null; // { box, frame, ts }
+    let lastQr = null;      // { points, frame, ts }
+    const RECOGNIZE_API = 'http://127.0.0.1:5000/api/face-recognize';
+    const QR_DECODE_API = 'http://127.0.0.1:5000/api/qr-decode';
+    const FACE_POSE_API = 'http://127.0.0.1:5000/api/face-pose';
+    const RECOGNIZE_INTERVAL_MS = 280;
+    const FACE_POSE_INTERVAL_MS = 180;
+    let currentEventInterval = null;
+    let manualPanelLoaded = false;
+    let currentAssistMode = 'camera'; // camera | manual | mobileqr
+    let mobileQrStream = null;
+    let mobileQrDetectTimer = null;
+    let mobileQrDetector = null;
+    let mobileQrScanMode = 'native'; // native | server
+    let mobileQrServerBusy = false;
+    let mobileQrPosting = false;
+    let mobileQrLastRaw = '';
+    let mobileQrLastTs = 0;
+    let mobileQrPollTimer = null;
+    let mobileQrLastLogId = 0;
+    let mobileQrDisplayResetTimer = null;
+    let mobileQrLastMarker = '';
+
+    let cameraFsHideInfoTimer = null;
+
+    function setCameraFsPanelVisible(on) {
+      if (!cameraFsInfoPanel) return;
+      cameraFsInfoPanel.hidden = !on;
+
+      if (!on) {
+        cameraFsStateWaiting && (cameraFsStateWaiting.hidden = false);
+        cameraFsStateDetected && (cameraFsStateDetected.hidden = true);
+      }
+    }
+
+    function renderCameraFsEmployeeInfo(detection) {
+      if (!detection) return;
+
+      if (cameraFsEmpName) cameraFsEmpName.textContent = detection.fullName || 'Unknown';
+      if (cameraFsEmpId) cameraFsEmpId.textContent = detection.employeeId || '---';
+      if (cameraFsEmpDepartment) cameraFsEmpDepartment.textContent = detection.department || '---';
+      if (cameraFsEmpPosition) cameraFsEmpPosition.textContent = detection.position || '---';
+      if (cameraFsTimeRecorded) cameraFsTimeRecorded.textContent = detection.time || '--:-- --';
+      if (cameraFsDateRecorded) cameraFsDateRecorded.textContent = detection.logDate || '--';
+
+      var status = String(detection.status || 'time_in');
+      var isTimeOut = status === 'time_out';
+      var isLate = status === 'late';
+
+      if (cameraFsAttendanceTypeBadge) {
+        cameraFsAttendanceTypeBadge.classList.toggle('camera-fs-badge--timeout', isTimeOut);
+        cameraFsAttendanceTypeBadge.classList.toggle('camera-fs-badge--timein', !isTimeOut);
+        cameraFsAttendanceTypeBadge.textContent = isTimeOut ? 'Time out' : (isLate ? 'Late' : 'Time in');
+      }
+
+      if (cameraFsStateWaiting) cameraFsStateWaiting.hidden = true;
+      if (cameraFsStateDetected) cameraFsStateDetected.hidden = false;
+
+      if (cameraFsHideInfoTimer) clearTimeout(cameraFsHideInfoTimer);
+      cameraFsHideInfoTimer = setTimeout(function () {
+        if (cameraFsStateWaiting) cameraFsStateWaiting.hidden = false;
+        if (cameraFsStateDetected) cameraFsStateDetected.hidden = true;
+      }, 3000);
+    }
+
+    function updateCameraFsInfoFromLastDetection() {
+      // Only update if we are currently in capture card fullscreen + camera mode.
+      var isFs = document.fullscreenElement === captureMainCard ||
+        document.webkitFullscreenElement === captureMainCard ||
+        document.msFullscreenElement === captureMainCard;
+      if (!isFs || currentAssistMode !== 'camera') return;
+
+      fetch('ajax/last_detection.php', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (!j || !j.success) return;
+          renderCameraFsEmployeeInfo(j.detection);
+        })
+        .catch(function () {});
+    }
+
+    function syncStartStopVisibilityForMode(mode) {
+      var showCameraControls = mode === 'camera';
+      var hide = !showCameraControls;
+
+      // Use display:none for more reliable hiding across CSS/layout.
+      if (btnStart) {
+        btnStart.hidden = hide;
+        btnStart.style.display = hide ? 'none' : '';
+        btnStart.disabled = showCameraControls ? btnStart.disabled : true;
+      }
+      if (btnStop) {
+        btnStop.hidden = hide;
+        btnStop.style.display = hide ? 'none' : '';
+        btnStop.disabled = showCameraControls ? btnStop.disabled : true;
+      }
+    }
+
+    function stopCameraFully() {
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+        stream = null;
+      }
+      cameraFeed.srcObject = null;
+      cameraFeed.style.display = 'none';
+      cameraPlaceholder.style.display = 'flex';
+      btnStart.disabled = false;
+      btnStop.disabled = true;
+      stopTimer();
+      if (detectionsInterval) {
+        clearInterval(detectionsInterval);
+        detectionsInterval = null;
+      }
+      if (recognitionInterval) {
+        clearInterval(recognitionInterval);
+        recognitionInterval = null;
+      }
+      if (qrInterval) {
+        clearInterval(qrInterval);
+        qrInterval = null;
+      }
+      if (poseInterval) {
+        clearInterval(poseInterval);
+        poseInterval = null;
+      }
+      stopLocalFaceLoop();
+      lastFaceBox = null;
+      lastQr = null;
+      if (currentEventInterval) {
+        clearInterval(currentEventInterval);
+        currentEventInterval = null;
+      }
+    }
+
+    function setModeButtonsState(mode) {
+      var cameraOn = mode === 'camera';
+      if (btnCameraMode) {
+        btnCameraMode.classList.toggle('is-active', cameraOn);
+        btnCameraMode.setAttribute('aria-checked', cameraOn ? 'true' : 'false');
+      }
+      var manualOn = mode === 'manual';
+      if (btnManual) {
+        btnManual.classList.toggle('is-active', manualOn);
+        btnManual.setAttribute('aria-checked', manualOn ? 'true' : 'false');
+      }
+      var qrOn = mode === 'mobileqr';
+      if (btnMobileQr) {
+        btnMobileQr.classList.toggle('is-active', qrOn);
+        btnMobileQr.setAttribute('aria-checked', qrOn ? 'true' : 'false');
+      }
+    }
+
+    function stopMobileQrScanner() {
+      if (mobileQrDetectTimer) {
+        clearInterval(mobileQrDetectTimer);
+        mobileQrDetectTimer = null;
+      }
+      if (mobileQrPollTimer) {
+        clearInterval(mobileQrPollTimer);
+        mobileQrPollTimer = null;
+      }
+      if (mobileQrStream) {
+        mobileQrStream.getTracks().forEach(function (t) { t.stop(); });
+        mobileQrStream = null;
+      }
+      if (mobileQrDisplayResetTimer) {
+        clearTimeout(mobileQrDisplayResetTimer);
+        mobileQrDisplayResetTimer = null;
+      }
+      mobileQrServerBusy = false;
+      mobileQrPosting = false;
+    }
+
+    function setAssistMode(mode) {
+      if (!captureMainCard || !manualModeView) return;
+      if (mode === currentAssistMode) return;
+
+      if (mode !== 'mobileqr') {
+        stopMobileQrScanner();
+        mobileQrLastMarker = '';
+      }
+      if (mode !== 'camera') {
+        stopCameraFully();
+      }
+
+      currentAssistMode = mode;
+      setModeButtonsState(mode);
+      syncStartStopVisibilityForMode(mode);
+
+      if (mode === 'camera') {
+        manualModeView.hidden = true;
+        captureMainCard.classList.remove('camera-replaced');
+        if (captureHeaderTitle) captureHeaderTitle.textContent = 'Attendance Capture';
+        if (captureHeaderSubtitle) captureHeaderSubtitle.textContent = 'Live Camera Feed & Real-Time Monitoring';
+        stopTimer();
+        btnStart.disabled = false;
+        btnStop.disabled = true;
+        // Hide the camera fullscreen info panel unless user actually enters fullscreen.
+        if (cameraFsInfoPanel) cameraFsInfoPanel.hidden = true;
+        return;
+      }
+
+      captureMainCard.classList.add('camera-replaced');
+      manualModeView.hidden = false;
+      // Start/Stop controls are only shown for camera mode.
+      btnStart.disabled = true;
+      btnStop.disabled = true;
+      // Hide camera fullscreen info panel when leaving camera mode.
+      if (cameraFsInfoPanel) cameraFsInfoPanel.hidden = true;
+      if (captureHeaderTitle) {
+        captureHeaderTitle.textContent = mode === 'mobileqr'
+          ? 'QR Scanner using phone'
+          : 'Attendance Capture – Manual Monitoring';
+      }
+      if (captureHeaderSubtitle) {
+        captureHeaderSubtitle.textContent = mode === 'mobileqr'
+          ? 'Record attendance by scanning on phone'
+          : 'Record attendance using Employee ID';
+      }
+      resumeTimerIfPersisted();
+    }
+
+    function setManualMode(on) {
+      if (!on) {
+        setAssistMode('camera');
+        return;
+      }
+      setAssistMode('manual');
+      function runInit() {
+        if (window.initManualAttendanceModule) {
+          window.initManualAttendanceModule({
+            embed: true,
+            root: manualModeView,
+            onBackToCamera: function () { setAssistMode('camera'); }
+          });
+        }
+      }
+      // If Mobile QR mode replaced the innerHTML, #empIdInput won't exist anymore.
+      // In that case we must re-render the manual panel even if manualPanelLoaded was true before.
+      var hasManualMarkupNow = !!manualModeView.querySelector('#empIdInput');
+      if (!manualPanelLoaded || !hasManualMarkupNow) {
+        fetch('manualAttendanceDesign.php?embed=1', { cache: 'no-store' })
+          .then(function (res) { return res.text(); })
+          .then(function (html) {
+            if (currentAssistMode !== 'manual') return;
+            manualModeView.innerHTML = html;
+            manualPanelLoaded = true;
+            var mt = manualModeView.querySelector('.mad-toolbar');
+            if (mt) mt.remove();
+            runInit();
+            wireManualTimerStart();
+          })
+          .catch(function () {
+            manualModeView.innerHTML = '<p style="padding:1.25rem;color:#64748b;font-size:0.9rem;">Could not load manual attendance. Refresh and try again.</p>';
+          });
+      } else {
+        runInit();
+        var inp = manualModeView.querySelector('#empIdInput');
+        if (inp) setTimeout(function () { inp.focus(); }, 30);
+        wireManualTimerStart();
+      }
+    }
+
+    btnManual.addEventListener('click', function () {
+      if (currentAssistMode === 'manual') {
+        setAssistMode('camera');
+        return;
+      }
+      setManualMode(true);
+    });
+
+    if (btnCameraMode) {
+      btnCameraMode.addEventListener('click', function () {
+        if (currentAssistMode === 'camera') return;
+        setAssistMode('camera');
+      });
+    }
+
+    // Realtime clock (replaces elapsed timer display)
+    function formatClock(d) {
+      let h = d.getHours();
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      if (h === 0) h = 12;
+      const hh = String(h);
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      const ss = String(d.getSeconds()).padStart(2, '0');
+      return hh + ':' + mm + ':' + ss + ' ' + ampm;
+    }
+
+    function paintClock() {
+      const v = formatClock(new Date());
+      const t1 = document.getElementById('elapsedTimer');
+      if (t1) t1.textContent = v;
+      const t2 = document.getElementById('manualElapsedTimer');
+      if (t2) t2.textContent = v;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      paintClock();
+      timerInterval = setInterval(paintClock, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = null;
+      paintClock();
+    }
+
+    function resumeTimerIfPersisted() {
+      // Kept for compatibility with existing calls; realtime clock doesn't need persistence.
+      startTimer();
+    }
+
+    function isManualModeActive() {
+      return currentAssistMode === 'manual';
+    }
+
+    function wireManualTimerStart() {
+      if (!manualModeView) return;
+      var inp = manualModeView.querySelector('#empIdInput');
+      if (!inp || inp.getAttribute('data-manual-timer-bound') === '1') return;
+      inp.setAttribute('data-manual-timer-bound', '1');
+      inp.addEventListener('input', function () {
+        if (!isManualModeActive()) return;
+        if (!timerInterval && inp.value.trim() !== '') {
+          startTimer();
+        }
+      });
+    }
+
+    function formatHumanTime(d) {
+      return d.toLocaleTimeString('en-PH', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+    }
+
+    function formatHumanDate(d) {
+      return d.toLocaleDateString('en-PH', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    function buildMobileQrMarkup() {
+      return (
+        '<div class="manual-attendance-design-root manual-attendance-design-root--embed mobile-qr-mode-root">' +
+          '<div class="mad-content">' +
+            '<div class="main-grid mad-scanner-grid mad-single-column">' +
+              '<div class="card">' +
+                '<h2 class="card-title">Employee Information</h2>' +
+                '<div class="info-body" id="madQrEmptyState">' +
+                  '<div class="avatar-circle empty">' +
+                    '<svg class="icon-avatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+                      '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>' +
+                    '</svg>' +
+                  '</div>' +
+                  '<p class="waiting-text">Wait for QR scanner thru phone</p>' +
+                  '<p class="waiting-sub">Attendance details will appear after a successful scan.</p>' +
+                '</div>' +
+                '<div class="info-body hidden" id="madQrFilledState">' +
+                  '<div class="avatar-circle filled">' +
+                    '<svg class="icon-avatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2e7d52" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+                      '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>' +
+                    '</svg>' +
+                  '</div>' +
+                  '<p class="emp-name" id="madQrEmpName">—</p>' +
+                  '<p class="emp-id-display" id="madQrEmpId">—</p>' +
+                  '<div class="info-rows">' +
+                    '<div class="info-row"><span class="info-icon"><svg class="icon-row" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2e7d52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span><div><span class="info-label">Department</span><span class="info-value" id="madQrEmpDept">—</span></div></div>' +
+                    '<div class="info-row"><span class="info-icon"><svg class="icon-row" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2e7d52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><div><span class="info-label">Position</span><span class="info-value" id="madQrEmpPos">—</span></div></div>' +
+                    '<div class="info-row"><span class="info-icon"><svg class="icon-row" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2e7d52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><div><span class="info-label">Time</span><span class="info-value" id="madQrEmpTime">—</span></div></div>' +
+                    '<div class="info-row"><span class="info-icon"><svg class="icon-row" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2e7d52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><div><span class="info-label">Date</span><span class="info-value" id="madQrEmpDate">—</span></div></div>' +
+                    '<div class="info-row"><span class="info-icon"><svg class="icon-row" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2e7d52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><div><span class="info-label">Status</span><span class="info-value" id="madQrEmpStatus">—</span></div></div>' +
+                  '</div>' +
+                  '<div class="confirmation-banner hidden" id="madQrConfirmBanner">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+                    '<span id="madQrConfirmText">Attendance recorded successfully!</span>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function setMobileQrStatus(kind, text) {
+      var pill = document.getElementById('madScanStatusPill');
+      var statusText = document.getElementById('madScanStatusText');
+      if (!pill || !statusText) return;
+      pill.classList.remove('is-waiting', 'is-detected', 'is-processing', 'is-error', 'is-success');
+      if (kind === 'detected') pill.classList.add('is-detected');
+      else if (kind === 'processing') pill.classList.add('is-processing');
+      else if (kind === 'error') pill.classList.add('is-error');
+      else if (kind === 'success') pill.classList.add('is-success');
+      else pill.classList.add('is-waiting');
+      if (kind === 'detected') pill.textContent = 'QR Detected';
+      else if (kind === 'processing') pill.textContent = 'Processing...';
+      else if (kind === 'error') pill.textContent = 'Error';
+      else if (kind === 'success') pill.textContent = 'Recorded';
+      else pill.textContent = 'Scanning...';
+      statusText.textContent = text || 'Point camera at employee QR code.';
+    }
+
+    function flashMobileQrDetection() {
+      var wrap = document.getElementById('madQrPreviewWrap');
+      if (!wrap) return;
+      wrap.classList.remove('detected-flash');
+      void wrap.offsetWidth;
+      wrap.classList.add('detected-flash');
+    }
+
+    function showMobileQrResult(data) {
+      var emp = data && data.employee ? data.employee : {};
+      var empty = document.getElementById('madQrEmptyState');
+      var filled = document.getElementById('madQrFilledState');
+      if (mobileQrDisplayResetTimer) {
+        clearTimeout(mobileQrDisplayResetTimer);
+        mobileQrDisplayResetTimer = null;
+      }
+      if (empty) empty.classList.add('hidden');
+      if (filled) filled.classList.remove('hidden');
+      var nameEl = document.getElementById('madQrEmpName');
+      var idEl = document.getElementById('madQrEmpId');
+      var deptEl = document.getElementById('madQrEmpDept');
+      var posEl = document.getElementById('madQrEmpPos');
+      var timeEl = document.getElementById('madQrEmpTime');
+      var dateEl = document.getElementById('madQrEmpDate');
+      var statusEl = document.getElementById('madQrEmpStatus');
+      var confirm = document.getElementById('madQrConfirmBanner');
+      var confirmText = document.getElementById('madQrConfirmText');
+
+      if (nameEl) nameEl.textContent = emp.full_name || 'Unknown employee';
+      if (idEl) idEl.textContent = emp.employee_code || emp.employee_id || '—';
+      if (deptEl) deptEl.textContent = emp.department || '—';
+      if (posEl) posEl.textContent = emp.position || '—';
+      if (timeEl) timeEl.textContent = formatHumanTime(new Date());
+      if (dateEl) dateEl.textContent = formatHumanDate(new Date());
+      var logStatus = (data && data.log_status) ? String(data.log_status) : 'time_in';
+      var label = logStatus === 'time_out' ? 'Time Out Recorded' : (logStatus === 'late' ? 'Late Attendance Recorded' : 'Time In Recorded');
+      if (statusEl) statusEl.textContent = label;
+      if (confirmText) confirmText.textContent = label + ' Successfully';
+      if (confirm) {
+        confirm.classList.remove('hidden');
+        confirm.classList.add('show');
+        setTimeout(function () {
+          confirm.classList.remove('show');
+          confirm.classList.add('hidden');
+        }, 1900);
+      }
+
+      mobileQrDisplayResetTimer = setTimeout(function () {
+        var waitState = document.getElementById('madQrEmptyState');
+        var infoState = document.getElementById('madQrFilledState');
+        if (waitState) waitState.classList.remove('hidden');
+        if (infoState) infoState.classList.add('hidden');
+      }, 3000);
+    }
+
+    function captureMobileQrFrame() {
+      var video = document.getElementById('madQrVideo');
+      var canvas = document.getElementById('madQrCanvas');
+      if (!video || !canvas || video.readyState < 2) return '';
+      var w = video.videoWidth || 0;
+      var h = video.videoHeight || 0;
+      if (!w || !h) return '';
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      if (!ctx) return '';
+      ctx.drawImage(video, 0, 0, w, h);
+      return canvas.toDataURL('image/jpeg', 0.85);
+    }
+
+    function parseBarcodeDetectorResult(codes) {
+      if (!codes || !codes.length) return '';
+      return String(codes[0].rawValue || '').trim();
+    }
+
+    function processMobileQrRaw(raw) {
+      if (!raw || currentAssistMode !== 'mobileqr') return;
+      var now = Date.now();
+      if (raw === mobileQrLastRaw && (now - mobileQrLastTs) < 2500) return;
+      mobileQrLastRaw = raw;
+      mobileQrLastTs = now;
+      setMobileQrStatus('detected', 'QR captured. Preparing attendance request...');
+      flashMobileQrDetection();
+      mobileQrPosting = true;
+      setMobileQrStatus('processing', 'Sending attendance data...');
+
+      var fd = new FormData();
+      fd.append('qr_content', raw);
+      fetch('ajax/log_attendance.php', { method: 'POST', body: fd })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (currentAssistMode !== 'mobileqr') return;
+          if (data && data.success) {
+            showMobileQrResult(data);
+            setMobileQrStatus('success', data.message || 'Attendance recorded.');
+            if (typeof window.loadRecentDetections === 'function') window.loadRecentDetections();
+            return;
+          }
+          var msg = (data && (data.message || data.error)) ? (data.message || data.error) : 'Attendance request failed.';
+          setMobileQrStatus('error', msg);
+        })
+        .catch(function () {
+          if (currentAssistMode === 'mobileqr') setMobileQrStatus('error', 'Network error while submitting attendance.');
+        })
+        .then(function () {
+          mobileQrPosting = false;
+        });
+    }
+
+    function runMobileQrDetectOnce() {
+      if (currentAssistMode !== 'mobileqr' || mobileQrPosting) return;
+      var video = document.getElementById('madQrVideo');
+      if (!video || video.readyState < 2) return;
+
+      if (mobileQrScanMode === 'native') {
+        if (!mobileQrDetector) return;
+        mobileQrDetector.detect(video)
+          .then(function (codes) {
+            var raw = parseBarcodeDetectorResult(codes);
+            if (raw) processMobileQrRaw(raw);
+          })
+          .catch(function () {});
+        return;
+      }
+
+      if (mobileQrScanMode === 'server') {
+        if (mobileQrServerBusy) return;
+        var image = captureMobileQrFrame();
+        if (!image) return;
+        mobileQrServerBusy = true;
+        fetch('ajax/mobile_qr_decode.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: image }),
+          cache: 'no-store'
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (!d || !d.success || !d.found) return;
+            var raw = String(d.qr_content || '').trim();
+            if (raw) processMobileQrRaw(raw);
+          })
+          .catch(function () {})
+          .then(function () {
+            mobileQrServerBusy = false;
+          });
+      }
+    }
+
+    function initMobileQrScanner() {
+      if (currentAssistMode !== 'mobileqr') return;
+      stopMobileQrScanner();
+      setMobileQrStatus('waiting', 'Waiting for scan from phone...');
+      var baselineReady = false;
+
+      function pollLatestScan() {
+        if (currentAssistMode !== 'mobileqr') return;
+        var url = 'ajax/latest_attendance_employee.php?last_id=' + encodeURIComponent(String(mobileQrLastLogId)) +
+          '&last_marker=' + encodeURIComponent(String(mobileQrLastMarker || '')) +
+          '&t=' + Date.now();
+        fetch(url, { cache: 'no-store' })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (currentAssistMode !== 'mobileqr') return;
+            if (!data || !data.success) return;
+            if (data.marker) mobileQrLastMarker = String(data.marker);
+            if (!data.updated) {
+              baselineReady = true;
+              return;
+            }
+            var incomingId = Number(data.latest.id || mobileQrLastLogId || 0);
+            mobileQrLastLogId = incomingId;
+            // On first poll after mode entry, only baseline the latest row.
+            // This prevents showing stale attendance from before user opened Mobile QR mode.
+            if (!baselineReady) {
+              baselineReady = true;
+              return;
+            }
+            var result = {
+              success: true,
+              log_status: data.latest.log_status || 'time_in',
+              message: data.latest.message || '',
+              employee: {
+                employee_code: data.latest.employee_id || '',
+                full_name: data.latest.full_name || '',
+                department: data.latest.department || '',
+                position: data.latest.position || ''
+              }
+            };
+            showMobileQrResult(result);
+            setMobileQrStatus('success', (data.latest.message || 'Attendance recorded.') + ' via phone scanner');
+            if (typeof window.loadRecentDetections === 'function') window.loadRecentDetections();
+          })
+          .catch(function () {});
+      }
+
+      pollLatestScan();
+      mobileQrPollTimer = setInterval(pollLatestScan, 1200);
+    }
+
+    function setMobileQrMode(on) {
+      if (!on) {
+        if (currentAssistMode === 'mobileqr') setAssistMode('camera');
+        return;
+      }
+      setAssistMode('mobileqr');
+      mobileQrLastLogId = 0;
+      mobileQrLastMarker = '';
+      manualModeView.innerHTML = buildMobileQrMarkup();
+      initMobileQrScanner();
+    }
+
+    if (btnMobileQr) {
+      btnMobileQr.addEventListener('click', function () {
+        if (currentAssistMode === 'mobileqr') {
+          setAssistMode('camera');
+          return;
+        }
+        setMobileQrMode(true);
+      });
+    }
+
+    // Initialize segmented control state on page load.
+    setModeButtonsState(currentAssistMode);
+    syncStartStopVisibilityForMode(currentAssistMode);
+
+    function toggleFullscreenOn(el) {
+      if (!el) return;
+      var fsEl = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+      if (fsEl === el) {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        else if (document.msExitFullscreen) document.msExitFullscreen();
+        return;
+      }
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    }
+
+    if (btnContextFullscreen) {
+      btnContextFullscreen.addEventListener('click', function () {
+        // Context-aware fullscreen behavior.
+        if (isManualModeActive()) {
+          try { localStorage.setItem('openManualOnLoad', '1'); } catch (e) {}
+          var ret = encodeURIComponent(window.location.href.replace(/[#].*$/, ''));
+          window.location.href = 'manualAttendance_fullscreen.php?return=' + ret;
+          return;
+        }
+        if (currentAssistMode === 'mobileqr') {
+          window.location.href = 'mobileQr_fullscreen.php';
+          return;
+        }
+        // Camera: use dedicated fullscreen page with stable layout.
+        window.location.href = 'fullscreen.php';
+      });
+    }
+
+    // Support returning back to manual mode after minimizing from manualAttendance_fullscreen.php
+    (function () {
+      var sp = new URLSearchParams(window.location.search);
+      var wantManual = sp.get('manual') === '1';
+      var wantMobileQr = sp.get('mobileqr') === '1';
+      try {
+        if (localStorage.getItem('openManualOnLoad') === '1') {
+          wantManual = true;
+          localStorage.removeItem('openManualOnLoad');
+        }
+      } catch (e) {}
+
+      try {
+        if (localStorage.getItem('openMobileQrOnLoad') === '1') {
+          wantMobileQr = true;
+          localStorage.removeItem('openMobileQrOnLoad');
+        }
+      } catch (e) {}
+
+      if (wantManual) {
+        setTimeout(function () {
+          setManualMode(true);
+          resumeTimerIfPersisted();
+        }, 0);
+      }
+
+      if (!wantManual && wantMobileQr) {
+        setTimeout(function () {
+          setMobileQrMode(true);
+          resumeTimerIfPersisted();
+        }, 0);
+      }
+    })();
+
+    function loadRecentDetections() {
+      fetch('ajax/recent_detections.php?limit=5', { cache: 'no-store' })
+        .then(res => res.json())
+        .then(data => {
+          const ul = document.getElementById('detectionsList');
+          if (!ul) return;
+          ul.innerHTML = '';
+          if (!data.success || !Array.isArray(data.detections)) {
+            ul.innerHTML = '<li class="det-empty">No detections yet</li>';
+          } else if (data.detections.length === 0) {
+            ul.innerHTML = '<li class="det-empty">No detections yet</li>';
+          } else {
+            data.detections.forEach(d => {
+              const li = document.createElement('li');
+              const isOut = String(d.status || '') === 'time_out';
+              const badgeClass = isOut ? 'badge-exit' : 'badge-entry';
+              const badgeText = isOut ? 'TIME OUT' : 'TIME IN';
+              li.innerHTML = '<div><strong>' + escapeHtml(d.fullName) + '</strong><span class="det-time">' + escapeHtml(d.time) + '</span></div><span class="' + badgeClass + '">' + badgeText + '</span>';
+              ul.appendChild(li);
+            });
+          }
+          document.getElementById('totalDetections').textContent = data.todayCount ?? 0;
+          const regEl = document.getElementById('registeredCount');
+          if (regEl) regEl.textContent = data.registeredCount ?? 0;
+        })
+        .catch(() => {
+          const ul = document.getElementById('detectionsList');
+          if (ul && !ul.querySelector('.det-empty')) ul.innerHTML = '<li class="det-empty">Could not load</li>';
+        });
+    }
+
+    window.loadRecentDetections = loadRecentDetections;
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
+
+    function updateEventCard(eventData) {
+      const dayEl = document.getElementById('ceremonyDay');
+      const typeEl = document.getElementById('ceremonyType');
+      const timeEl = document.getElementById('ceremonyTime');
+      if (!dayEl || !typeEl || !timeEl || !eventData) return;
+      // Always show local (browser) day for realtime correctness.
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const d = new Date();
+      dayEl.textContent = days[d.getDay()];
+      typeEl.textContent = eventData.name || 'No Event';
+      timeEl.textContent = eventData.time || '--:-- --';
+    }
+
+    function loadCurrentEvent() {
+      const now = new Date();
+      const url =
+        'ajax/current_event.php?t=' +
+        Date.now() +
+        '&client_now=' +
+        encodeURIComponent(now.toISOString()) +
+        '&client_tz_offset_min=' +
+        encodeURIComponent(String(now.getTimezoneOffset()));
+      fetch(url, { cache: 'no-store' })
+        .then(res => res.json())
+        .then(data => {
+          if (!data || !data.success || !data.event) return;
+          updateEventCard(data.event);
+        })
+        .catch(() => {});
+    }
+
+    let noticeTimer = null;
+    function showNotice(text, kind) {
+      const el = document.getElementById('captureNotice');
+      if (!el) return;
+      const msg = String(text || '').trim();
+      if (!msg) return;
+      el.textContent = msg;
+      el.classList.remove('is-error', 'is-info');
+      el.classList.add(kind === 'info' ? 'is-info' : 'is-error');
+      el.style.display = 'block';
+      if (noticeTimer) clearTimeout(noticeTimer);
+      noticeTimer = setTimeout(function () {
+        el.style.display = 'none';
+      }, 3500);
+    }
+
+    // Overlay-only status (shown near face box)
+    let loggingInFlight = false;
+    let alreadyTimeInUntilMs = 0;
+    let alreadyTimeOutUntilMs = 0;
+    let unknownFaceUntilMs = 0;
+    let lastMatchedEmployeeId = '';
+    let sameMatchStreak = 0;
+    const REQUIRED_STABLE_MATCHES = 3;
+
+    function captureFrame() {
+      if (!cameraFeed.videoWidth || !captureCanvas) return null;
+      const w = cameraFeed.videoWidth, h = cameraFeed.videoHeight;
+      const scale = 0.5;
+      captureCanvas.width = Math.round(w * scale);
+      captureCanvas.height = Math.round(h * scale);
+      const ctx = captureCanvas.getContext('2d');
+      ctx.drawImage(cameraFeed, 0, 0, captureCanvas.width, captureCanvas.height);
+      return captureCanvas.toDataURL('image/jpeg', 0.7);
+    }
+
+    function captureFrameForPose() {
+      if (!cameraFeed.videoWidth || !captureCanvas) return null;
+      const w = cameraFeed.videoWidth, h = cameraFeed.videoHeight;
+      const scale = 0.8; // higher detail so face box appears faster
+      captureCanvas.width = Math.round(w * scale);
+      captureCanvas.height = Math.round(h * scale);
+      const ctx = captureCanvas.getContext('2d');
+      ctx.drawImage(cameraFeed, 0, 0, captureCanvas.width, captureCanvas.height);
+      return captureCanvas.toDataURL('image/jpeg', 0.82);
+    }
+
+    function captureFrameForQr() {
+      if (!cameraFeed.videoWidth || !captureCanvas) return null;
+      const w = cameraFeed.videoWidth, h = cameraFeed.videoHeight;
+      captureCanvas.width = w;
+      captureCanvas.height = h;
+      const ctx = captureCanvas.getContext('2d');
+      ctx.drawImage(cameraFeed, 0, 0, w, h);
+      return captureCanvas.toDataURL('image/png');
+    }
+
+    function resizeOverlayCanvas() {
+      if (!overlayCanvas) return;
+      const w = overlayCanvas.clientWidth;
+      const h = overlayCanvas.clientHeight;
+      if (!w || !h) return;
+      if (overlayCanvas.width !== w) overlayCanvas.width = w;
+      if (overlayCanvas.height !== h) overlayCanvas.height = h;
+    }
+
+    function mapRectToOverlay(rect, frame) {
+      const W = overlayCanvas.width, H = overlayCanvas.height;
+      const scale = Math.max(W / frame.w, H / frame.h);
+      const dispW = frame.w * scale, dispH = frame.h * scale;
+      const offsetX = (W - dispW) / 2, offsetY = (H - dispH) / 2;
+      let x = offsetX + rect.x * scale;
+      const y = offsetY + rect.y * scale;
+      const w = rect.w * scale;
+      const h = rect.h * scale;
+      x = W - (x + w); // mirrored video
+      return { x, y, w, h };
+    }
+
+    function mapPointToOverlay(pt, frame) {
+      const W = overlayCanvas.width, H = overlayCanvas.height;
+      const scale = Math.max(W / frame.w, H / frame.h);
+      const dispW = frame.w * scale, dispH = frame.h * scale;
+      const offsetX = (W - dispW) / 2, offsetY = (H - dispH) / 2;
+      let x = offsetX + pt[0] * scale;
+      const y = offsetY + pt[1] * scale;
+      x = W - x;
+      return [x, y];
+    }
+
+    function drawOverlay() {
+      if (!overlayCanvas) return;
+      resizeOverlayCanvas();
+      const ctx = overlayCanvas.getContext('2d');
+      if (!ctx) return;
+      ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+      const now = Date.now();
+      const pulse = 0.55 + 0.25 * Math.sin(now / 140);
+
+      function drawBadge(x, y, text, kind) {
+        const label = String(text || '').trim();
+        if (!label) return;
+        ctx.save();
+        ctx.font = '700 14px system-ui, -apple-system, Segoe UI, sans-serif';
+        ctx.textBaseline = 'middle';
+        const padX = 10;
+        const padY = 8;
+        const metrics = ctx.measureText(label);
+        const w = Math.ceil(metrics.width + padX * 2);
+        const h = 28;
+        const r = 10;
+        const bx = Math.round(x);
+        const by = Math.round(y - h - 10);
+        const fill =
+          kind === 'already' ? 'rgba(255, 251, 235, 0.95)' :
+          kind === 'processing' ? 'rgba(220, 252, 231, 0.95)' :
+          'rgba(248, 250, 252, 0.95)';
+        const stroke =
+          kind === 'already' ? 'rgba(253, 230, 138, 0.95)' :
+          kind === 'processing' ? 'rgba(187, 247, 208, 0.95)' :
+          'rgba(226, 232, 240, 0.95)';
+        const color =
+          kind === 'already' ? '#92400e' :
+          kind === 'processing' ? '#0f5132' :
+          '#334155';
+
+        // Rounded rect
+        ctx.beginPath();
+        ctx.moveTo(bx + r, by);
+        ctx.lineTo(bx + w - r, by);
+        ctx.quadraticCurveTo(bx + w, by, bx + w, by + r);
+        ctx.lineTo(bx + w, by + h - r);
+        ctx.quadraticCurveTo(bx + w, by + h, bx + w - r, by + h);
+        ctx.lineTo(bx + r, by + h);
+        ctx.quadraticCurveTo(bx, by + h, bx, by + h - r);
+        ctx.lineTo(bx, by + r);
+        ctx.quadraticCurveTo(bx, by, bx + r, by);
+        ctx.closePath();
+        ctx.fillStyle = fill;
+        ctx.fill();
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.fillText(label, bx + padX, by + h / 2);
+        ctx.restore();
+      }
+
+      if (lastFaceBox && (now - lastFaceBox.ts) < 550 && lastFaceBox.box && lastFaceBox.frame) {
+        const r = mapRectToOverlay(lastFaceBox.box, lastFaceBox.frame);
+        ctx.save();
+        ctx.globalAlpha = pulse;
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#22c55e';
+        ctx.shadowColor = 'rgba(34, 197, 94, 0.6)';
+        ctx.shadowBlur = 12;
+        ctx.strokeRect(r.x, r.y, r.w, r.h);
+        ctx.restore();
+
+        // Badge anchored to face box (top-left).
+        // "Already" badges must override "Processing…" to avoid flicker.
+        const isAlreadyOut = Date.now() < alreadyTimeOutUntilMs;
+        const isAlreadyIn = Date.now() < alreadyTimeInUntilMs;
+        const isUnknown = Date.now() < unknownFaceUntilMs;
+        const badgeText = isAlreadyOut
+          ? 'Already time out'
+          : (isAlreadyIn
+            ? 'Already time in'
+            : (loggingInFlight
+              ? 'Processing…'
+              : (isUnknown ? 'Unknown' : '')));
+        const badgeKind = (isAlreadyOut || isAlreadyIn)
+          ? 'already'
+          : (loggingInFlight ? 'processing' : '');
+        drawBadge(r.x, r.y, badgeText, badgeKind);
+      }
+
+      if (lastQr && (now - lastQr.ts) < 1200 && lastQr.points && lastQr.frame) {
+        const pts = lastQr.points.map(p => mapPointToOverlay(p, lastQr.frame));
+        ctx.save();
+        ctx.globalAlpha = pulse;
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#facc15';
+        ctx.shadowColor = 'rgba(250, 204, 21, 0.6)';
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.moveTo(pts[0][0], pts[0][1]);
+        ctx.lineTo(pts[1][0], pts[1][1]);
+        ctx.lineTo(pts[2][0], pts[2][1]);
+        ctx.lineTo(pts[3][0], pts[3][1]);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      requestAnimationFrame(drawOverlay);
+    }
+
+    function runRecognition() {
+      if (isRecognizing) return;
+      if (Date.now() < alreadyTimeOutUntilMs) return;
+      if (Date.now() < alreadyTimeInUntilMs) return; // prevent flicker during "already time in" cooldown
+      const dataUrl = captureFrame();
+      if (!dataUrl) return;
+      isRecognizing = true;
+      if (lastFaceBox && (Date.now() - lastFaceBox.ts) < 900) {
+        unknownFaceUntilMs = Date.now() + 1500;
+      }
+      const ctrl = new AbortController();
+      const timeoutId = setTimeout(function () {
+        try { ctrl.abort(); } catch (e) {}
+      }, 2500);
+      fetch(RECOGNIZE_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataUrl }),
+        signal: ctrl.signal
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.box && data.frame) {
+            lastFaceBox = { box: data.box, frame: data.frame, ts: Date.now() };
+          }
+          if (data && data.detected && !data.matched) {
+            unknownFaceUntilMs = Date.now() + 1500;
+            lastMatchedEmployeeId = '';
+            sameMatchStreak = 0;
+          } else if (data && data.matched) {
+            unknownFaceUntilMs = 0;
+          }
+          const backendAmbiguous = !!(data && (data.ambiguous === true ||
+            (typeof data.ambiguity_gap === 'number' && data.ambiguity_gap < 0.02) ||
+            (typeof data.confidence === 'number' && data.confidence < 0.22)));
+          if (!data.matched || !data.employee_id || backendAmbiguous) {
+            lastMatchedEmployeeId = '';
+            sameMatchStreak = 0;
+            if (backendAmbiguous && data && data.detected) {
+              unknownFaceUntilMs = Date.now() + 1500;
+            }
+            return;
+          }
+
+          if (lastMatchedEmployeeId === data.employee_id) {
+            sameMatchStreak += 1;
+          } else {
+            lastMatchedEmployeeId = data.employee_id;
+            sameMatchStreak = 1;
+          }
+
+          if (sameMatchStreak < REQUIRED_STABLE_MATCHES) {
+            return;
+          }
+
+          sameMatchStreak = 0;
+          const fd = new FormData();
+          fd.append('employee_id', data.employee_id);
+          fd.append('client_now', new Date().toISOString());
+          fd.append('client_tz_offset_min', String(new Date().getTimezoneOffset()));
+          loggingInFlight = true;
+          return fetch('ajax/log_attendance.php', { method: 'POST', body: fd });
+        })
+        .then(res => res ? res.json() : null)
+        .then(data => {
+          if (!data) return;
+          if (data.success) {
+            loadRecentDetections();
+            updateCameraFsInfoFromLastDetection();
+            return;
+          }
+          if (data.cooldown) return;
+          const msg = String(data.message || data.error || '').trim();
+          // Do not show these notices on Capture UI.
+          if (
+            msg === 'This ceremony is time-in only. Attendance already recorded.'
+          ) {
+            alreadyTimeInUntilMs = Date.now() + 3500;
+            return;
+          }
+          if (msg === 'Time out is not open yet. Please scan during the allowed time-out window.') {
+            alreadyTimeInUntilMs = Date.now() + 3500;
+            return;
+          }
+          if (msg === 'Already timed out for this event today.') {
+            alreadyTimeOutUntilMs = Date.now() + 3500;
+            return;
+          }
+          if (msg === 'Employee not found') {
+            return;
+          }
+          showNotice(msg || 'Could not record attendance.', data.no_active_event ? 'info' : 'error');
+        })
+        .catch(() => {})
+        .then(() => {
+          isRecognizing = false;
+          loggingInFlight = false;
+          clearTimeout(timeoutId);
+        });
+    }
+
+    function runFacePose() {
+      if (!cameraFeed || !cameraFeed.srcObject) return;
+      if (isPoseRunning) return;
+      isPoseRunning = true;
+      const img = captureFrameForPose();
+      if (!img) { isPoseRunning = false; return; }
+      const ctrl = new AbortController();
+      const timeoutId = setTimeout(function () {
+        try { ctrl.abort(); } catch (e) {}
+      }, 900);
+      fetch(FACE_POSE_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: img }),
+        signal: ctrl.signal
+      })
+        .then(res => res.json())
+        .then(p => {
+          if (p && p.detected && p.box && p.frame) {
+            lastFaceBox = { box: p.box, frame: p.frame, ts: Date.now(), source: 'pose' };
+          } else if (lastFaceBox && lastFaceBox.source === 'pose') {
+            // Clear stale backend box quickly when backend says no face.
+            lastFaceBox = null;
+          }
+        })
+        .catch(() => {})
+        .then(() => {
+          clearTimeout(timeoutId);
+          isPoseRunning = false;
+        });
+    }
+
+    function initLocalFaceDetector() {
+      // Disabled intentionally: local detector produced false-positive ghost boxes.
+      return false;
+      if (!('FaceDetector' in window)) return false;
+      if (!localFaceDetector) {
+        try {
+          localFaceDetector = new window.FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
+        } catch (e) {
+          localFaceDetector = null;
+          return false;
+        }
+      }
+      return !!localFaceDetector;
+    }
+
+    function runLocalFaceDetect() {
+      if (!localFaceDetector || !cameraFeed || !cameraFeed.srcObject) return;
+      if (isLocalFaceRunning) return;
+      if (!cameraFeed.videoWidth || !cameraFeed.videoHeight || cameraFeed.readyState < 2) return;
+      isLocalFaceRunning = true;
+      localFaceDetector.detect(cameraFeed)
+        .then(function (faces) {
+          if (!faces || !faces.length) {
+            localFaceMissStreak += 1;
+            if (localFaceMissStreak >= 2 && lastFaceBox && lastFaceBox.source === 'local') {
+              lastFaceBox = null;
+            }
+            return;
+          }
+          var bb = faces[0].boundingBox;
+          if (!bb) {
+            localFaceMissStreak += 1;
+            return;
+          }
+          var fw = Math.max(1, cameraFeed.videoWidth);
+          var fh = Math.max(1, cameraFeed.videoHeight);
+          var areaRatio = (bb.width * bb.height) / (fw * fh);
+          var aspect = bb.width / Math.max(1, bb.height);
+          // Reject obvious false positives so the box doesn't jump randomly.
+          if (areaRatio < 0.015 || areaRatio > 0.75 || aspect < 0.55 || aspect > 1.85) {
+            localFaceMissStreak += 1;
+            if (localFaceMissStreak >= 2 && lastFaceBox && lastFaceBox.source === 'local') {
+              lastFaceBox = null;
+            }
+            return;
+          }
+          localFaceMissStreak = 0;
+          lastFaceBox = {
+            box: {
+              x: Math.max(0, Math.round(bb.x)),
+              y: Math.max(0, Math.round(bb.y)),
+              w: Math.max(1, Math.round(bb.width)),
+              h: Math.max(1, Math.round(bb.height))
+            },
+            frame: { w: cameraFeed.videoWidth, h: cameraFeed.videoHeight },
+            ts: Date.now(),
+            source: 'local'
+          };
+        })
+        .catch(function () {})
+        .then(function () {
+          isLocalFaceRunning = false;
+        });
+    }
+
+    function startLocalFaceLoop() {
+      if (!initLocalFaceDetector()) return;
+      if (localFaceInterval) clearInterval(localFaceInterval);
+      runLocalFaceDetect();
+      localFaceInterval = setInterval(runLocalFaceDetect, 120);
+    }
+
+    function stopLocalFaceLoop() {
+      if (localFaceInterval) {
+        clearInterval(localFaceInterval);
+        localFaceInterval = null;
+      }
+      isLocalFaceRunning = false;
+      localFaceMissStreak = 0;
+    }
+
+    function runQrScan() {
+      if (isQrScanning) return;
+      if (Date.now() < alreadyTimeOutUntilMs) return;
+      if (Date.now() < alreadyTimeInUntilMs) return; // prevent flicker during "already time in" cooldown
+      const img = captureFrameForQr();
+      if (!img) return;
+      isQrScanning = true;
+
+      fetch(QR_DECODE_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: img })
+      })
+        .then(res => res.json())
+        .then(qr => {
+          if (!qr || !qr.found || !qr.qr_content) return null;
+          if (qr.points && qr.frame) {
+            lastQr = { points: qr.points, frame: qr.frame, ts: Date.now() };
+          }
+          const raw = String(qr.qr_content || '');
+          const now = Date.now();
+          if (raw === lastQrValue && (now - lastQrTs) < 2000) return null;
+          lastQrValue = raw;
+          lastQrTs = now;
+          const fd = new FormData();
+          fd.append('qr_content', raw);
+          fd.append('client_now', new Date().toISOString());
+          fd.append('client_tz_offset_min', String(new Date().getTimezoneOffset()));
+          loggingInFlight = true;
+          return fetch('ajax/log_attendance.php', { method: 'POST', body: fd });
+        })
+        .then(res => res ? res.json() : null)
+        .then(data => {
+          if (!data) return;
+          if (data.success) {
+            loadRecentDetections();
+            return;
+          }
+          if (data.cooldown) return;
+          const msg = String(data.message || data.error || '').trim();
+          // Do not show these notices on Capture UI.
+          if (
+            msg === 'This ceremony is time-in only. Attendance already recorded.'
+          ) {
+            alreadyTimeInUntilMs = Date.now() + 3500;
+            return;
+          }
+          if (msg === 'Time out is not open yet. Please scan during the allowed time-out window.') {
+            alreadyTimeInUntilMs = Date.now() + 3500;
+            return;
+          }
+          if (msg === 'Already timed out for this event today.') {
+            alreadyTimeOutUntilMs = Date.now() + 3500;
+            return;
+          }
+          if (msg === 'Employee not found') {
+            return;
+          }
+          showNotice(msg || 'Could not record attendance.', data.no_active_event ? 'info' : 'error');
+        })
+        .catch(() => {})
+        .then(() => {
+          isQrScanning = false;
+          loggingInFlight = false;
+        });
+    }
+
+    let detectionsInterval = null;
+
+    btnStart.addEventListener('click', async () => {
+      try {
+        if (currentAssistMode === 'camera') {
+          stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 }, audio: false });
+          cameraFeed.srcObject = stream;
+          cameraFeed.style.display = 'block';
+          cameraPlaceholder.style.display = 'none';
+          btnStart.disabled = true;
+          btnStop.disabled = false;
+          startTimer();
+          loadRecentDetections();
+          loadCurrentEvent();
+          if (detectionsInterval) clearInterval(detectionsInterval);
+          detectionsInterval = setInterval(loadRecentDetections, 5000);
+          if (currentEventInterval) clearInterval(currentEventInterval);
+          currentEventInterval = setInterval(loadCurrentEvent, 5000);
+          function startRecognitionLoop() {
+            if (recognitionInterval) return;
+            recognitionInterval = setInterval(runRecognition, RECOGNIZE_INTERVAL_MS);
+          }
+          function startQrLoop() {
+            if (qrInterval) return;
+            // QR scan is heavier; run slower than face recognition
+            qrInterval = setInterval(runQrScan, 1000);
+          }
+          if (cameraFeed.readyState >= 2) {
+            cameraFeed.play && cameraFeed.play();
+            startLocalFaceLoop();
+            setTimeout(startRecognitionLoop, 200);
+            setTimeout(startQrLoop, 1500);
+            if (poseInterval) clearInterval(poseInterval);
+            runFacePose();
+            setTimeout(runFacePose, 120);
+            setTimeout(runFacePose, 240);
+            setTimeout(runFacePose, 360);
+            poseInterval = setInterval(runFacePose, FACE_POSE_INTERVAL_MS);
+            drawOverlay();
+          } else {
+            cameraFeed.onloadeddata = () => {
+              cameraFeed.play && cameraFeed.play();
+              startLocalFaceLoop();
+              setTimeout(startRecognitionLoop, 200);
+              setTimeout(startQrLoop, 1500);
+              if (poseInterval) clearInterval(poseInterval);
+              runFacePose();
+              setTimeout(runFacePose, 120);
+              setTimeout(runFacePose, 240);
+              setTimeout(runFacePose, 360);
+              poseInterval = setInterval(runFacePose, FACE_POSE_INTERVAL_MS);
+              drawOverlay();
+            };
+          }
+          return;
+        }
+
+        // Manual mode: no camera capture; we just start/resume UI timers + refresh intervals.
+        if (currentAssistMode === 'manual') {
+          setManualMode(true);
+          btnStart.disabled = true;
+          btnStop.disabled = false;
+          startTimer();
+          loadRecentDetections();
+          loadCurrentEvent();
+          if (detectionsInterval) clearInterval(detectionsInterval);
+          detectionsInterval = setInterval(loadRecentDetections, 5000);
+          if (currentEventInterval) clearInterval(currentEventInterval);
+          currentEventInterval = setInterval(loadCurrentEvent, 5000);
+          return;
+        }
+
+        // Mobile QR mode: start/resume server-side polling.
+        if (currentAssistMode === 'mobileqr') {
+          var hasQrMarkup = !!manualModeView.querySelector('#madQrEmptyState');
+          if (!hasQrMarkup) {
+            // Ensure markup exists before starting polling.
+            setMobileQrMode(true);
+          } else if (!mobileQrPollTimer) {
+            initMobileQrScanner();
+          }
+
+          btnStart.disabled = true;
+          btnStop.disabled = false;
+          startTimer();
+          loadRecentDetections();
+          loadCurrentEvent();
+          if (detectionsInterval) clearInterval(detectionsInterval);
+          detectionsInterval = setInterval(loadRecentDetections, 5000);
+          if (currentEventInterval) clearInterval(currentEventInterval);
+          currentEventInterval = setInterval(loadCurrentEvent, 5000);
+          return;
+        }
+      } catch (err) {
+        console.error('Camera error:', err);
+        alert('Could not open camera: ' + err.message);
+      }
+    });
+
+    btnStop.addEventListener('click', () => {
+      // Camera: full stop (camera + all loops + timer + intervals)
+      if (currentAssistMode === 'camera') {
+        stopCameraFully();
+        return;
+      }
+
+      // Manual: stop only timers + right-side polling (no recognition loops expected in manual mode)
+      stopTimer();
+      if (detectionsInterval) {
+        clearInterval(detectionsInterval);
+        detectionsInterval = null;
+      }
+      if (recognitionInterval) {
+        clearInterval(recognitionInterval);
+        recognitionInterval = null;
+      }
+      if (qrInterval) {
+        clearInterval(qrInterval);
+        qrInterval = null;
+      }
+      if (poseInterval) {
+        clearInterval(poseInterval);
+        poseInterval = null;
+      }
+      if (currentEventInterval) {
+        clearInterval(currentEventInterval);
+        currentEventInterval = null;
+      }
+      if (currentAssistMode === 'mobileqr') {
+        stopMobileQrScanner();
+        if (typeof setMobileQrStatus === 'function') {
+          setMobileQrStatus('waiting', 'Press Start to begin scanning again...');
+        }
+      }
+
+      btnStart.disabled = false;
+      btnStop.disabled = true;
+    });
+
+    loadRecentDetections();
+    loadCurrentEvent();
+    startTimer();
+
+    // Refresh event immediately when tab becomes active again.
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) loadCurrentEvent();
+    });
+    window.addEventListener('focus', function () {
+      loadCurrentEvent();
+    });
+  </script>
+</body>
+</html>

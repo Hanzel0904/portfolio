@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request History</title>
+  <link rel="stylesheet" href="dashb-gso.css" />
+  <style>
+    :root {
+      --primary-color: #1e40af;
+      --secondary-color: #3b82f6;
+      --accent-color: #60a5fa;
+      --light-color: #f0f9ff;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --text-dark: #1f2937;
+      --text-light: #6b7280;
+      --border-color: #e5e7eb;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius-sm: 0.25rem;
+      --radius-md: 0.375rem;
+      --radius-lg: 0.5rem;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .history-container {
+      background-color: white;
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      box-shadow: var(--shadow-md);
+      width: 96%;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .section-header h2 {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .section-header p {
+      color: var(--text-light);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .table-container {
+      width: 96%;
+      overflow-x: auto;
+      background: white;
+      padding: 20px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 30px;
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9fafb;
+    }
+
+    tr:hover {
+      background-color: #f0f9ff;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .status-pending {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-delivered {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-out-of-stock {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-approved {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .search-container {
+      margin-bottom: 25px;
+      display: flex;
+      gap: 10px;
+      width: 98%;
+      margin-left: 1px;
+      margin-right: auto;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px 20px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .no-records {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-light);
+      font-style: italic;
+      background-color: #f9fafb;
+      border-radius: var(--radius-md);
+      margin-top: 20px;
+      display: none;
+    }
+
+    @media (max-width: 1024px) {
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .history-container {
+        padding: 20px;
+      }
+      
+      table {
+        font-size: 0.8rem;
+      }
+      
+      th, td {
+        padding: 8px 12px;
+      }
+      
+      .search-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="sidebar"><h3>Department Portal</h3><div class="user-info"><div class="user-name">Demo account</div><div class="dept-info">Sample office</div></div><ul><li><a href="user_dashboard.html"><span>Dashboard</span></a></li><li><a href="user_add_PLP.html"><span>Request form</span></a></li><li><a href="user_history.html"><span>History</span></a></li><li><a href="user_settings.html"><span>Settings</span></a></li><li><a href="index.html"><span>Logout</span></a></li></ul></div>
+
+<div class="main-content">
+  <div class="history-container">
+    <div class="section-header">
+      <h2>Request History</h2>
+      <p>View all your past requests and their status</p>
+    </div>
+
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search by item name, RIS No, or description..." onkeyup="searchTable()">
+    </div>
+
+    <div class="table-container">
+      
+      <table id="requestsTable">
+        <thead>
+          <tr>
+            <th>RIS No</th>
+            <th>Item Name</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Requested Date</th>
+            <th>Status</th>
+            <th>Delivered Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+              
+                <span class="status-badge status-pending">PENDING</span>
+              
+                <span class="status-badge status-delivered">DELIVERED</span>
+              
+                <span class="status-badge status-out-of-stock">OUT OF STOCK</span>
+              
+                <span class="status-badge status-approved">APPROVED</span>
+              
+                <span class="status-badge"></span>
+              
+            </td>
+            <td></td>
+          </tr>
+          
+        </tbody>
+      </table>
+      <div class="no-records" style="display: none;">No matching records found.</div>
+      
+        <p class="no-records">No request history found.</p>
+      
+    </div>
+  </div>
+</div>
+
+<script>
+function searchTable() {
+  const input = document.getElementById('searchInput');
+  const filter = input.value.toUpperCase();
+  const table = document.getElementById('requestsTable');
+  
+  if (!table) return;
+  
+  const tr = table.getElementsByTagName('tr');
+  let anyVisible = false;
+  const noRecordsMsg = document.querySelector('.no-records');
+
+  // Start from 1 to skip header row
+  for (let i = 1; i < tr.length; i++) {
+    let found = false;
+    const td = tr[i].getElementsByTagName('td');
+    
+    for (let j = 0; j < td.length; j++) {
+      if (td[j]) {
+        const txtValue = td[j].textContent || td[j].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          found = true;
+          break;
+        }
+      }
+    }
+    
+    if (found) {
+      tr[i].style.display = '';
+      anyVisible = true;
+    } else {
+      tr[i].style.display = 'none';
+    }
+  }
+
+  // Show/hide no records message
+  if (noRecordsMsg) {
+    if (filter.length > 0 && !anyVisible) {
+      noRecordsMsg.style.display = 'block';
+    } else {
+      noRecordsMsg.style.display = 'none';
+    }
+  }
+}
+
+// Initialize the search on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Add event listener for search input
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('keyup', searchTable);
+  }
+});
+</script>
+</body>
+</html>

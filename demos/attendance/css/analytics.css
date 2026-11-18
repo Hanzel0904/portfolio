@@ -1,0 +1,164 @@
+/* Analytics page styles aligned with module consistency */
+:root {
+  --an-accent: #1a7a40;
+  --an-accent-hover: #145c30;
+  --an-bg: #f4f6f9;
+  --an-border: #e5e7eb;
+  --an-card-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+body {
+  background: var(--an-bg);
+}
+
+.analytics-content {
+  max-width: none;
+  margin: 0;
+  padding: 32px 40px 48px;
+}
+
+.analytics-toolbar {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid var(--an-border);
+  box-shadow: var(--an-card-shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.analytics-toolbar-left h2 {
+  font-size: 1rem;
+  color: var(--gray-900);
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.analytics-toolbar-left span {
+  color: var(--gray-500);
+  font-size: 0.88rem;
+}
+
+.analytics-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+/* Keep 5 KPI decks in one row on desktop */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.period-select {
+  padding: 0.58rem 0.85rem;
+  border: 1px solid var(--an-border);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--gray-600);
+  font-size: 0.88rem;
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.62rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--an-accent);
+  color: var(--white);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.export-btn:hover {
+  background: var(--an-accent-hover);
+}
+
+.analytics-stat-icon {
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0.95;
+}
+.analytics-stat-icon.arrivals { color: var(--an-accent); }
+.analytics-stat-icon.exits { color: #d97706; }
+.analytics-stat-icon.attendance { color: #2563eb; }
+.analytics-stat-icon.late { color: #dc2626; }
+.analytics-stat-icon.absent { color: #b91c1c; }
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem;
+}
+
+.chart-card {
+  margin-bottom: 0;
+  padding: 1.1rem;
+  border-radius: 10px;
+  border: 1px solid var(--an-border);
+  box-shadow: var(--an-card-shadow);
+}
+
+.chart-card h3 {
+  font-size: 0.96rem;
+  margin-bottom: 0.8rem;
+  color: var(--gray-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-info h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chart-container {
+  height: 290px;
+}
+
+@media (max-width: 1200px) {
+  .stats-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .analytics-content {
+    padding: 24px 20px 40px;
+  }
+
+  .analytics-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .analytics-controls {
+    width: 100%;
+  }
+
+  .period-select,
+  .export-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+

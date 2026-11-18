@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLP GSO Supply Tracking and Monitoring System</title>
+  
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons@4.29.0/dist/feather.min.js"></script>
+  
+  <style>
+    :root {
+      --primary: #2f80ed;
+      --primary-hover: #1c6dd0;
+      --background: #f4f7f8;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --border: #e0e0e0;
+      --border-radius: 12px;
+      --shadow: 0 6px 20px rgba(0, 0, 102, 0.12);
+      --error-color: #e74c3c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      font-family: 'Raleway', sans-serif;
+      padding: 2rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 2.5rem;
+      width: 100%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Error message container */
+    .error-container {
+      background-color: rgba(231, 76, 60, 0.1);
+      border-left: 4px solid var(--error-color);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 4px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .error-container ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--error-color);
+    }
+
+    .error-container li {
+      margin-bottom: 0.5rem;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-control {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .form-control.full {
+      grid-column: span 2;
+    }
+
+    .label-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .label-icon {
+      color: var(--primary);
+      width: 18px;
+      height: 18px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .required-field::after {
+      content: " *";
+      color: #e74c3c;
+    }
+
+    input {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(47, 128, 237, 0.2);
+    }
+
+    /* Form validation styles */
+    input:invalid:not(:placeholder-shown) {
+      border-left: 3px solid var(--error-color);
+    }
+
+    /* Password strength indicator */
+    .password-strength-container {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+    }
+    
+    .password-strength-bar {
+      height: 4px;
+      background-color: #ddd;
+      border-radius: 2px;
+      margin-top: 4px;
+    }
+    
+    .password-strength-progress {
+      height: 100%;
+      width: 0;
+      border-radius: 2px;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    /* Tooltip */
+    .input-tooltip {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #888;
+      cursor: help;
+    }
+    
+    .input-tooltip:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      right: 0;
+      background: var(--text);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      width: 150px;
+      z-index: 10;
+    }
+    
+    .input-tooltip:hover::before {
+      content: '';
+      position: absolute;
+      bottom: 75%;
+      right: 5px;
+      border: 8px solid transparent;
+      border-top-color: var(--text);
+      z-index: 10;
+    }
+
+    .submit-btn {
+      padding: 0.9rem 2rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      display: block;
+      margin-left: auto;
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .submit-btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .info-message {
+      margin-top: 1.5rem;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .info-message a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .info-message a:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-control.full {
+        grid-column: span 1;
+      }
+
+      .container {
+        padding: 1.5rem;
+      }
+
+      body {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Create Account</h1>
+    </div>
+
+    
+    <div class="error-container">
+      <ul>
+        
+          <li></li>
+        
+      </ul>
+    </div>
+    
+
+    <form id="registerForm" action="#" method="POST" onsubmit="return false;">
+      <div class="form-section">
+        <h2 class="section-title">Personal Information</h2>
+        <div class="form-grid">
+          <div class="form-control">
+            <div class="label-container">
+              <i data-feather="user" class="label-icon"></i>
+              <label for="fname" class="required-field">First Name</label>
+            </div>
+            <input type="text" id="fname" name="fname" value="" placeholder="Enter your first name" required>
+          </div>
+
+          <div class="form-control">
+            <div class="label-container">
+              <i data-feather="user" class="label-icon"></i>
+              <label for="lname" class="required-field">Last Name</label>
+            </div>
+            <input type="text" id="lname" name="lname" value="" placeholder="Enter your last name" required>
+          </div>
+
+          <div class="form-control">
+            <div class="label-container">
+              <i data-feather="briefcase" class="label-icon"></i>
+              <label for="department" class="required-field">Department</label>
+            </div>
+            <input type="text" id="department" name="department" value="" placeholder="Enter your department" required>
+          </div>
+
+          <div class="form-control">
+            <div class="label-container">
+              <i data-feather="calendar" class="label-icon"></i>
+              <label for="dob" class="required-field">Date of Birth</label>
+            </div>
+            <input type="date" id="dob" name="dob" value="" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2 class="section-title">Account Information</h2>
+        <div class="form-grid">
+          <div class="form-control">
+            <div class="label-container">
+              <i data-feather="mail" class="label-icon"></i>
+              <label for="email" class="required-field">Email</label>
+            </div>
+            <input type="email" id="email" name="email" value="" placeholder="Enter your email address" required>
+          </div>
+
+          <div class="form-control">
+            <div class="label-container">
+              <i data-feather="user" class="label-icon"></i>
+              <label for="username" class="required-field">Username</label>
+            </div>
+            <input type="text" id="username" name="username" value="" placeholder="Choose a username" required>
+          </div>
+
+          <div class="form-control">
+            <div class="label-container">
+              <i data-feather="lock" class="label-icon"></i>
+              <label for="password" class="required-field">Password</label>
+            </div>
+            <div class="input-container">
+              <input type="password" id="password" name="password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" placeholder="Create a strong password" title="Must contain at least one number, one uppercase and lowercase letter, and at least 8 characters">
+              <span class="input-tooltip" data-tooltip="Password must be at least 8 characters with numbers, uppercase and lowercase letters">?</span>
+            </div>
+            <div class="password-strength-container">
+              <div id="password-strength">Password strength</div>
+              <div class="password-strength-bar">
+                <div id="password-strength-bar" class="password-strength-progress"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-control">
+            <div class="label-container">
+              <i data-feather="lock" class="label-icon"></i>
+              <label for="confirm_password" class="required-field">Confirm Password</label>
+            </div>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: flex-end;">
+        <div class="info-message">
+          Already have an account? <a href="index.html">Login</a>
+        </div>
+          <button type="submit" class="submit-btn">
+            <i data-feather="user-plus"></i>
+             Create Account
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Feather Icons
+      if (typeof feather !== 'undefined') {
+        feather.replace();
+      }
+      
+      // Form validation
+      const form = document.getElementById('registerForm');
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirm_password');
+      
+      // Password strength indicator
+      if (password) {
+        password.addEventListener('input', function() {
+          const strength = checkPasswordStrength(this.value);
+          updatePasswordStrengthIndicator(strength);
+        });
+      }
+      
+      // Password matching validation
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          if (password && confirmPassword && password.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert("Passwords don't match!");
+            confirmPassword.focus();
+          }
+        });
+      }
+    });
+    
+    // Password strength checker function
+    function checkPasswordStrength(password) {
+      let strength = 0;
+      if (password.length >= 8) strength += 1;
+      if (password.match(/[A-Z]/)) strength += 1;
+      if (password.match(/[a-z]/)) strength += 1;
+      if (password.match(/[0-9]/)) strength += 1;
+      if (password.match(/[^A-Za-z0-9]/)) strength += 1;
+      return strength;
+    }
+    
+    function updatePasswordStrengthIndicator(strength) {
+      const strengthIndicator = document.getElementById('password-strength');
+      
+      if (!strengthIndicator) return;
+      
+      const strengthMessages = [
+        'Very weak',
+        'Weak',
+        'Medium',
+        'Strong',
+        'Very strong'
+      ];
+      
+      const strengthColors = [
+        '#ff4d4d',
+        '#ffa64d',
+        '#ffff4d',
+        '#4dff4d',
+        '#4dffff'
+      ];
+      
+      strengthIndicator.textContent = strengthMessages[strength];
+      strengthIndicator.style.color = strengthColors[strength];
+      
+      // Update the progress bar
+      const progressBar = document.getElementById('password-strength-bar');
+      if (progressBar) {
+        progressBar.style.width = `${(strength + 1) * 20}%`;
+        progressBar.style.backgroundColor = strengthColors[strength];
+      }
+    }
+  </script>
+</body>
+</html>

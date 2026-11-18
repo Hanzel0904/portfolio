@@ -1,0 +1,534 @@
+:root {
+  --plp-green: #14833b;
+  --plp-green-dark: #0f6a30;
+  --nav-bg: #ffffff;
+  --page-bg: #f4f6f9;
+  --card-bg: #ffffff;
+  --border-color: #e0e4eb;
+  --text-main: #1d2939;
+  --text-muted: #667085;
+  --input-bg: #f9fafb;
+  --input-border: #d0d5dd;
+  --danger: #d92d20;
+
+  --green: #1a7c3e;
+  --green-light: #dcfce7;
+  --green-dark: #0f5132;
+  --blue: #2563eb;
+  --blue-hover: #1d4ed8;
+  --gray-900: #1a1a2e;
+  --gray-600: #475569;
+  --gray-500: #64748b;
+  --gray-400: #94a3b8;
+  --gray-200: #e2e8f0;
+  --gray-100: #f1f5f9;
+  --gray-50: #f8fafc;
+  --white: #ffffff;
+  --bg-page: #f5f6f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background-color: var(--page-bg);
+  color: var(--text-main);
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: 2.5rem 3.5rem 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.content-inner {
+  width: 100%;
+  max-width: 1120px;
+}
+
+.card {
+  background-color: var(--card-bg);
+  border-radius: 18px;
+  border: 1px solid var(--border-color);
+  padding: 1.75rem 2rem 1.75rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+  gap: 2rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  overflow: visible;
+}
+
+.card-header {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.card-subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.card-required {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-top: 0.2rem;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.1rem;
+}
+
+/* Face capture column – hiwalay sa form, walang overlap */
+.face-column,
+.info-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.info-column {
+  overflow: visible;
+}
+
+.face-column {
+  position: relative;
+  z-index: 0;
+}
+
+/* Frame: fixed 300px – walang resize kapag camera on o off */
+.face-frame {
+  position: relative;
+  border-radius: 16px;
+  border: 1px dashed #cbd5e1;
+  background-color: #f9fafb;
+  width: 100%;
+  /* Let the frame stretch so its bottom roughly aligns
+     with the bottom of the form (phone number field),
+     but keep a sensible minimum height on smaller screens. */
+  min-height: 320px;
+  height: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  overflow: hidden;
+}
+
+.face-frame-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+}
+
+.face-frame-icon .icon {
+  width: 26px;
+  height: 26px;
+}
+
+.face-frame-text-main {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.face-helper {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 0.6rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--plp-green);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+.btn-primary .icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.btn-primary:hover {
+  background-color: var(--plp-green-dark);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-primary:disabled {
+  background-color: #9ca3af;
+  color: #f3f4f6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary:disabled:hover {
+  background-color: #9ca3af;
+}
+
+/* Face frame states */
+.face-frame-default {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  flex: 1;
+}
+
+.face-frame-icon-done {
+  display: none;
+  background-color: var(--green-light);
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+
+.face-frame.face-captured .face-frame-icon-default {
+  display: none;
+}
+
+.face-frame.face-captured .face-frame-icon-done {
+  display: flex;
+}
+
+.face-frame.face-captured .face-frame-text-main {
+  color: var(--green-dark);
+  font-weight: 500;
+}
+
+/* Face capture inline – exact same size as face-frame, no resize */
+.face-frame-capture {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.face-frame-capture[aria-hidden="true"] {
+  display: none !important;
+}
+
+/* Video fills face-frame exactly – walang resize */
+.face-capture-video-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  background: #111;
+  overflow: hidden;
+  /* Mirror: tinaas kanan = kanan sa screen (parang salamin) */
+  transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+}
+
+.face-capture-video-wrap video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Canvas: hidden – ginagamit lang para sa API, hindi para display */
+.face-capture-video-wrap canvas {
+  position: absolute;
+  left: -9999px;
+  visibility: hidden;
+}
+
+.face-capture-oval {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 72%;
+  max-width: 160px;
+  aspect-ratio: 3/4;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+}
+
+.face-focus-box {
+  position: absolute;
+  border: 2px solid rgba(37, 99, 235, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+  pointer-events: none;
+  display: none;
+}
+
+.face-focus-box.is-active {
+  display: block;
+}
+
+.face-pose-instruction {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%) scaleX(-1);
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.face-progress-wrap {
+  height: 6px;
+  flex-shrink: 0;
+  background: var(--gray-200);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.35rem 0;
+}
+
+.face-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--plp-green), var(--green-dark));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.face-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.face-capture-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  padding-bottom: 0.25rem;
+}
+
+.btn-face-cancel,
+.btn-face-done {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-face-cancel {
+  background: var(--gray-100);
+  color: var(--text-main);
+}
+
+.btn-face-cancel:hover {
+  background: var(--gray-200);
+}
+
+.btn-face-done {
+  background: var(--plp-green);
+  color: #fff;
+}
+
+.btn-face-done:hover:not(:disabled) {
+  background: var(--plp-green-dark);
+}
+
+.btn-face-done:disabled {
+  background: #9ca3af;
+  color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+/* Employee info form */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.required {
+  color: var(--danger);
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.9rem;
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+  color: var(--text-muted);
+}
+
+.input-element {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  padding: 0.6rem 1rem 0.6rem 2.4rem;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.input-element::placeholder {
+  color: #9ca3af;
+}
+
+.input-element:focus {
+  border-color: var(--plp-green);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(20, 131, 59, 0.28);
+}
+
+.input-element[readonly] {
+  background-color: #f1f5f9;
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.card-divider {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.5rem;
+}
+
+.card-actions {
+  grid-column: 1 / -1;
+  padding-top: 1.25rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.actions-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.actions-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-disabled {
+  padding: 0.7rem 1.8rem;
+  border-radius: 999px;
+  border: none;
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: not-allowed;
+}
+
+@media (max-width: 960px) {
+  .content {
+    padding-inline: 1.5rem;
+  }
+
+  .card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .content {
+    padding-inline: 1rem;
+  }
+
+  .card {
+    padding-inline: 1.25rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions-right {
+    justify-content: flex-end;
+  }
+}

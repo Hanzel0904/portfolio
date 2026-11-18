@@ -1,0 +1,1398 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLP Smart Attendance Monitoring - Security Portal v2.8</title>
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/employee_management.css">
+  <link rel="stylesheet" href="css/pdf_report_modal.css">
+  <link rel="stylesheet" href="css/department_select.css">
+  <link rel="stylesheet" href="css/action_feedback_modal.css">
+  <!-- Offline icon sprite -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;">
+    <defs>
+      <!-- Nav: Dashboard = 4-panel grid, Register = user+plus, Records = clipboard list -->
+      <path id="ico-dashboard" d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
+      <path id="ico-register" d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-2.2 0-6 1.1-6 3.3V18h12v-1.7c0-2.2-3.8-3.3-6-3.3zm5-9h1V4h2v1h1v2h-1v1h-2V7h-1V5z"/>
+      <path id="ico-records" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm0 2l4 4h-4V4zM6 20V4h2v4h8v2H6v10zm0-6h8v2H6v-2zm0 4h5v2H6v-2z"/>
+      <path id="ico-bars" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+      <path id="ico-user" d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/>
+      <path id="ico-upload" d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/>
+      <path id="ico-plus" d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6v-2z"/>
+      <path id="ico-users" d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3zm-8 0c1.7 0 3-1.3 3-3S9.7 5 8 5 5 6.3 5 8s1.3 3 3 3zm0 2c-2.2 0-6 1.1-6 3.3V18h12v-1.7c0-2.2-3.8-3.3-6-3.3zm8 0c-.3 0-.6 0-.9.1.6.9.9 1.9.9 2.9V18h6v-1.7c0-2.2-3.8-3.3-6-3.3z"/>
+      <path id="ico-check" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.4-1.4L10 14.2l7.6-7.6L19 8l-9 9z"/>
+      <path id="ico-search" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+      <path id="ico-filter" d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>
+      <path id="ico-calendar" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+      <path id="ico-building" d="M4 2h16v20H4V2zm2 2v4h4V4H6zm6 0v4h4V4h-4zm-6 6v4h4v-4H6zm6 0v4h4v-4h-4zm-6 6v2h4v-2H6zm6 0v2h4v-2h-4z"/>
+      <path id="ico-envelope" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+      <path id="ico-ellipsis" d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+      <path id="ico-total-employees" d="M4 4h6v2H4v12h16V6h-6V4h6c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm2 4h10v2H6V8zm0 4h10v2H6v-2zm0 4h6v2H6v-2z"/>
+    </defs>
+  </svg>
+</head>
+<body>
+
+<header class="plp-header" role="banner">
+  <a href="dashboard.html" class="plp-logo-wrap">
+    <div class="plp-logo-icon"><img src="assets/logo.png" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
+    <div class="plp-logo-text"><span class="plp-logo-title">PLP Smart Attendance</span><span class="plp-logo-sub">Demo</span></div>
+  </a>
+  <nav class="plp-nav">
+    <a class="plp-nav-link" href="dashboard.html"><span>Dashboard</span></a>
+    <a class="plp-nav-link" href="employee_registration.html"><span>Register</span></a>
+    <a class="plp-nav-link" href="records.html"><span>Records</span></a>
+    <a class="plp-nav-link" href="employee_management.html"><span>Employees</span></a>
+    <a class="plp-nav-link" href="capture.html"><span>Capture</span></a>
+    <a class="plp-nav-link" href="analytics.html"><span>Analytics</span></a>
+    <a class="plp-nav-link" href="audit_monitoring.html"><span>Audit</span></a>
+    <a class="plp-nav-link" href="system_settings.html"><span>Settings</span></a>
+    <a class="plp-nav-link" href="scanner.html"><span>Scanner</span></a><a class="plp-nav-link" href="manualAttendanceDesign.html"><span>Manual</span></a><a class="plp-nav-link" href="fullscreen.html"><span>Ceremony</span></a><a class="plp-nav-link" href="mobileQr_fullscreen.html"><span>Mobile QR</span></a>
+    <a class="plp-nav-link" href="index.html"><span>Logout</span></a>
+  </nav>
+</header>
+
+  
+
+  <main class="main">
+    <div class="toolbar">
+      <div class="toolbar-title">
+        <h2>Employee Management</h2>
+        <p>Manage employee records and attendance enrollment</p>
+      </div>
+      <div class="toolbar-actions">
+        <button type="button" class="btn btn-outline" id="btnBatchImport" aria-haspopup="dialog" aria-controls="modalBatchImport">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#ico-upload"/></svg> Batch Import
+        </button>
+        <a href="employee_registration.html" class="btn btn-primary">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#ico-plus"/></svg> Add Employee
+        </a>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-content">
+          <h3>Total Employees</h3>
+          <div class="value" id="deckTotalValue"></div>
+        </div>
+        <div class="card-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#ico-total-employees"/></svg>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-content">
+          <h3>Facial Recognition</h3>
+          <div class="value" id="deckFaceValue"></div>
+        </div>
+        <div class="card-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#ico-users"/></svg>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-content">
+          <h3 id="deckStatusLabel"></h3>
+          <div class="value" id="deckStatusValue"></div>
+        </div>
+        <div class="card-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#ico-check"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <section class="directory">
+      <div class="directory-header">
+        <h3>Employee Directory</h3>
+        <div class="search-filter">
+          <div class="search-wrap">
+            <svg class="icon" viewBox="0 0 24 24" style="pointer-events:none"><use href="#ico-search"/></svg>
+            <input type="search" id="employeeSearchInput" name="q" placeholder="Search employees..." aria-label="Search employees" autocomplete="off" value="">
+          </div>
+                    <!-- Archive Button -->
+          <a href="" 
+             class="filter-btn " 
+             id="archiveButton" 
+             title="">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                <path d="M4 4h16v2H4V4zm2 4h12v12H6V8zm2 2v8h8v-8H8z" fill="currentColor"/>
+              </svg>
+          </a>
+          <div class="filter-dropdown emp-reg-date-dropdown " id="empRegDateDropdown">
+            <button type="button" class="filter-btn" id="empRegDateToggle" aria-expanded="false" aria-haspopup="true" aria-controls="empRegDatePanel" title="">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-calendar"/></svg>
+            </button>
+            <div class="filter-dropdown-panel emp-reg-date-panel" id="empRegDatePanel" role="region" aria-label="Registration date filter" hidden>
+              <div class="filter-dropdown-section">
+                <div class="filter-dropdown-heading">Registration date</div>
+                <p class="emp-reg-date-hint">Show employees registered on the selected date or range.</p>
+                <div class="emp-reg-date-fields">
+                  <div class="emp-reg-date-field">
+                    <label for="emp-reg-date-from">Date</label>
+                    <input type="date" id="emp-reg-date-from" value="">
+                  </div>
+                  <label class="emp-reg-date-range-check">
+                    <input type="checkbox" id="emp-reg-date-range-enable"  />
+                    <span>Use date range (different end date)</span>
+                  </label>
+                  <div class="emp-reg-date-field emp-reg-date-to-row" id="emp-reg-date-to-row" >
+                    <label for="emp-reg-date-to">To</label>
+                    <input type="date" id="emp-reg-date-to" value="">
+                  </div>
+                </div>
+                <div class="emp-reg-date-actions">
+                  <button type="button" class="btn btn-outline emp-reg-date-clear" id="empRegDateClear">Clear</button>
+                  <button type="button" class="btn btn-primary emp-reg-date-apply" id="empRegDateApply">Apply</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="filter-dropdown " id="directoryFilterDropdown">
+            <button type="button" class="filter-btn" id="directoryFilterToggle" aria-expanded="false" aria-haspopup="true" aria-controls="directoryFilterPanel" title="Filter by department">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-filter"/></svg>
+            </button>
+            <div class="filter-dropdown-panel" id="directoryFilterPanel" role="region" aria-label="Department filter" hidden>
+              <div class="filter-dropdown-section">
+                <div class="filter-dropdown-heading" id="filterDeptHeading">Filter by department</div>
+                <ul class="filter-dept-list" role="listbox" aria-labelledby="filterDeptHeading">
+                  <li role="none">
+                    <a class="filter-dept-option" role="option" href="" aria-selected="">All departments</a>
+                  </li>
+                  
+                  
+                  
+                  <li role="none">
+                    <a class="filter-dept-option " role="option" href="" aria-selected=""></a>
+                  </li>
+                  
+                  
+                </ul>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary export-csv-btn" id="employeePdfExportBtn">
+            Download PDF
+          </button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Department</th>
+              <th>Email</th>
+              <th>Enrollment</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="employeeTableBody">
+            
+            <tr
+              class="employee-directory-row"
+              data-id=""
+              data-name=""
+              data-employee-id=""
+              data-email=""
+              data-department=""
+              data-position=""
+              data-status=""
+              data-enrollment=""
+            >
+              <td>
+                <div class="employee-cell">
+                  <div class="avatar">
+                    <span class="avatar-initials"></span>
+                  </div>
+                  <div>
+                    <div class="employee-name"></div>
+                    <div class="employee-id"></div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="dept-cell">
+                  <svg class="icon" viewBox="0 0 24 24"><use href="#ico-building"/></svg>
+                  <div>
+                    <div class="dept-name"></div>
+                    <div class="dept-title"></div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="contact-cell">
+                  <div class="email"><svg class="icon" viewBox="0 0 24 24"><use href="#ico-envelope"/></svg> </div>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex;align-items:center;justify-content:flex-start;gap:10px;min-height:28px;">
+                  
+                    <span title="Face enrolled" aria-label="Face enrolled" style="width:42px;height:26px;border-radius:999px;background:#dcfce7;border:1px solid #86efac;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:0.4px;color:#0f5132;font-family:inherit;">
+                      FACE
+                    </span>
+                  
+                  
+                    <span title="QR assigned" aria-label="QR assigned" style="width:38px;height:26px;border-radius:999px;background:#dcfce7;border:1px solid #86efac;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:0.4px;color:#0f5132;font-family:inherit;">
+                      QR
+                    </span>
+                  
+                  
+                    <span style="color:#94a3b8;">—</span>
+                  
+                </div>
+              </td>
+              <td><span class="badge "></span></td>
+              <td><button type="button" class="actions-btn" aria-label="Actions"><svg class="icon" viewBox="0 0 24 24"><use href="#ico-ellipsis"/></svg></button></td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="emp-pagination" style="justify-content:center; text-align:center;">
+        <span class="emp-pagination-info">
+          Showing – of 
+        </span>
+        <nav class="emp-pagination-nav" aria-label="Employee directory pages" style="justify-content:center;">
+          
+            <a href="" class="emp-page-link">Previous</a>
+          
+          
+            
+              <span class="emp-page-current" aria-current="page"></span>
+            
+              <a href="" class="emp-page-link"></a>
+            
+          
+          
+            <a href="" class="emp-page-link">Next</a>
+          
+        </nav>
+      </div>
+      
+    </section>
+
+       <!-- Row actions popover (three-dots menu) -->
+    <div class="row-actions-popover" id="rowActionsPopover" aria-hidden="true">
+      <button type="button" class="row-action-item" data-action="view">View Profile</button>
+      <button type="button" class="row-action-item" data-action="edit">Edit Details</button>
+      <button type="button" class="row-action-item" data-action="resend-qr">Resend QR</button>
+      <button type="button" class="row-action-item" data-action="enroll">Enroll Face</button>
+      <button type="button" class="row-action-item row-action-danger row-action-deactivate" data-action="deactivate">Deactivate</button>
+      <button type="button" class="row-action-item row-action-success row-action-activate" data-action="activate" style="display: none;">Activate</button>
+      <!-- NEW: Permanent Delete (only visible for archived employees) -->
+      <button type="button" class="row-action-item row-action-danger row-action-delete" data-action="delete" style="display: none;">Delete Permanently</button>
+    </div>
+
+    <!-- Modal backdrop -->
+    <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true"></div>
+
+    <!-- View Profile modal -->
+    <div class="modal" id="modalProfile" role="dialog" aria-modal="true" aria-labelledby="modalProfileTitle">
+      <div class="modal-dialog modal-dialog-wide">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modalProfileTitle">Employee Details</h2>
+          <button type="button" class="modal-close" data-close-modal>&times;</button>
+        </div>
+
+        <div class="modal-section modal-profile-header">
+          <div class="modal-avatar">
+            <img src="assets/icons/icon-person.png" alt="" />
+          </div>
+          <div class="modal-profile-main">
+            <div class="modal-profile-name" id="profileName">Employee Name</div>
+            <div class="modal-profile-id" id="profileEmployeeId">EMP-0000</div>
+            <span class="status-pill" id="profileStatusPill">Active</span>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h3 class="modal-section-title">Personal Information</h3>
+          <div class="modal-field">
+            <label>Full Name</label>
+            <div class="modal-field-box" id="profileFullName">Employee Name</div>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h3 class="modal-section-title">Contact Information</h3>
+          <div class="modal-field">
+            <label>Email Address</label>
+            <div class="modal-field-box" id="profileEmail">email@example.com</div>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h3 class="modal-section-title">Work Information</h3>
+          <div class="modal-field">
+            <label>Department</label>
+            <div class="modal-field-box" id="profileDepartment">Department name</div>
+          </div>
+          <div class="modal-field">
+            <label>Position</label>
+            <div class="modal-field-box" id="profilePosition">Position</div>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h3 class="modal-section-title">Enrollment Status</h3>
+          <div class="modal-enrollment-row">
+            <div class="enrollment-pill enrollment-pill-success">
+              <span class="enrollment-label">Face Recognition</span>
+              <span class="enrollment-status">Enrolled</span>
+            </div>
+            <div class="enrollment-pill enrollment-pill-success">
+              <span class="enrollment-label">QR Code</span>
+              <span class="enrollment-status">Assigned</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Employee modal -->
+    <div class="modal" id="modalEdit" role="dialog" aria-modal="true" aria-labelledby="modalEditTitle">
+      <div class="modal-dialog modal-dialog-narrow">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modalEditTitle">Edit Employee Details</h2>
+          <button type="button" class="modal-close" data-close-modal>&times;</button>
+        </div>
+
+        <form class="modal-form" id="editEmployeeForm" method="get" onsubmit="return false;">
+          <div class="modal-field">
+            <label for="editFullName">Full Name</label>
+            <input type="text" id="editFullName" name="full_name" required />
+          </div>
+
+          <div class="modal-field">
+            <label for="editEmployeeId">Employee ID</label>
+            <input type="text" id="editEmployeeId" name="employee_id" readonly />
+          </div>
+
+          <div class="modal-field">
+            <label for="editEmail">Email Address</label>
+            <input type="email" id="editEmail" name="email" />
+          </div>
+
+          
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Deactivate Employee modal -->
+    <div class="modal modal-danger" id="modalDeactivate" role="dialog" aria-modal="true" aria-labelledby="modalDeactivateTitle">
+      <div class="modal-dialog modal-dialog-wide">
+        <div class="modal-header">
+          <div class="modal-header-left">
+            <img src="assets/icons/icon-warning.png" alt="" class="modal-danger-icon" />
+            <h2 class="modal-title" id="modalDeactivateTitle">Deactivate Employee</h2>
+          </div>
+          <button type="button" class="modal-close" data-close-modal>&times;</button>
+        </div>
+
+        <div class="modal-section">
+          <p class="modal-danger-text">
+            Are you sure you want to deactivate this employee? This action will:
+          </p>
+          <ul class="modal-danger-list">
+            <li>Remove access to attendance recording</li>
+            <li>Disable face recognition enrollment</li>
+            <li>Invalidate assigned QR code</li>
+          </ul>
+        </div>
+
+        <div class="modal-section modal-deactivate-employee">
+          <div class="modal-avatar">
+            <img src="assets/icons/icon-person.png" alt="" />
+          </div>
+          <div class="modal-profile-main">
+            <div class="modal-profile-name" id="deactivateName">Employee Name</div>
+            <div class="modal-profile-id" id="deactivateEmployeeId">EMP-0000</div>
+          </div>
+        </div>
+
+        <p class="modal-deactivate-note">
+          This action can be reversed by reactivating the employee later.
+        </p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeactivateBtn">Deactivate Employee</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activate Employee modal -->
+    <div class="modal modal-success" id="modalActivate" role="dialog" aria-modal="true" aria-labelledby="modalActivateTitle">
+      <div class="modal-dialog modal-dialog-wide">
+        <div class="modal-header">
+          <div class="modal-header-left">
+            <span class="modal-success-icon" aria-hidden="true">✓</span>
+            <h2 class="modal-title" id="modalActivateTitle">Activate Employee</h2>
+          </div>
+          <button type="button" class="modal-close" data-close-modal>&times;</button>
+        </div>
+
+        <div class="modal-section">
+          <p class="modal-success-text">
+            Activate this employee to restore access. They will be able to:
+          </p>
+          <ul class="modal-success-list">
+            <li>Record attendance again</li>
+            <li>Use face recognition for check-in</li>
+            <li>Use their assigned QR code</li>
+          </ul>
+        </div>
+
+        <div class="modal-section modal-activate-employee">
+          <div class="modal-avatar">
+            <img src="assets/icons/icon-person.png" alt="" />
+          </div>
+          <div class="modal-profile-main">
+            <div class="modal-profile-name" id="activateName">Employee Name</div>
+            <div class="modal-profile-id" id="activateEmployeeId">EMP-0000</div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="button" class="btn btn-success" id="confirmActivateBtn">Activate Employee</button>
+        </div>
+      </div>
+    </div>
+    
+
+ <!-- Batch Import Employees modal -->
+<div class="modal" id="modalBatchImport" role="dialog" aria-modal="true" aria-labelledby="modalBatchImportTitle" aria-hidden="true">
+  <div class="modal-dialog" style="max-width: 520px;">
+    <div class="modal-header" style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray-200);">
+      <h2 class="modal-title" id="modalBatchImportTitle" style="font-size: 1.2rem; font-weight: 600;">Batch Import Employees</h2>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close" style="font-size: 1.5rem;">&times;</button>
+    </div>
+
+    <div style="padding: 1.5rem;">
+      <!-- Dropzone area -->
+      <div class="batch-drop-container" id="batchImportDropzone" style="
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        background: #f9fafb;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        position: relative;
+        margin-bottom: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      ">
+        <!-- Upload icon -->
+        <div style="margin-bottom: 1rem;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5">
+            <path d="M12 3v12m0 0-3-3m3 3 3-3M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke-linecap="round"/>
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" fill="none"/>
+          </svg>
+        </div>
+        <div class="batch-drop-text-main" style="font-weight: 500; color: #111827; margin-bottom: 0.25rem;">Drop Excel file here or click to browse</div>
+        <div class="batch-drop-text-sub" style="font-size: 0.85rem; color: #6b7280;">Supports .xlsx, .xls, and .csv formats</div>
+        <input type="file" id="batchImportFileInput" class="batch-hidden-input" accept=".xlsx,.xls,.csv" style="
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          cursor: pointer;
+        " />
+      </div>
+
+      <!-- Required columns info -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;margin-bottom:0.75rem;">
+          <p style="font-weight: 600; font-size: 0.9rem; color: #111827; margin: 0;">Required columns:</p>
+          <a href="employee_management.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem; white-space: nowrap;">Download Template</a>
+        </div>
+        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+          <li style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="color: #6b7280;">•</span>
+            <span><strong style="font-weight: 600;">Name</strong> - Full name</span>
+          </li>
+          <li style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="color: #6b7280;">•</span>
+            <span><strong style="font-weight: 600;">Employee ID</strong> - Employee ID code </span>
+          </li>
+           <li style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="color: #6b7280;">•</span>
+            <span><strong style="font-weight: 600;">Department</strong> - Department name</span>
+          </li>
+           <li style="display: flex; align-items: baseline; gap: 0.5rem;">
+            <span style="color: #6b7280;">•</span>
+            <span><strong style="font-weight: 600;">Position</strong> - Job title/position</span>
+          </li>
+          <li style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="color: #6b7280;">•</span>
+            <span><strong style="font-weight: 600;">Email</strong> - Valid email address</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="padding: 1rem 1.5rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--gray-200);">
+      <button type="button" class="btn btn-outline" data-close-modal style="padding: 0.5rem 1.25rem;">Cancel</button>
+      <button type="button" class="btn btn-primary" id="batchImportSaveBtn" style="padding: 0.5rem 1.5rem;">Save</button>
+    </div>
+  </div>
+</div>
+  </main>
+
+  
+
+  <div class="pdf-overlay" id="empPdfModalOverlay" aria-hidden="true">
+    <div class="pdf-modal" role="dialog" aria-modal="true" aria-labelledby="empPdfModalTitle">
+      <div class="pdf-modal-header">
+        <div class="pdf-modal-title" id="empPdfModalTitle">PDF export preview</div>
+        <button type="button" class="pdf-close-btn" id="empClosePdfModalBtn" aria-label="Close">&times;</button>
+      </div>
+      <div class="pdf-modal-body">
+        <div class="pdf-layout">
+          <div class="pdf-config-col">
+            <div class="pdf-section-row">
+              <div class="pdf-section-label">Left logos (3)</div>
+              <div class="pdf-mini-actions" aria-label="Logo history">
+                <button type="button" class="pdf-mini-btn" id="empPdfLogoUndoBtn" title="Undo" aria-label="Undo">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
+                </button>
+                <button type="button" class="pdf-mini-btn" id="empPdfLogoRedoBtn" title="Redo" aria-label="Redo">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"/></svg>
+                </button>
+                <button type="button" class="pdf-mini-btn pdf-mini-btn--wide" id="empPdfLogoResetBtn" title="Back to default logos" aria-label="Back to default logos">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+                    <path d="M3 4v5h5"></path>
+                  </svg>
+                  <span>Default</span>
+                </button>
+              </div>
+            </div>
+            <div class="pdf-logo-row">
+              <div class="pdf-logo-slot">
+                <div class="pdf-field"><label for="emp-f-l1">Logo 1</label></div>
+                <div class="pdf-logo-preview-box" id="emp-prev-l1"><img src="assets/pasig_seal.png" alt="Logo 1" /></div>
+                <input type="file" id="emp-f-l1" accept="image/*" style="display:none" />
+                <div class="pdf-upload-row">
+                  <label class="pdf-upload-btn" for="emp-f-l1">Upload</label>
+                  <button type="button" class="pdf-upload-btn" id="emp-rm-l1">Remove</button>
+                </div>
+              </div>
+              <div class="pdf-logo-slot">
+                <div class="pdf-field"><label for="emp-f-l2">Logo 2</label></div>
+                <div class="pdf-logo-preview-box" id="emp-prev-l2"><img src="assets/pasig_logo.png" alt="Logo 2" /></div>
+                <input type="file" id="emp-f-l2" accept="image/*" style="display:none" />
+                <div class="pdf-upload-row">
+                  <label class="pdf-upload-btn" for="emp-f-l2">Upload</label>
+                  <button type="button" class="pdf-upload-btn" id="emp-rm-l2">Remove</button>
+                </div>
+              </div>
+              <div class="pdf-logo-slot">
+                <div class="pdf-field"><label for="emp-f-l3">Logo 3</label></div>
+                <div class="pdf-logo-preview-box" id="emp-prev-l3"><img src="assets/logo.png" alt="Logo 3" /></div>
+                <input type="file" id="emp-f-l3" accept="image/*" style="display:none" />
+                <div class="pdf-upload-row">
+                  <label class="pdf-upload-btn" for="emp-f-l3">Upload</label>
+                  <button type="button" class="pdf-upload-btn" id="emp-rm-l3">Remove</button>
+                </div>
+              </div>
+            </div>
+            <div class="pdf-section-label">Right side header info</div>
+            <div class="pdf-fields">
+              <div class="pdf-field"><label for="emp-city-name">City / LGU name</label><input id="emp-city-name" value="PAMAHALAANG LUNGSOD NG PASIG" /></div>
+              <div class="pdf-field"><label for="emp-department-name">Department</label><input id="emp-department-name" value="Office of the Human Resource Development" /></div>
+              <div class="pdf-field"><label for="emp-address-line">Address</label><input id="emp-address-line" value="Alkalde Jose St. Kapasigan Pasig City, Philippines 1600" /></div>
+              <div class="pdf-field"><label for="emp-landline-line">Landline</label><input id="emp-landline-line" value="628-1014 Loc. 106" /></div>
+              <div class="pdf-field"><label for="emp-email-line">Email</label><input id="emp-email-line" value="hrd@plpasig.edu.ph" /></div>
+              <div class="pdf-field"><label for="emp-office-name">Office (report)</label><input id="emp-office-name" value="Human Resource Development" /></div>
+              <div class="pdf-field"><label for="emp-doc-date">As-of date</label><input id="emp-doc-date" type="date" value="" /></div>
+              <div class="pdf-field"><label for="emp-doc-subtitle">Filter / scope (label)</label><input id="emp-doc-subtitle" value="" /></div>
+              <div class="pdf-field"><label for="emp-recorded-by">Prepared by</label><input id="emp-recorded-by" value="HRD Personnel" /></div>
+              <div class="pdf-field"><label for="emp-head-of-office-name">Head of Office (printed name)</label><input id="emp-head-of-office-name" value="" /></div>
+            </div>
+          </div>
+          <div class="pdf-preview-col">
+            <div class="doc-preview-label">Print preview</div>
+            <div class="pdf-preview-wrap">
+              <div class="pdf-preview" id="emp-doc-inner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pdf-modal-footer">
+        <button type="button" class="btn btn-outline" style="margin-right:8px" id="empCancelPdfModalBtn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="empDownloadPdfBtn">Download PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const EMP_PDF_ROWS = ;
+      const exportPdfBtn = document.getElementById('employeePdfExportBtn');
+      const overlay = document.getElementById('empPdfModalOverlay');
+      const closeBtn = document.getElementById('empClosePdfModalBtn');
+      const cancelBtn = document.getElementById('empCancelPdfModalBtn');
+      const downloadBtn = document.getElementById('empDownloadPdfBtn');
+      if (!exportPdfBtn || !overlay) return;
+
+      const LOGO_STORE_KEY = 'plp_records_pdf_logos_v1';
+      const defaultLogos = { l1: 'assets/pasig_seal.png', l2: 'assets/pasig_logo.png', l3: 'assets/logo.png' };
+      const logos = { l1: defaultLogos.l1, l2: defaultLogos.l2, l3: defaultLogos.l3 };
+      let logoHistory = [];
+      let logoHistoryIdx = -1;
+
+      function esc(s) {
+        return String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function cloneLogos() {
+        return { l1: String(logos.l1 || ''), l2: String(logos.l2 || ''), l3: String(logos.l3 || '') };
+      }
+
+      function savePersistedLogos() {
+        try { localStorage.setItem(LOGO_STORE_KEY, JSON.stringify(cloneLogos())); } catch (e) {}
+      }
+
+      function loadPersistedLogos() {
+        try {
+          const raw = localStorage.getItem(LOGO_STORE_KEY);
+          if (!raw) return null;
+          const obj = JSON.parse(raw);
+          if (!obj || typeof obj !== 'object') return null;
+          return { l1: String(obj.l1 || ''), l2: String(obj.l2 || ''), l3: String(obj.l3 || '') };
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function logoEl(key, label) {
+        var u = logos[key];
+        if (u) return '<img src="' + u + '" alt="' + esc(label) + '" />';
+        return '<div class="doc-logo-placeholder">' + esc(label) + '</div>';
+      }
+
+      function applyLogos(state) {
+        if (!state) return;
+        logos.l1 = String(state.l1 || '');
+        logos.l2 = String(state.l2 || '');
+        logos.l3 = String(state.l3 || '');
+        ['l1', 'l2', 'l3'].forEach(function (key, idx) {
+          const prev = document.getElementById('emp-prev-' + key);
+          if (!prev) return;
+          if (logos[key]) prev.innerHTML = '<img src="' + logos[key] + '" alt="" />';
+          else prev.innerHTML = '<div class="doc-logo-placeholder">LOGO ' + (idx + 1) + '</div>';
+        });
+        renderEmpPdfPreview();
+      }
+
+      function syncLogoHistoryButtons() {
+        const undoBtn = document.getElementById('empPdfLogoUndoBtn');
+        const redoBtn = document.getElementById('empPdfLogoRedoBtn');
+        if (undoBtn) undoBtn.disabled = !(logoHistoryIdx > 0);
+        if (redoBtn) redoBtn.disabled = !(logoHistoryIdx >= 0 && logoHistoryIdx < (logoHistory.length - 1));
+      }
+
+      function pushLogoHistory() {
+        const snap = cloneLogos();
+        if (logoHistoryIdx < logoHistory.length - 1) {
+          logoHistory = logoHistory.slice(0, logoHistoryIdx + 1);
+        }
+        logoHistory.push(snap);
+        logoHistoryIdx = logoHistory.length - 1;
+        syncLogoHistoryButtons();
+        savePersistedLogos();
+      }
+
+      function renderEmpPdfPreview() {
+        const target = document.getElementById('emp-doc-inner');
+        if (!target) return;
+        const city = (document.getElementById('emp-city-name') || {}).value || '';
+        const dept = (document.getElementById('emp-department-name') || {}).value || '';
+        const addr = (document.getElementById('emp-address-line') || {}).value || '';
+        const landline = (document.getElementById('emp-landline-line') || {}).value || '';
+        const email = (document.getElementById('emp-email-line') || {}).value || '';
+        const scopeLine = (document.getElementById('emp-doc-subtitle') || {}).value || '';
+        const office = (document.getElementById('emp-office-name') || {}).value || '';
+        const docDate = (document.getElementById('emp-doc-date') || {}).value || '';
+        const rec = (document.getElementById('emp-recorded-by') || {}).value || '';
+        const headName = (document.getElementById('emp-head-of-office-name') || {}).value || '';
+
+        const rows = Array.isArray(EMP_PDF_ROWS) ? EMP_PDF_ROWS : [];
+        const tableHead =
+          '<tr>' +
+          '<th class="center emp-pdf-col-no">No.</th>' +
+          '<th class="left emp-pdf-name-col">Name</th>' +
+          '<th class="left emp-pdf-col-id">Employee ID</th>' +
+          '<th class="left emp-pdf-col-email">Email</th>' +
+          '<th class="left emp-pdf-col-dept">Department</th>' +
+          '<th class="left emp-pdf-col-pos">Position</th>' +
+          '</tr>';
+        const rowsHtml = rows.length
+          ? rows.map(function (r) {
+            return '<tr>' +
+              '<td class="center emp-pdf-col-no">' + esc(String(r.no ?? '')) + '</td>' +
+              '<td class="left emp-pdf-name-col">' + esc(String(r.name ?? '')) + '</td>' +
+              '<td class="left emp-pdf-col-id">' + esc(String(r.employee_id ?? '')) + '</td>' +
+              '<td class="left emp-pdf-col-email">' + esc(String(r.email ?? '')) + '</td>' +
+              '<td class="left emp-pdf-col-dept">' + esc(String(r.department ?? '')) + '</td>' +
+              '<td class="left emp-pdf-col-pos">' + esc(String(r.position ?? '')) + '</td>' +
+              '</tr>';
+          }).join('')
+          : '<tr><td colspan="6" class="center">No employees match the current filters.</td></tr>';
+
+        const headerHtml =
+          '<div class="doc-header">' +
+            '<div class="doc-logos-left">' + logoEl('l1', 'LOGO 1') + logoEl('l2', 'LOGO 2') + logoEl('l3', 'LOGO 3') + '</div>' +
+            '<div class="doc-right-info"><div class="doc-right-city">' + esc(city) + '</div><div class="doc-right-dept">' + esc(dept) + '</div><div class="doc-right-addr">&#9679; ' + esc(addr) + '<br>&#9742; ' + esc(landline) + ' &nbsp;|&nbsp; &#9993; ' + esc(email) + '</div></div>' +
+          '</div>' +
+          '<hr class="doc-divider" />' +
+          '<div class="doc-ceremony-title">EMPLOYEE DIRECTORY</div>' +
+          '<div class="doc-date-line"><strong>SCOPE / FILTERS:</strong> ' + esc(scopeLine) + '</div>' +
+          '<div class="doc-office-line">OFFICE: <strong>' + esc(office) + '</strong></div>' +
+          '<div class="doc-date-line"><strong>AS OF:</strong> ' + esc(docDate) + '</div>';
+
+        const bodyHtml =
+          '<table class="doc-att-table emp-pdf-dir-table"><thead>' + tableHead + '</thead><tbody>' + rowsHtml + '</tbody></table>' +
+          '<div class="doc-footer-txt">Prepared by ' + esc(rec) + '</div>' +
+          '<div class="doc-sig-area"><div class="doc-sig-line"><div class="doc-sig-name">' + esc(headName) + '</div>' +
+          '<div class="doc-sig-caption">Signature Over Printed Name<br>Head of Office</div></div></div>';
+
+        target.innerHTML =
+          '<table class="an-doc-sheet" role="presentation"><thead><tr><td>' + headerHtml + '</td></tr></thead><tbody><tr><td>' + bodyHtml + '</td></tr></tbody></table>';
+      }
+
+      function wireLogoUi() {
+        ['l1', 'l2', 'l3'].forEach(function (key) {
+          const inp = document.getElementById('emp-f-' + key);
+          const rm = document.getElementById('emp-rm-' + key);
+          if (inp) {
+            inp.addEventListener('change', function () {
+              const f = inp.files && inp.files[0];
+              if (!f) return;
+              const r = new FileReader();
+              r.onload = function () {
+                logos[key] = String(r.result || '');
+                applyLogos(cloneLogos());
+                pushLogoHistory();
+              };
+              r.readAsDataURL(f);
+              inp.value = '';
+            });
+          }
+          if (rm) {
+            rm.addEventListener('click', function () {
+              logos[key] = '';
+              pushLogoHistory();
+              applyLogos(logoHistory[logoHistoryIdx]);
+            });
+          }
+        });
+        const undoBtn = document.getElementById('empPdfLogoUndoBtn');
+        const redoBtn = document.getElementById('empPdfLogoRedoBtn');
+        const resetBtn = document.getElementById('empPdfLogoResetBtn');
+        if (undoBtn) {
+          undoBtn.addEventListener('click', function () {
+            if (logoHistoryIdx <= 0) return;
+            logoHistoryIdx--;
+            applyLogos(logoHistory[logoHistoryIdx]);
+            syncLogoHistoryButtons();
+            savePersistedLogos();
+          });
+        }
+        if (redoBtn) {
+          redoBtn.addEventListener('click', function () {
+            if (logoHistoryIdx >= logoHistory.length - 1) return;
+            logoHistoryIdx++;
+            applyLogos(logoHistory[logoHistoryIdx]);
+            syncLogoHistoryButtons();
+            savePersistedLogos();
+          });
+        }
+        if (resetBtn) {
+          resetBtn.addEventListener('click', function () {
+            logoHistory = [];
+            logoHistoryIdx = -1;
+            applyLogos({ l1: defaultLogos.l1, l2: defaultLogos.l2, l3: defaultLogos.l3 });
+            pushLogoHistory();
+            syncLogoHistoryButtons();
+          });
+        }
+      }
+
+      function openModal() {
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+        logoHistory = [];
+        logoHistoryIdx = -1;
+        const saved = loadPersistedLogos();
+        applyLogos(saved || defaultLogos);
+        pushLogoHistory();
+        renderEmpPdfPreview();
+        syncLogoHistoryButtons();
+      }
+
+      function closeModal() {
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('modal-open');
+      }
+
+      function printEmpPdf() {
+        renderEmpPdfPreview();
+        const inner = (document.getElementById('emp-doc-inner') || {}).innerHTML || '';
+        const linkHref = document.querySelector('link[href*="pdf_report_modal.css"]');
+        const cssLink = linkHref ? ('<link rel="stylesheet" href="' + esc(linkHref.getAttribute('href')) + '" />') : '';
+        const printExtra =
+          '<style>' +
+          'html,body,*{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}' +
+          'body{margin:0;padding:0;background:#fff;color:#111;}' +
+          '#emp-doc-inner{padding:0;font-size:13.5px !important;}' +
+          '.doc-right-city{font-size:12.5px !important;}' +
+          '.doc-right-dept{font-size:13px !important;}' +
+          '.doc-right-addr{font-size:11.5px !important;}' +
+          '.doc-ceremony-title{font-size:18px !important;}' +
+          '.doc-date-line,.doc-office-line{font-size:13.5px !important;}' +
+          '.doc-instr{font-size:11.8px !important;}' +
+          '.doc-att-table{font-size:13px !important;}' +
+          '.doc-att-table th{font-size:12px !important;padding:8px 10px !important;}' +
+          '.doc-att-table td{padding:7px 10px !important;}' +
+          '.doc-footer-txt{font-size:11.8px !important;}' +
+          '.doc-sig-name{font-size:12px !important;}' +
+          '.doc-sig-caption{font-size:11px !important;}' +
+          '.doc-note{font-size:10.5px !important;}' +
+          '.doc-att-table th{background:#003366 !important;color:#fff !important;border:0.5px solid #002244 !important;}' +
+          '.doc-att-table tr:nth-child(even) td{background:#f0f4ff !important;}' +
+          '.doc-divider{border-top:1.5px solid #003366 !important;}' +
+          '.doc-right-city{color:#003366 !important;border-bottom:1px solid #003366 !important;}' +
+          '.an-doc-sheet{width:100%;border-collapse:collapse;}' +
+          '.an-doc-sheet>thead>tr>td,.an-doc-sheet>tbody>tr>td{padding:0;border:0;vertical-align:top;}' +
+          '@media print{.an-doc-sheet thead{display:table-header-group;} .an-doc-sheet tfoot{display:table-footer-group;} .an-doc-sheet thead,.an-doc-sheet tr{break-inside:avoid;}}' +
+          '.emp-pdf-dir-table{table-layout:auto!important;width:max-content!important;max-width:100%!important;}' +
+          '.emp-pdf-dir-table .emp-pdf-name-col{white-space:nowrap!important;}' +
+          '@page{size:auto;margin:20px;}' +
+          '</style>';
+        const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title></title>' + cssLink + printExtra +
+          '</head><body><div id="emp-doc-inner">' + inner + '</div></body></html>';
+        const printFrame = document.createElement('iframe');
+        printFrame.style.position = 'fixed';
+        printFrame.style.right = '0';
+        printFrame.style.bottom = '0';
+        printFrame.style.width = '0';
+        printFrame.style.height = '0';
+        printFrame.style.border = '0';
+        printFrame.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(printFrame);
+        const doc = printFrame.contentWindow && printFrame.contentWindow.document;
+        if (!doc || !printFrame.contentWindow) return;
+        doc.open();
+        doc.write(html);
+        doc.close();
+        setTimeout(function () {
+          try {
+            printFrame.contentWindow.focus();
+            printFrame.contentWindow.print();
+          } finally {
+            setTimeout(function () {
+              if (printFrame.parentNode) printFrame.parentNode.removeChild(printFrame);
+            }, 500);
+          }
+        }, 250);
+      }
+
+      wireLogoUi();
+      ['emp-city-name', 'emp-department-name', 'emp-address-line', 'emp-landline-line', 'emp-email-line', 'emp-doc-subtitle', 'emp-office-name', 'emp-doc-date', 'emp-recorded-by', 'emp-head-of-office-name'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', renderEmpPdfPreview);
+      });
+      const docDateEl = document.getElementById('emp-doc-date');
+      if (docDateEl) docDateEl.addEventListener('change', renderEmpPdfPreview);
+
+      exportPdfBtn.addEventListener('click', openModal);
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+      if (downloadBtn) downloadBtn.addEventListener('click', function () { printEmpPdf(); });
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeModal();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        if (!overlay.classList.contains('open')) return;
+        e.stopImmediatePropagation();
+        closeModal();
+      }, true);
+    })();
+  </script>
+
+  <script src="js/institutional-email.js"></script>
+  <script src="js/department-select.js"></script>
+  <script src="js/employee-directory-filter.js"></script>
+  <script src="js/employee-directory-date-filter.js"></script>
+  <script src="js/action_feedback_modal.js"></script>
+  <script>
+    (function () {
+      const popover = document.getElementById('rowActionsPopover');
+      const backdrop = document.getElementById('modalBackdrop');
+      const modalProfile = document.getElementById('modalProfile');
+      const modalEdit = document.getElementById('modalEdit');
+      const modalDeactivate = document.getElementById('modalDeactivate');
+      const modalActivate = document.getElementById('modalActivate');
+      const modalBatchImport = document.getElementById('modalBatchImport');
+      const confirmDeactivateBtn = document.getElementById('confirmDeactivateBtn');
+      const confirmActivateBtn = document.getElementById('confirmActivateBtn');
+      const popoverDeactivate = popover ? popover.querySelector('.row-action-deactivate') : null;
+      const popoverActivate = popover ? popover.querySelector('.row-action-activate') : null;
+
+      let currentRow = null;
+
+      function closePopover() {
+        if (!popover) return;
+        popover.classList.remove('is-open');
+        popover.setAttribute('aria-hidden', 'true');
+      }
+
+      function openPopoverForButton(btn) {
+        if (!popover) return;
+        const row = btn.closest('tr');
+        currentRow = row;
+        var status = (row && row.dataset && row.dataset.status) ? row.dataset.status : 'Active';
+        if (popoverDeactivate) popoverDeactivate.style.display = status === 'Inactive' ? 'none' : '';
+        if (popoverActivate) popoverActivate.style.display = status === 'Inactive' ? '' : 'none';
+
+        const rect = btn.getBoundingClientRect();
+        const width = 190;
+
+        popover.style.top = window.scrollY + rect.bottom + 4 + 'px';
+        popover.style.left = window.scrollX + rect.right - width + 'px';
+        popover.classList.add('is-open');
+        popover.setAttribute('aria-hidden', 'false');
+      }
+
+      document.addEventListener('click', function (e) {
+        const btn = e.target && e.target.closest ? e.target.closest('.actions-btn') : null;
+        if (!btn) return;
+        e.stopPropagation();
+        if (popover.classList.contains('is-open') && currentRow === btn.closest('tr')) {
+          closePopover();
+          return;
+        }
+        openPopoverForButton(btn);
+      });
+
+      document.addEventListener('click', function (e) {
+        const target = e.target;
+        if (target && target.closest && target.closest('.actions-btn')) return;
+        if (popover && target && popover.contains(target)) return;
+        closePopover();
+      });
+
+      if (popover) {
+        popover.addEventListener('click', function (e) {
+          const item = e.target.closest('.row-action-item');
+          if (!item) return;
+          e.stopPropagation();
+          const action = item.getAttribute('data-action');
+          closePopover();
+          if (!currentRow) return;
+
+          if (action === 'view') {
+            openProfileModal(currentRow);
+          } else if (action === 'edit') {
+            openEditModal(currentRow);
+          } else if (action === 'resend-qr') {
+            resendQrForRow(currentRow);
+          } else if (action === 'enroll') {
+            var enrollId = currentRow && currentRow.dataset && currentRow.dataset.id ? currentRow.dataset.id : '';
+            window.location.href = enrollId
+              ? 'employee_registration.php?id=' + encodeURIComponent(enrollId)
+              : 'employee_registration.php';
+          } else if (action === 'deactivate') {
+            openDeactivateModal(currentRow);
+          } else if (action === 'activate') {
+            openActivateModal(currentRow);
+          }
+        });
+      }
+
+      function openModal(modalEl) {
+        if (!modalEl || !backdrop) return;
+        backdrop.classList.add('is-visible');
+        backdrop.setAttribute('aria-hidden', 'false');
+        modalEl.classList.add('is-open');
+        document.body.classList.add('modal-open');
+      }
+
+      function closeAllModals() {
+        [modalProfile, modalEdit, modalDeactivate, modalActivate, modalBatchImport].forEach(function (m) {
+          if (m) m.classList.remove('is-open');
+        });
+        if (backdrop) {
+          backdrop.classList.remove('is-visible');
+          backdrop.setAttribute('aria-hidden', 'true');
+        }
+        document.body.classList.remove('modal-open');
+      }
+
+      if (backdrop) {
+        backdrop.addEventListener('click', closeAllModals);
+      }
+
+      var btnBatchImport = document.getElementById('btnBatchImport');
+      if (btnBatchImport && modalBatchImport) {
+        btnBatchImport.addEventListener('click', function () {
+          openModal(modalBatchImport);
+        });
+      }
+
+      document.querySelectorAll('[data-close-modal]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          closeAllModals();
+        });
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          closeAllModals();
+          closePopover();
+        }
+      });
+
+      function rowData(row) {
+        if (!row) return {};
+        const d = row.dataset || {};
+        return {
+          id: d.id ? parseInt(d.id, 10) : 0,
+          name: d.name || '',
+          employeeId: d.employeeId || d.employee_id || '',
+          email: d.email || '',
+          department: d.department || '',
+          position: d.position || '',
+          status: d.status || 'Active'
+        };
+      }
+
+      function openProfileModal(row) {
+        const info = rowData(row);
+        const nameEl = document.getElementById('profileName');
+        const fullNameEl = document.getElementById('profileFullName');
+        const idEl = document.getElementById('profileEmployeeId');
+        const emailEl = document.getElementById('profileEmail');
+        const deptEl = document.getElementById('profileDepartment');
+        const posEl = document.getElementById('profilePosition');
+        const pillEl = document.getElementById('profileStatusPill');
+
+        const displayName = info.name || 'Employee Name';
+        if (nameEl) nameEl.textContent = displayName;
+        if (fullNameEl) fullNameEl.textContent = displayName;
+        if (idEl) idEl.textContent = info.employeeId || 'EMP-0000';
+        if (emailEl) emailEl.textContent = info.email || '—';
+        if (deptEl) deptEl.textContent = info.department || '—';
+        if (posEl) posEl.textContent = info.position || '—';
+        if (pillEl) {
+          pillEl.textContent = info.status || 'Active';
+        }
+
+        openModal(modalProfile);
+      }
+
+      function openEditModal(row) {
+        const info = rowData(row);
+
+        const fullNameInput = document.getElementById('editFullName');
+        const idInput = document.getElementById('editEmployeeId');
+        const emailInput = document.getElementById('editEmail');
+        const deptInput = document.getElementById('editDepartment');
+        const posInput = document.getElementById('editPosition');
+
+        if (fullNameInput) fullNameInput.value = info.name || '';
+        if (idInput) idInput.value = info.employeeId || '';
+        if (emailInput) emailInput.value = info.email || '';
+        if (deptInput) {
+          var dv = (info.department && info.department !== '—') ? info.department : '';
+          deptInput.value = dv;
+          deptInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        if (posInput) {
+          var pv = (info.position && info.position !== '—') ? info.position : '';
+          if (pv && !Array.from(posInput.options).some(function (o) { return o.value === pv; })) {
+            var opt = document.createElement('option');
+            opt.value = pv;
+            opt.textContent = pv;
+            posInput.appendChild(opt);
+          }
+          posInput.value = pv;
+        }
+
+        openModal(modalEdit);
+      }
+
+      function openDeactivateModal(row) {
+        const info = rowData(row);
+        const nameEl = document.getElementById('deactivateName');
+        const idEl = document.getElementById('deactivateEmployeeId');
+        if (nameEl) nameEl.textContent = info.name || 'Employee Name';
+        if (idEl) idEl.textContent = info.employeeId || 'EMP-0000';
+        openModal(modalDeactivate);
+      }
+
+      function openActivateModal(row) {
+        const info = rowData(row);
+        const nameEl = document.getElementById('activateName');
+        const idEl = document.getElementById('activateEmployeeId');
+        if (nameEl) nameEl.textContent = info.name || 'Employee Name';
+        if (idEl) idEl.textContent = info.employeeId || 'EMP-0000';
+        openModal(modalActivate);
+      }
+
+      function resendQrForRow(row) {
+        const info = rowData(row);
+        if (!info.id) return;
+        if (!info.employeeId || String(info.employeeId).trim() === '') {
+          if (window.ActionFeedback && typeof window.ActionFeedback.show === 'function') {
+            window.ActionFeedback.show({
+              type: 'error',
+              title: 'Cannot resend',
+              message: 'This employee has no employee ID, so no QR file exists.'
+            });
+          } else {
+            alert('This employee has no employee ID; QR cannot be resent.');
+          }
+          return;
+        }
+        var em = (info.email || '').trim();
+        if (window.plpInstitutionalEmail && typeof window.plpInstitutionalEmail.isValid === 'function') {
+          if (!window.plpInstitutionalEmail.isValid(em)) {
+            if (window.ActionFeedback && typeof window.ActionFeedback.show === 'function') {
+              window.ActionFeedback.show({
+                type: 'error',
+                title: 'Invalid email',
+                message: window.plpInstitutionalEmail.hintMessage()
+              });
+            } else {
+              alert('Employee email must be a valid @plpasig.edu.ph address before resending.');
+            }
+            return;
+          }
+        }
+        var fd = new FormData();
+        fd.append('id', String(info.id));
+        fetch('ajax/resend_qr_email.php', { method: 'POST', body: fd })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.success) {
+              if (window.ActionFeedback && typeof window.ActionFeedback.show === 'function') {
+                window.ActionFeedback.show({
+                  type: 'success',
+                  title: 'QR email sent',
+                  message: data.message || 'The QR code email was resent successfully.'
+                });
+              } else {
+                alert(data.message || 'QR code email was sent.');
+              }
+            } else {
+              if (window.ActionFeedback && typeof window.ActionFeedback.show === 'function') {
+                window.ActionFeedback.show({
+                  type: 'error',
+                  title: 'Resend failed',
+                  message: data.error || 'Could not resend the QR email.'
+                });
+              } else {
+                alert(data.error || 'Could not resend the QR email.');
+              }
+            }
+          })
+          .catch(function () {
+            if (window.ActionFeedback && typeof window.ActionFeedback.show === 'function') {
+              window.ActionFeedback.show({
+                type: 'error',
+                title: 'Resend failed',
+                message: 'Network error. Please try again.'
+              });
+            } else {
+              alert('Request failed.');
+            }
+          });
+      }
+
+      if (confirmDeactivateBtn) {
+        confirmDeactivateBtn.addEventListener('click', function () {
+          if (!currentRow) return;
+          const info = rowData(currentRow);
+          if (!info.id) return;
+          const fd = new FormData();
+          fd.append('id', info.id);
+          fetch('ajax/deactivate_employee.php', { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (data.success) {
+                closeAllModals();
+                window.location.reload();
+              } else {
+                alert(data.error || 'Failed to deactivate.');
+              }
+            })
+            .catch(function () { alert('Request failed.'); });
+        });
+      }
+
+      if (confirmActivateBtn) {
+        confirmActivateBtn.addEventListener('click', function () {
+          if (!currentRow) return;
+          const info = rowData(currentRow);
+          if (!info.id) return;
+          const fd = new FormData();
+          fd.append('id', info.id);
+          fetch('ajax/activate_employee.php', { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (data.success) {
+                closeAllModals();
+                window.location.reload();
+              } else {
+                alert(data.error || 'Failed to activate.');
+              }
+            })
+            .catch(function () { alert('Request failed.'); });
+        });
+      }
+
+      // Batch import dropzone interactions
+      var batchDropzone = document.getElementById('batchImportDropzone');
+      var batchFileInput = document.getElementById('batchImportFileInput');
+      var batchSaveBtn = document.getElementById('batchImportSaveBtn');
+
+      if (batchDropzone && batchFileInput) {
+        batchDropzone.addEventListener('dragover', function (e) {
+          e.preventDefault();
+          batchDropzone.classList.add('drag-over');
+        });
+        batchDropzone.addEventListener('dragleave', function () {
+          batchDropzone.classList.remove('drag-over');
+        });
+        batchDropzone.addEventListener('drop', function (e) {
+          e.preventDefault();
+          batchDropzone.classList.remove('drag-over');
+          var file = e.dataTransfer.files[0];
+          if (file) updateBatchDropzone(file);
+        });
+        batchFileInput.addEventListener('change', function () {
+          if (batchFileInput.files[0]) updateBatchDropzone(batchFileInput.files[0]);
+        });
+      }
+
+      function updateBatchDropzone(file) {
+        var label = batchDropzone ? batchDropzone.querySelector('.batch-drop-text-main') : null;
+        if (label) {
+          label.textContent = '\uD83D\uDCC4 ' + file.name;
+        }
+      }
+
+      if (batchSaveBtn) {
+        batchSaveBtn.addEventListener('click', function () {
+          if (!batchFileInput || !batchFileInput.files || !batchFileInput.files[0]) {
+            alert('Please select a file first.');
+            return;
+          }
+
+          var file = batchFileInput.files[0];
+          var fd = new FormData();
+          fd.append('file', file);
+
+          batchSaveBtn.disabled = true;
+          batchSaveBtn.textContent = 'Importing...';
+
+          fetch('ajax/batch_import_start.php', {
+            method: 'POST',
+            body: fd
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              batchSaveBtn.disabled = false;
+              batchSaveBtn.textContent = 'Save';
+
+              if (!data || !data.success) {
+                alert((data && data.error) ? data.error : 'Batch import failed to start.');
+                return;
+              }
+
+              closeAllModals();
+              if (batchFileInput) batchFileInput.value = '';
+              if (batchDropzone) {
+                var label = batchDropzone.querySelector('.batch-drop-text-main');
+                if (label) label.textContent = 'Drop Excel file here or click to browse';
+              }
+
+              if (window.BatchImportTracker && typeof window.BatchImportTracker.begin === 'function') {
+                window.BatchImportTracker.begin(data.job_id, data.total);
+              } else {
+                alert('Import started but progress UI failed to load. Refresh the page to resume.');
+              }
+            })
+            .catch(function () {
+              batchSaveBtn.disabled = false;
+              batchSaveBtn.textContent = 'Save';
+              alert('Request failed. Please try again.');
+            });
+        });
+      }
+
+      const editForm = document.getElementById('editEmployeeForm');
+      if (editForm) {
+        editForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (!currentRow) return;
+          const info = rowData(currentRow);
+          const fullName = ((document.getElementById('editFullName') && document.getElementById('editFullName').value) || '').trim() || info.name;
+          if (!fullName) {
+            alert('Full name is required.');
+            return;
+          }
+          var editEmailVal = (document.getElementById('editEmail') && document.getElementById('editEmail').value) || '';
+          editEmailVal = String(editEmailVal).trim();
+          if (window.plpInstitutionalEmail && typeof window.plpInstitutionalEmail.isValid === 'function') {
+            if (!window.plpInstitutionalEmail.isValid(editEmailVal)) {
+              alert(window.plpInstitutionalEmail.hintMessage());
+              return;
+            }
+          } else if (!/@plpasig\.edu\.ph$/i.test(editEmailVal)) {
+            alert('Email must be a valid @plpasig.edu.ph address.');
+            return;
+          }
+          const fd = new FormData();
+          fd.append('id', info.id);
+          fd.append('full_name', fullName);
+          fd.append('email', editEmailVal);
+          var deptHidden = document.getElementById('editDepartment');
+          fd.append('department', deptHidden ? (deptHidden.value || '').trim() : '');
+          fd.append('position', (document.getElementById('editPosition') && document.getElementById('editPosition').value) || info.position || '');
+          fetch('ajax/update_employee.php', { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (data.success) {
+                closeAllModals();
+                window.location.reload();
+              } else {
+                alert(data.error || 'Failed to update.');
+              }
+            })
+            .catch(function () { alert('Request failed.'); });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

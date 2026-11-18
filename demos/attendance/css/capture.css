@@ -1,0 +1,1057 @@
+@import url('https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap');
+
+/* ========================= */
+/* CAPTURE PAGE - Same font family & sizes as dashboard/employee_management/etc. */
+/* ========================= */
+
+:root {
+  --green: #1A7C3E;
+  --green-light: #dcfce7;
+  --green-dark: #0f5132;
+  --blue: #2563eb;
+  --blue-hover: #1d4ed8;
+  --gray-900: #1a1a2e;
+  --gray-700: #334155;
+  --gray-600: #475569;
+  --gray-500: #64748b;
+  --gray-400: #94a3b8;
+  --gray-200: #e2e8f0;
+  --gray-100: #f1f5f9;
+  --gray-50: #f8fafc;
+  --white: #ffffff;
+  --bg-page: #f5f6f8;
+  --card-bg: #ffffff;
+  --orange: #f97316;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg-page);
+  color: var(--gray-900);
+}
+
+/* ========================= */
+/* MAIN LAYOUT - 3 columns */
+/* ========================= */
+
+.capture-content {
+  display: grid;
+  grid-template-columns: 340px 1fr 320px;
+  gap: 24px;
+  padding: 24px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.capture-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.capture-sidebar .capture-card:nth-child(1) {
+  flex: 1;
+  min-height: 0;
+}
+
+.capture-sidebar .capture-card:nth-child(2) {
+  flex-shrink: 0;
+}
+
+.capture-main {
+  min-width: 0;
+  display: flex;
+}
+
+.capture-main .capture-card {
+  flex: 1;
+}
+
+/* Manual attendance panel (replaces camera block) */
+#manualModeView {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: 0;
+  background-color: transparent;
+}
+
+#manualModeView .manual-attendance-design-root {
+  flex: 1;
+  min-height: 100%;
+  background-color: transparent;
+}
+
+/* Mobile QR (embedded in capture.php) should not resize the "Employee Information" deck.
+   manualAttendanceDesign.css uses vh-based min-heights + centers content, which can cause
+   layout shift. We force stretch + remove min-heights in embedded context. */
+#manualModeView .manual-attendance-design-root.mobile-qr-mode-root {
+  /* let child stretch based on the capture card height */
+  height: 100%;
+}
+
+#manualModeView .manual-attendance-design-root.mobile-qr-mode-root .mad-content {
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  height: auto !important;
+  justify-content: stretch !important;
+  align-items: stretch !important;
+}
+
+#manualModeView .manual-attendance-design-root.mobile-qr-mode-root .main-grid {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  align-items: stretch !important;
+}
+
+#manualModeView .manual-attendance-design-root.mobile-qr-mode-root .card {
+  min-height: 0 !important;
+  height: auto !important;
+  flex: 1 1 auto !important;
+  position: relative; /* for absolute banner overlay below */
+}
+
+/* Make the confirmation banner overlay so it doesn't change card height. */
+#manualModeView .manual-attendance-design-root.mobile-qr-mode-root .confirmation-banner {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  margin-top: 0 !important;
+}
+
+/* Manual mode uses the shared capture header (fullscreen + timer). Hide manual toolbar if present. */
+#manualModeView .mad-toolbar {
+  display: none !important;
+}
+
+#manualModeView[hidden] {
+  display: none !important;
+}
+
+.capture-card-large.camera-replaced #cameraModeView {
+  display: none;
+}
+
+.capture-card-large.camera-replaced {
+  /* Keep deck height stable between camera and non-camera modes. */
+  min-height: 400px;
+}
+
+/* ========================= */
+/* CARDS */
+/* ========================= */
+
+.capture-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--gray-200);
+}
+
+.capture-card-large {
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+/* Left sidebar card header - icon beside text */
+.capture-card-header-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.capture-card-icon-wrap {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.capture-card-icon-admin {
+  background: var(--green);
+}
+
+.capture-card-icon-flag {
+  background: var(--green);
+}
+
+.capture-card-icon-svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--white);
+}
+
+.capture-card-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.capture-card-label {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+.capture-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.capture-card-title-flag {
+  margin: 0;
+}
+
+/* Flag Ceremony - light green details box */
+.ceremony-details-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--green-light);
+  border-radius: 10px;
+}
+
+.ceremony-details-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ceremony-day {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.ceremony-type {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ceremony-sub {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.ceremony-time {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.capture-notice {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--gray-200);
+  background: var(--gray-50);
+  color: var(--gray-700);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.capture-notice.is-error {
+  border-color: #fecaca;
+  background: #fff1f2;
+  color: #991b1b;
+}
+
+.capture-notice.is-info {
+  border-color: #bbf7d0;
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+/* MAIN CONTROLS */
+.main-controls {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-200);
+}
+
+.main-controls-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.main-controls-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.mode-segment {
+  display: flex;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+
+.mode-seg-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--gray-600);
+  transition: background 0.2s ease, color 0.2s ease;
+  text-transform: none;
+}
+
+.mode-seg-btn:hover {
+  background: var(--gray-100);
+}
+
+.mode-seg-btn.is-active {
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+.mode-seg-btn:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
+
+.btn-start,
+.btn-stop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.btn-start svg,
+.btn-stop svg {
+  width: 1.15em;
+  height: 1.15em;
+  flex-shrink: 0;
+  fill: currentColor;
+  vertical-align: middle;
+}
+
+.btn-start {
+  background: var(--green);
+  color: var(--white);
+}
+
+.btn-start:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-stop {
+  background: var(--gray-200);
+  color: var(--gray-500);
+}
+
+.btn-stop:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.btn-stop:disabled {
+  cursor: not-allowed;
+}
+
+.btn-manual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s, box-shadow 0.2s;
+  background: #facc15;
+  color: #1e293b;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+.btn-manual:hover:not(:disabled) {
+  opacity: 0.95;
+}
+
+.btn-manual.is-active {
+  outline: 2px solid var(--green, #1a7c3e);
+  outline-offset: 2px;
+}
+
+.btn-manual:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ========================= */
+/* CENTER - Attendance Capture */
+/* ========================= */
+
+.capture-main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.capture-main-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.capture-main-subtitle {
+  font-size: 0.95rem;
+  color: var(--gray-500);
+  margin-top: 4px;
+}
+
+.capture-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* When captureMainCard is in fullscreen (Mobile QR true full experience),
+   restyle the in-card header to match the green fullscreen header UX. */
+#captureMainCard:fullscreen .capture-main-header,
+#captureMainCard:-webkit-full-screen .capture-main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--green);
+  padding: 0 28px;
+  height: 56px;
+  align-items: center;
+  margin-bottom: 0;
+  font-family: 'Arimo', sans-serif;
+}
+
+#captureMainCard:fullscreen .capture-main-title,
+#captureMainCard:-webkit-full-screen .capture-main-title {
+  color: #ffffff;
+  font-size: 17px;
+  font-family: 'Arimo', sans-serif;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+#captureMainCard:fullscreen .capture-main-subtitle,
+#captureMainCard:-webkit-full-screen .capture-main-subtitle {
+  display: block;
+  color: rgba(255,255,255,0.92);
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#captureMainCard:fullscreen .capture-header-right,
+#captureMainCard:-webkit-full-screen .capture-header-right {
+  gap: 12px;
+}
+
+#captureMainCard:fullscreen .capture-timer,
+#captureMainCard:-webkit-full-screen .capture-timer {
+  color: rgba(255,255,255,0.92);
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#captureMainCard:fullscreen .capture-timer svg,
+#captureMainCard:-webkit-full-screen .capture-timer svg {
+  fill: rgba(255,255,255,0.92);
+}
+
+/* Camera fullscreen embedded employee info panel (camera mode only) */
+#captureMainCard:fullscreen {
+  padding-top: 56px;
+}
+
+#captureMainCard:fullscreen:not(.camera-replaced) #cameraModeView,
+#captureMainCard:-webkit-full-screen:not(.camera-replaced) #cameraModeView {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+  height: calc(100% - 56px);
+}
+
+#captureMainCard:fullscreen:not(.camera-replaced) .capture-fs-left,
+#captureMainCard:-webkit-full-screen:not(.camera-replaced) .capture-fs-left {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#captureMainCard:fullscreen .capture-footer,
+#captureMainCard:-webkit-full-screen .capture-footer {
+  margin-top: auto;
+}
+
+#captureMainCard:fullscreen:not(.camera-replaced) .camera-fs-info-panel,
+#captureMainCard:-webkit-full-screen:not(.camera-replaced) .camera-fs-info-panel {
+  width: 420px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 2px solid var(--green);
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#captureMainCard:fullscreen .camera-fs-state,
+#captureMainCard:-webkit-full-screen .camera-fs-state {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#captureMainCard:fullscreen .camera-fs-state-waiting,
+#captureMainCard:-webkit-full-screen .camera-fs-state-waiting {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+}
+
+#captureMainCard:fullscreen .camera-fs-avatar-circle,
+#captureMainCard:-webkit-full-screen .camera-fs-avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--green-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#captureMainCard:fullscreen .camera-fs-avatar-circle img,
+#captureMainCard:-webkit-full-screen .camera-fs-avatar-circle img {
+  width: 40px;
+  height: 40px;
+}
+
+#captureMainCard:fullscreen .camera-fs-waiting-text,
+#captureMainCard:-webkit-full-screen .camera-fs-waiting-text {
+  color: var(--gray-600);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+#captureMainCard:fullscreen .camera-fs-state-detected,
+#captureMainCard:-webkit-full-screen .camera-fs-state-detected {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+#captureMainCard:fullscreen .camera-fs-attendance-banner,
+#captureMainCard:-webkit-full-screen .camera-fs-attendance-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+#captureMainCard:fullscreen .camera-fs-attendance-label,
+#captureMainCard:-webkit-full-screen .camera-fs-attendance-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+#captureMainCard:fullscreen .camera-fs-attendance-label img,
+#captureMainCard:-webkit-full-screen .camera-fs-attendance-label img {
+  width: 18px;
+  height: 18px;
+}
+
+#captureMainCard:fullscreen .camera-fs-badge,
+#captureMainCard:-webkit-full-screen .camera-fs-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+#captureMainCard:fullscreen .camera-fs-badge--timein,
+#captureMainCard:-webkit-full-screen .camera-fs-badge--timein {
+  background: #FACC15;
+  color: #713f12;
+}
+
+#captureMainCard:fullscreen .camera-fs-badge--timeout,
+#captureMainCard:-webkit-full-screen .camera-fs-badge--timeout {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+#captureMainCard:fullscreen .camera-fs-emp-avatar,
+#captureMainCard:-webkit-full-screen .camera-fs-emp-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+#captureMainCard:fullscreen .camera-fs-emp-avatar-circle,
+#captureMainCard:-webkit-full-screen .camera-fs-emp-avatar-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--green-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#captureMainCard:fullscreen .camera-fs-emp-avatar-circle img,
+#captureMainCard:-webkit-full-screen .camera-fs-emp-avatar-circle img {
+  width: 36px;
+  height: 36px;
+}
+
+#captureMainCard:fullscreen .camera-fs-emp-name,
+#captureMainCard:-webkit-full-screen .camera-fs-emp-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+#captureMainCard:fullscreen .camera-fs-emp-id,
+#captureMainCard:-webkit-full-screen .camera-fs-emp-id {
+  font-size: 12px;
+  color: var(--gray-600);
+}
+
+#captureMainCard:fullscreen .camera-fs-info-rows,
+#captureMainCard:-webkit-full-screen .camera-fs-info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+#captureMainCard:fullscreen .camera-fs-info-row,
+#captureMainCard:-webkit-full-screen .camera-fs-info-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-page);
+  border-radius: 8px;
+  padding: 10px 12px;
+  flex-shrink: 0;
+}
+
+#captureMainCard:fullscreen .camera-fs-info-row--highlighted,
+#captureMainCard:-webkit-full-screen .camera-fs-info-row--highlighted {
+  background: var(--green-light);
+}
+
+#captureMainCard:fullscreen .camera-fs-info-row--highlighted.camera-fs-info-row,
+#captureMainCard:-webkit-full-screen .camera-fs-info-row--highlighted.camera-fs-info-row {
+  background: rgba(16,185,129,0.18);
+}
+
+#captureMainCard:fullscreen .camera-fs-row-icon,
+#captureMainCard:-webkit-full-screen .camera-fs-row-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+#captureMainCard:fullscreen .camera-fs-info-row-text label,
+#captureMainCard:-webkit-full-screen .camera-fs-info-row-text label {
+  font-size: 11px;
+  color: var(--gray-600);
+  display: block;
+  font-weight: 500;
+}
+
+#captureMainCard:fullscreen .camera-fs-info-row-text span,
+#captureMainCard:-webkit-full-screen .camera-fs-info-row-text span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+#captureMainCard:fullscreen .btn-fullscreen,
+#captureMainCard:-webkit-full-screen .btn-fullscreen {
+  color: rgba(255,255,255,0.92);
+}
+
+#captureMainCard:fullscreen .btn-fullscreen:hover,
+#captureMainCard:-webkit-full-screen .btn-fullscreen:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.btn-fullscreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  color: var(--gray-600);
+  background: transparent;
+  border: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-fullscreen:hover {
+  background: var(--gray-100);
+  color: var(--gray-900);
+}
+
+.btn-fullscreen svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.capture-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--gray-600);
+}
+
+.capture-timer svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
+  fill: var(--gray-600);
+  vertical-align: middle;
+}
+
+/* Camera area */
+.camera-area {
+  flex: 1;
+  background: #1a1d2e;
+  border-radius: 10px;
+  /* Lock the visual camera size so it doesn't jump
+     when the real webcam stream starts rendering */
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+}
+
+.camera-offline {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--gray-500);
+}
+
+.camera-offline-icon {
+  width: 64px;
+  height: 64px;
+  fill: var(--gray-500);
+  opacity: 0.7;
+}
+
+.camera-offline-text {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.camera-offline-hint {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+#cameraFeed {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  /* Mirror effect: parang salamin (kanan = kanan sa screen) */
+  transform: scaleX(-1);
+}
+
+.capture-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-200);
+  font-size: 0.9rem;
+}
+
+.capture-footer-left,
+.capture-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.capture-footer-left {
+  color: var(--green);
+}
+
+.capture-footer-left svg,
+.capture-footer-right svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.icon-check {
+  fill: var(--green);
+}
+
+.capture-footer-right {
+  color: var(--gray-600);
+}
+
+.icon-users {
+  fill: var(--gray-600);
+}
+
+/* ========================= */
+/* RIGHT - Recent Detections */
+/* ========================= */
+
+.capture-card-header-detections {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.capture-card-header-detections h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.detections-badge {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.detections-list {
+  list-style: none;
+}
+
+.detections-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 0.9rem;
+}
+
+.detections-list li:last-child {
+  border-bottom: none;
+}
+
+.detections-list .det-empty {
+  color: var(--gray-500);
+  font-size: 0.9rem;
+  font-style: italic;
+  padding: 16px 0;
+}
+
+.det-time {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  font-weight: 400;
+}
+
+.badge-entry {
+  background: var(--green-light);
+  color: var(--green);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.badge-exit {
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* Today's Statistics */
+.capture-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.stats-row span {
+  color: var(--gray-600);
+}
+
+.stats-row strong {
+  font-size: 1rem;
+}
+
+.stats-row-green strong {
+  color: var(--green);
+}
+
+/* ========================= */
+/* BOTTOM - Step cards */
+/* ========================= */
+
+.steps-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 24px 40px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.step-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--gray-200);
+}
+
+.step-num {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 auto 16px;
+}
+
+.step-card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+
+.step-card p {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+}
+
+/* ========================= */
+/* Responsive */
+/* ========================= */
+
+@media (max-width: 1200px) {
+  .capture-content {
+    grid-template-columns: 280px 1fr 280px;
+  }
+}
+
+@media (max-width: 900px) {
+  .capture-content {
+    grid-template-columns: 1fr;
+  }
+
+  .steps-section {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Item</title>
+</head>
+<body>
+    <header>
+        <h1>Add New Item</h1>
+        <button class="close-btn" onclick="window.location.href = ''; return false;">
+            <i class="fas fa-times"></i>
+        </button>
+    </header>
+
+    <main>
+        <form action="#" method="POST" id="addItemForm" onsubmit="return false;">
+            <label for="type">Type:</label>
+            <input type="text" id="type" name="type" required>
+
+            <label for="itemName">Item Name:</label>
+            <input type="text" id="itemName" name="itemName" required>
+
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required>
+
+            <label for="unitMeasure">Unit Measure:</label>
+            <input type="text" id="unitMeasure" name="unitMeasure" required>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" required>
+            
+            <input type="hidden" id="status" name="status" value="AVAILABLE">
+            <input type="hidden" id="customID" name="customID" value="ITEM-">
+
+            <button type="submit">Add Item</button>
+        </form>
+    </main>
+
+    <script>
+    document.getElementById('quantity').addEventListener('input', function () {
+        const qty = parseInt(this.value);
+        const statusField = document.getElementById('status');
+
+        if (!isNaN(qty)) {
+            if (qty === 0) {
+                statusField.value = 'OUT OF STOCK';
+            } else if (qty > 0) {
+                statusField.value = 'AVAILABLE';
+            }
+        } else {
+            statusField.value = '';
+        }
+    });
+    </script>
+</body>
+</html>

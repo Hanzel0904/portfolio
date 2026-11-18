@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;800&display=swap">
+  <title>PLP GSO Supply Tracking and Monitoring System</title>
+  <style>
+    :root {
+      --primary: #2f80ed;
+      --primary-hover: #1c6dd0;
+      --background: #f4f7f8;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --border: #e0e0e0;
+      --border-radius: 12px;
+      --shadow: 0 6px 20px rgba(0, 0, 102, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Raleway', san-serif;
+      background-color: var(--background);
+      color: var(--text);
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 2.5rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-control {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-control.full {
+      grid-column: span 2;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    input, select {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(47, 128, 237, 0.2);
+    }
+
+    input:read-only {
+      background-color: #f9f9f9;
+      cursor: not-allowed;
+    }
+
+    /* Visual feedback for required fields */
+    input:required {
+      border-left: 3px solid var(--primary);
+    }
+
+    .product-section {
+      margin: 2rem 0;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .product-header h2 {
+      font-size: 1.3rem;
+      color: var(--text);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .add-product-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: color 0.2s ease;
+      margin-top: 1rem;
+      text-align: right;
+      margin-left: auto;
+    }
+
+    .add-product-btn:hover {
+      color: var(--primary-hover);
+    }
+
+    .submit-btn {
+      padding: 0.9rem 2rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      display: block;
+      margin-left: auto;
+      margin-top: 1.5rem;
+    }
+
+    .submit-btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* Form section titles */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .required-field::after {
+      content: " *";
+      color: #e74c3c;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-control.full {
+        grid-column: span 1;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 1.5rem;
+      }
+
+      body {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>PLP Request Item</h1>
+    </div>
+
+    <form id="requestForm" method="POST" action="#" onsubmit="return false;">
+      <div class="form-section">
+        <h2 class="section-title">Request Information</h2>
+        <div class="form-grid">
+          <div class="form-control">
+            <label for="risNo">RIS No</label>
+            <input type="text" id="risNo" name="risNo" value="" readonly />
+          </div>
+
+          <div class="form-control">
+            <label for="requested_date" class="required-field">Requested Date</label>
+            <input type="date" id="requested_date" name="requested_date" required />
+          </div>
+
+          <div class="form-control">
+            <label for="department" class="required-field">Department</label>
+            <input type="text" id="department" name="department" required value="" readonly />
+          </div>
+
+          <div class="form-control">
+            <label for="requester_name" class="required-field">Requester Name</label>
+            <input type="text" id="requester_name" name="requester_name" required value="" readonly />
+          </div>
+        </div>
+      </div>
+
+      <div class="product-section">
+        <div class="product-header">
+          <h2>Product Information</h2>
+        </div>
+
+        <div id="productList">
+          <div class="product-grid">
+            <div class="form-control">
+              <label for="type-0" class="required-field">Type</label>
+                <select id="type-0" name="type[]" class="type-select" required>
+                    <option value="">Select Type</option>
+                    </select>
+            </div>
+            <div class="form-control">
+              <label for="itemName-0" class="required-field">Item Name</label>
+              <select id="itemName-0" name="itemName[]" class="item-select" required>
+                <option value="">Select Item Name</option>
+                </select>
+            </div>
+            <div class="form-control">
+              <label for="description-0" class="required-field">Description</label>
+              <select id="description-0" name="description[]" class="desc-select" required>
+                  <option value="">Select Description</option>
+                  </select>
+            </div>
+            <div class="form-control">
+              <label for="quantity-0" class="required-field">Requested Quantity</label>
+              <input type="number" id="quantity-0" name="quantity[]" min="1" required placeholder="Enter quantity" />
+            </div>
+          </div>
+        </div>
+
+        <button id="addMoreBtn" class="add-product-btn" type="button">
+          + Add more products
+        </button>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit Request</button>
+    </form>
+  </div>
+
+  <script>
+  // Global variable for tracking product rows
+  let rowCount = 0;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('requested_date').value = today;
+
+    // Item data as JSON
+    const itemData = ;
+    const productList = document.getElementById('productList');
+    const addMoreBtn = document.getElementById('addMoreBtn');
+    const requestForm = document.getElementById('requestForm');
+
+    // Function to get all currently selected combinations of (Type, Item Name, Description)
+    function getSelectedCombinations() {
+      const combinations = new Set();
+      document.querySelectorAll('.product-grid').forEach(row => {
+        const type = row.querySelector('.type-select').value;
+        const itemName = row.querySelector('.item-select').value;
+        const description = row.querySelector('.desc-select').value;
+
+        if (type && itemName && description) {
+          combinations.add(`${type}|${itemName}|${description}`);
+        }
+      });
+      return combinations;
+    }
+
+    // Function to validate a specific row for duplicates
+    function validateRowForDuplicates(currentRow) {
+      const typeSelect = currentRow.querySelector('.type-select');
+      const itemSelect = currentRow.querySelector('.item-select');
+      const descSelect = currentRow.querySelector('.desc-select');
+
+      const type = typeSelect.value;
+      const itemName = itemSelect.value;
+      const description = descSelect.value;
+
+      const currentCombination = `${type}|${itemName}|${description}`;
+
+      // Get all combinations excluding the current row's selections
+      const otherCombinations = new Set();
+      document.querySelectorAll('.product-grid').forEach(row => {
+        if (row !== currentRow) {
+          const otherType = row.querySelector('.type-select').value;
+          const otherItemName = row.querySelector('.item-select').value;
+          const otherDescription = row.querySelector('.desc-select').value;
+          if (otherType && otherItemName && otherDescription) {
+            otherCombinations.add(`${otherType}|${otherItemName}|${otherDescription}`);
+          }
+        }
+      });
+
+      let errorMessageSpan = currentRow.querySelector('.error-message');
+      if (errorMessageSpan) {
+        errorMessageSpan.remove(); // Clear previous error messages
+      }
+
+      if (type && itemName && description && otherCombinations.has(currentCombination)) {
+        const newErrorSpan = document.createElement('span');
+        newErrorSpan.className = 'error-message';
+        newErrorSpan.textContent = 'This item combination is already selected.';
+        currentRow.appendChild(newErrorSpan);
+        return false;
+      }
+      return true;
+    }
+
+    // Function to run validation on all rows
+    function validateAllRows() {
+      let allValid = true;
+      document.querySelectorAll('.product-grid').forEach(row => {
+        if (!validateRowForDuplicates(row)) {
+          allValid = false;
+        }
+      });
+      return allValid;
+    }
+
+    // Function to add event listeners to a row
+    function setupRowEventListeners(rowIndex) {
+      const typeSelect = document.getElementById(`type-${rowIndex}`);
+      const itemNameSelect = document.getElementById(`itemName-${rowIndex}`);
+      const descriptionSelect = document.getElementById(`description-${rowIndex}`);
+      const currentRow = typeSelect.closest('.product-grid');
+      
+      // Populate type dropdown options
+      populateTypeOptions(typeSelect, itemData);
+      
+      // Event listener for type selection
+      typeSelect.addEventListener('change', function() {
+        const selectedType = typeSelect.value;
+        
+        // Clear item name and description dropdowns
+        itemNameSelect.innerHTML = '<option value="">Select Item Name</option>';
+        descriptionSelect.innerHTML = '<option value="">Select Description</option>';
+        
+        if (selectedType) {
+          // Populate item names based on selected type
+          populateItemNames(itemNameSelect, selectedType, itemData);
+        }
+        validateRowForDuplicates(currentRow); // Validate on change
+      });
+      
+      // Event listener for item name selection
+      itemNameSelect.addEventListener('change', function() {
+        const selectedType = typeSelect.value;
+        const selectedItemName = itemNameSelect.value;
+        
+        // Clear description dropdown
+        descriptionSelect.innerHTML = '<option value="">Select Description</option>';
+        
+        if (selectedType && selectedItemName) {
+          // Populate descriptions based on selected type and item name
+          populateDescriptions(descriptionSelect, selectedType, selectedItemName, itemData);
+        }
+        validateRowForDuplicates(currentRow); // Validate on change
+      });
+
+      // Event listener for description selection
+      descriptionSelect.addEventListener('change', function() {
+        validateRowForDuplicates(currentRow); // Validate on change
+      });
+    }
+    
+    // Function to populate type options
+    function populateTypeOptions(selectElement, data) {
+      // Clear existing options except the first one
+      selectElement.innerHTML = '<option value="">Select Type</option>';
+      
+      // Add options for each type
+      Object.keys(data).forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = type;
+        selectElement.appendChild(option);
+      });
+    }
+    
+    // Function to populate item name options based on selected type
+    function populateItemNames(selectElement, selectedType, data) {
+      // Clear existing options except the first one
+      selectElement.innerHTML = '<option value="">Select Item Name</option>';
+      
+      if (selectedType && data[selectedType]) {
+        // Use a Set to track unique item names
+        const uniqueNames = new Set();
+        
+        // Add each unique item name as an option
+        data[selectedType].forEach(item => {
+          if (!uniqueNames.has(item.name)) {
+            const option = document.createElement('option');
+            option.value = item.name;
+            option.textContent = item.name;
+            selectElement.appendChild(option);
+            uniqueNames.add(item.name);
+          }
+        });
+      }
+    }
+    
+    // Function to populate description options based on selected type and item name
+    function populateDescriptions(selectElement, selectedType, selectedItemName, data) {
+      // Clear existing options except the first one
+      selectElement.innerHTML = '<option value="">Select Description</option>';
+      
+      if (selectedType && selectedItemName && data[selectedType]) {
+        // Filter items by type and item name
+        const matchingItems = data[selectedType].filter(item => item.name === selectedItemName);
+        
+        // Add matching descriptions to dropdown
+        matchingItems.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item.description;
+          option.textContent = item.description;
+          selectElement.appendChild(option);
+        });
+      }
+    }
+
+    // Setup event listeners for the initial row
+    setupRowEventListeners(0);
+
+    // Handle adding more products dynamically
+    addMoreBtn.addEventListener('click', function() {
+      rowCount++;
+      const productList = document.getElementById('productList');
+      const newProductDiv = document.createElement('div');
+      newProductDiv.classList.add('product-grid');
+
+      newProductDiv.innerHTML = `
+        <div class="form-control">
+          <label for="type-${rowCount}" class="required-field">Type</label>
+          <select id="type-${rowCount}" name="type[]" class="type-select" required>
+            <option value="">Select Type</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <label for="itemName-${rowCount}" class="required-field">Item Name</label>
+          <select id="itemName-${rowCount}" name="itemName[]" class="item-select" required>
+            <option value="">Select Item Name</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <label for="description-${rowCount}" class="required-field">Description</label>
+          <select id="description-${rowCount}" name="description[]" class="desc-select" required>
+            <option value="">Select Description</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <label for="quantity-${rowCount}" class="required-field">Requested Quantity</label>
+          <input type="number" id="quantity-${rowCount}" name="quantity[]" min="1" required placeholder="Enter quantity" />
+        </div>
+      `;
+      
+      productList.appendChild(newProductDiv);
+      
+      // Setup event listeners for the new row
+      setupRowEventListeners(rowCount);
+    });
+
+    // Prevent form submission if there are duplicates
+    requestForm.addEventListener('submit', function(event) {
+      if (!validateAllRows()) {
+        event.preventDefault(); // Stop form submission
+        alert('Please correct the duplicate item combinations before submitting.');
+      }
+    });
+  });
+  </script>
+</body>
+</html>

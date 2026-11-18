@@ -1,0 +1,234 @@
+/* Custom department dropdown — hover colors per college */
+
+.dept-custom-select {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.dept-custom-select.is-open {
+  z-index: 80;
+}
+
+.input-wrapper-dept .dept-custom-select {
+  display: block;
+}
+
+.dept-custom-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background-color 0.22s ease, color 0.22s ease, border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.dept-custom-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.22s ease;
+}
+
+.dept-custom-placeholder {
+  color: #9ca3af;
+}
+
+.dept-custom-caret {
+  flex-shrink: 0;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--text-muted, #667085);
+  opacity: 0.75;
+  transition: border-top-color 0.22s ease, opacity 0.22s ease;
+}
+
+.dept-custom-list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 100;
+  margin: 0;
+  padding: 0.35rem 0 0.5rem;
+  list-style: none;
+  border-radius: 12px;
+  border: 1px solid var(--input-border, #d0d5dd);
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+  max-height: min(200px, 38vh);
+  overflow-y: auto;
+  scrollbar-gutter: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.dept-custom-option {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, outline-color 0.2s ease;
+}
+
+/* Default row background (subtle) + strong hover */
+.dept-custom-option.dept-ccs {
+  background: #f3f4f6;
+  color: #111827;
+}
+.dept-custom-option.dept-ccs:hover {
+  background: #6b7280;
+  color: #fff;
+}
+
+.dept-custom-option.dept-edu {
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+.dept-custom-option.dept-edu:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+.dept-custom-option.dept-hosp {
+  background: #fef2f2;
+  color: #991b1b;
+}
+.dept-custom-option.dept-hosp:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.dept-custom-option.dept-arts {
+  background: #f5f3ff;
+  color: #5b21b6;
+}
+.dept-custom-option.dept-arts:hover {
+  background: #8b5cf6;
+  color: #fff;
+}
+
+.dept-custom-option.dept-eng {
+  background: #fff7ed;
+  color: #9a3412;
+}
+.dept-custom-option.dept-eng:hover {
+  background: #f97316;
+  color: #fff;
+}
+
+.dept-custom-option.dept-bus {
+  background: #fefce8;
+  color: #713f12;
+}
+.dept-custom-option.dept-bus:hover {
+  background: #eab308;
+  color: #1c1917;
+}
+
+.dept-custom-option.dept-nurse {
+  background: #fdf2f8;
+  color: #9d174d;
+}
+.dept-custom-option.dept-nurse:hover {
+  background: #ec4899;
+  color: #fff;
+}
+
+/* Departments from DB (settings) — not one of the preset colleges */
+.dept-custom-option.dept-from-db {
+  background: #f8fafc;
+  color: #334155;
+}
+/* No :hover here — rows also use .dept-has-db-color; a generic green hover
+   would override System Settings colors for custom department names. */
+
+/* Database-driven accent (System Settings display_color) — color on row hover only */
+.dept-custom-option.dept-has-db-color {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+/* Use background-color (not background shorthand) so hover/focus always paints
+   over preset row tints and is not dropped when box-shadow uses the same var. */
+.dept-custom-select .dept-custom-list .dept-custom-option.dept-has-db-color:hover,
+.dept-custom-select .dept-custom-list .dept-custom-option.dept-has-db-color:focus,
+.dept-custom-select .dept-custom-list .dept-custom-option.dept-has-db-color:focus-visible {
+  background-color: var(--dept-accent, #1a7c3e);
+  color: #fff;
+}
+
+.dept-custom-option.dept-has-db-color[aria-selected='true'] {
+  font-weight: 600;
+  outline: 1px solid var(--input-border, #d0d5dd);
+  outline-offset: -1px;
+}
+
+/* Native position select — registration form */
+.select-element {
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.25rem;
+}
+
+.select-element option {
+  color: var(--text-main, #1d2939);
+}
+
+/* Modal: department + position */
+.dept-custom-select--modal .modal-dept-trigger {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid var(--gray-200, #e2e8f0);
+  padding: 0.55rem 2rem 0.55rem 0.9rem;
+  font-size: 0.9rem;
+  outline: none;
+  background: #f9fafb;
+  color: var(--gray-900, #1a1a2e);
+  transition: background-color 0.22s ease, color 0.22s ease, border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.dept-custom-select--modal .modal-dept-trigger:focus {
+  border-color: var(--green, #1a7c3e);
+}
+
+.dept-custom-select--modal .dept-custom-list {
+  top: calc(100% + 4px);
+  max-height: min(200px, 38vh);
+  z-index: 200;
+  overflow-y: auto;
+  scrollbar-gutter: auto;
+}
+
+.modal-position-select {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid var(--gray-200, #e2e8f0);
+  padding: 0.55rem 2rem 0.55rem 0.9rem;
+  font-size: 0.9rem;
+  outline: none;
+  background: #f9fafb
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")
+    no-repeat right 0.75rem center;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.modal-position-select:focus {
+  border-color: var(--green, #1a7c3e);
+}

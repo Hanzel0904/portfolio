@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Item</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .floating-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .floating-message.error {
+            background-color: #dc3545;
+        }
+
+        .button-container {
+  display: flex;
+  justify-content: flex-end; 
+  margin-top: 20px;       
+}
+
+button[type="submit"] {
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.close-btn {
+  position: absolute;
+  display: flex;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  color: #dc3545 !important;    
+  font-size: 1.2rem; 
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.close-btn:hover {
+  color: #fff !important; 
+}
+
+</style>
+</head>
+<body>
+
+<header style="position: relative; padding: 1rem 2rem;">
+  <h1>Edit Item</h1>
+  <button class="close-btn" onclick="window.location.href = ''; return false;">
+        <i class="fas fa-times"></i>
+    </button>
+</header>
+
+    <main>
+        
+            <div class="floating-message " id="floatingMessage">
+                
+            </div>
+        
+
+        <form action="#" method="POST" onsubmit="return false;">
+            <input type="hidden" name="itemNo" value="">
+
+            <label for="itemName">Item Name:</label>
+            <input type="text" id="itemName" name="itemName" value="" required>
+
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" value="" required>
+
+            <label for="unitMeasure">Unit Measure:</label>
+            <input type="text" id="unitMeasure" name="unitMeasure" value="" required>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value="" required>
+
+            <input type="hidden" id="status" name="status" value="">
+
+
+            <button type="submit">Update Item</button>
+        </form>
+    </main>
+
+    <script>
+
+        // Show the floating message if there is one
+        if (document.getElementById('floatingMessage')) {
+            var message = document.getElementById('floatingMessage');
+            message.style.display = 'block';
+            setTimeout(function() {
+                message.style.display = 'none';
+            }, 3000); // Hide after 3 seconds
+        }
+
+        document.getElementById('quantity').addEventListener('input', function () {
+        const qty = parseInt(this.value);
+        const statusField = document.getElementById('status');
+        if (qty === 0) {
+            statusField.value = 'OUT OF STOCK';
+            statusField.readOnly = true;
+        } else {
+            statusField.readOnly = false;
+            statusField.value = ''; // or retain old value if needed
+        }
+    });
+
+    </script>
+
+</body>
+</html>

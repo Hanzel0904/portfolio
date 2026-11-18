@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mobile QR Scanners</title>
+  <link rel="stylesheet" href="css/scanner.css">
+</head>
+<body>
+  <main class="scanner-app">
+    <header class="scanner-header">
+      <h1>Mobile QR Scanner</h1>
+      <p>Scan employee QR to log attendance</p>
+      <p class="scanner-network-note">Connected locally: no internet required</p>
+    </header>
+
+    <section class="scanner-card">
+      <div class="scanner-preview-wrap">
+        <video id="scannerVideo" playsinline autoplay muted></video>
+        <canvas id="scannerCanvas" hidden aria-hidden="true"></canvas>
+        <div id="scannerOverlay" class="scanner-overlay" aria-hidden="true">
+          <div class="scanner-box"></div>
+        </div>
+      </div>
+
+      <div class="scanner-controls">
+        <button type="button" id="btnStartScan" class="btn btn-primary">Start Camera</button>
+        <button type="button" id="btnStopScan" class="btn btn-outline" disabled>Stop</button>
+      </div>
+
+      <div id="scannerStatus" class="scanner-status scanner-status-info" role="status" aria-live="polite">
+        Ready to scan.
+      </div>
+    </section>
+
+    <section class="scanner-card">
+      <h2>Last Scan</h2>
+      <div id="lastScanMeta" class="last-scan-meta">No scans yet.</div>
+      <div id="lastScanPayload" class="last-scan-payload">—</div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var video = document.getElementById('scannerVideo');
+      var canvas = document.getElementById('scannerCanvas');
+      var overlay = document.getElementById('scannerOverlay');
+      var btnStart = document.getElementById('btnStartScan');
+      var btnStop = document.getElementById('btnStopScan');
+      var statusEl = document.getElementById('scannerStatus');
+      var lastMetaEl = document.getElementById('lastScanMeta');
+      var lastPayloadEl = document.getElementById('lastScanPayload');
+
+      var stream = null;
+      var detectTimer = null;
+      var statusResetTimer = null;
+      var posting = false;
+      var detector = null;
+      var scanMode = 'native';
+      var serverDecodeBusy = false;
+      var serverDecodeErrorShownAt = 0;
+      var nativeStartedAt = 0;
+      var nativeMissCount = 0;
+      var autoFallbackTried = false;
+      var SERVER_DECODE_TIMEOUT_MS = 1800;
+      var lastValue = '';
+      var lastScanTs = 0;
+      var DUPLICATE_MS = 2500;
+
+      function setStatus(message, kind) {
+        statusEl.textContent = message;
+        statusEl.classList.remove('scanner-status-info', 'scanner-status-ok', 'scanner-status-error');
+        if (kind === 'ok') {
+          statusEl.classList.add('scanner-status-ok');
+        } else if (kind === 'error') {
+          statusEl.classList.add('scanner-status-error');
+        } else {
+          statusEl.classList.add('scanner-status-info');
+        }
+        if (statusResetTimer) {
+          clearTimeout(statusResetTimer);
+          statusResetTimer = null;
+        }
+        statusResetTimer = setTimeout(function () {
+          statusEl.textContent = 'Ready to scan.';
+          statusEl.classList.remove('scanner-status-ok', 'scanner-status-error');
+          statusEl.classList.add('scanner-status-info');
+        }, 3000);
+      }
+
+      function nowText() {
+        try {
+          return new Date().toLocaleString('en-PH', { hour12: true });
+        } catch (e) {
+          return new Date().toLocaleString();
+        }
+      }
+
+      function setLastScan(raw, resultText, responseData) {
+        var d = responseData || {};
+        var emp = d.employee || {};
+        var name = String(emp.full_name || '').trim();
+        if (!name) name = 'Unknown employee';
+        var status = String(d.log_status || '').toLowerCase();
+        var badge = status === 'time_out' ? 'TIME OUT' : (status === 'late' ? 'LATE' : 'TIME IN');
+        lastMetaEl.textContent = name + ' - ' + nowText();
+        lastPayloadEl.textContent = badge;
+
+        // Fallback display for non-success flows where employee data is unavailable.
+        if (!d || !d.success) {
+          var shortResult = String(resultText || '').trim();
+          if (shortResult.length > 48) shortResult = shortResult.slice(0, 45) + '...';
+          if (!shortResult) shortResult = 'Scan processed';
+          lastMetaEl.textContent = nowText() + ' - ' + shortResult;
+          var shortRaw = String(raw || '').trim();
+          if (shortRaw.length > 42) shortRaw = shortRaw.slice(0, 39) + '...';
+          lastPayloadEl.textContent = shortRaw || '—';
+        }
+      }
+
+      function supportsBarcodeDetector() {
+        return 'BarcodeDetector' in window;
+      }
+
+      async function initDetector() {
+        if (!supportsBarcodeDetector()) return false;
+        try {
+          if (typeof window.BarcodeDetector.getSupportedFormats === 'function') {
+            var formats = await window.BarcodeDetector.getSupportedFormats();
+            if (Array.isArray(formats) && formats.indexOf('qr_code') !== -1) {
+              detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+              return true;
+            }
+          }
+          // Some browsers throw for explicit formats but still work with default detector.
+          detector = new window.BarcodeDetector();
+          return true;
+        } catch (e) {
+          detector = null;
+          return false;
+        }
+      }
+
+      function stopLoop() {
+        if (detectTimer) {
+          clearInterval(detectTimer);
+          detectTimer = null;
+        }
+      }
+
+      function stopCamera() {
+        stopLoop();
+        if (stream) {
+          stream.getTracks().forEach(function (t) { t.stop(); });
+          stream = null;
+        }
+        video.srcObject = null;
+        overlay.classList.remove('is-active');
+        btnStart.disabled = false;
+        btnStop.disabled = true;
+        nativeStartedAt = 0;
+        nativeMissCount = 0;
+        autoFallbackTried = false;
+      }
+
+      function switchToServerFallback(reasonText) {
+        if (scanMode === 'server') return;
+        scanMode = 'server';
+        serverDecodeBusy = false;
+        if (reasonText) {
+          setStatus(reasonText, 'info');
+        } else {
+          setStatus('Switched to local server QR decode mode.', 'info');
+        }
+      }
+
+      function postQrContent(raw) {
+        if (!raw || posting) return;
+        posting = true;
+        setStatus('Submitting attendance...', 'info');
+
+        var fd = new FormData();
+        fd.append('qr_content', raw);
+
+        fetch('ajax/log_attendance.php', {
+          method: 'POST',
+          body: fd,
+          cache: 'no-store'
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data && data.success) {
+              var message = data.message || 'Attendance recorded.';
+              setStatus(message, 'ok');
+              setLastScan(raw, message, data);
+              return;
+            }
+            var msg = (data && (data.message || data.error)) ? (data.message || data.error) : 'Could not record attendance.';
+            setStatus(msg, 'error');
+            setLastScan(raw, msg, data);
+          })
+          .catch(function () {
+            setStatus('Request failed. Check local server connection.', 'error');
+            setLastScan(raw, 'Request failed');
+          })
+          .then(function () {
+            posting = false;
+          });
+      }
+
+      function captureFrameDataUrl() {
+        if (!video || video.readyState < 2 || !canvas) return '';
+        var w = video.videoWidth || 0;
+        var h = video.videoHeight || 0;
+        if (!w || !h) return '';
+        // Downscale very high-res mobile frames to keep decode fast/stable.
+        var maxW = 480;
+        if (w > maxW) {
+          var ratio = maxW / w;
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return '';
+        ctx.drawImage(video, 0, 0, w, h);
+        return canvas.toDataURL('image/jpeg', 0.5);
+      }
+
+      function processRawQrValue(raw) {
+        if (!raw) return;
+        var now = Date.now();
+        if (raw === lastValue && (now - lastScanTs) < DUPLICATE_MS) return;
+        lastValue = raw;
+        lastScanTs = now;
+        postQrContent(raw);
+      }
+
+      function scanOnce() {
+        if (scanMode === 'native') {
+          if (!detector || !video || video.readyState < 2 || posting) return;
+          detector.detect(video)
+            .then(function (codes) {
+              if (!codes || !codes.length) {
+                nativeMissCount += 1;
+                var runningMs = nativeStartedAt ? (Date.now() - nativeStartedAt) : 0;
+                if (!autoFallbackTried && runningMs > 15000 && nativeMissCount > 45) {
+                  autoFallbackTried = true;
+                  switchToServerFallback('No QR detected via native scanner. Trying server decode...');
+                }
+                return;
+              }
+              var raw = String(codes[0].rawValue || '').trim();
+              processRawQrValue(raw);
+            })
+            .catch(function () {
+              nativeMissCount += 1;
+              var runningMs = nativeStartedAt ? (Date.now() - nativeStartedAt) : 0;
+              if (!autoFallbackTried && runningMs > 3000) {
+                autoFallbackTried = true;
+                switchToServerFallback('Native scanner unstable. Switched to server decode.');
+              }
+            });
+          return;
+        }
+
+        if (scanMode === 'server') {
+          if (serverDecodeBusy || posting) return;
+          var image = captureFrameDataUrl();
+          if (!image) return;
+          serverDecodeBusy = true;
+          var ctrl = new AbortController();
+          var timeoutId = setTimeout(function () {
+            try { ctrl.abort(); } catch (e) {}
+          }, SERVER_DECODE_TIMEOUT_MS);
+          fetch('ajax/mobile_qr_decode.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: image }),
+            cache: 'no-store',
+            signal: ctrl.signal
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (!data || !data.success) {
+                var err = (data && data.error) ? String(data.error) : 'QR decode service error.';
+                var now = Date.now();
+                if ((now - serverDecodeErrorShownAt) > 2500) {
+                  setStatus(err, 'error');
+                  serverDecodeErrorShownAt = now;
+                }
+                return;
+              }
+              if (!data.found) return;
+              var raw = String(data.qr_content || '').trim();
+              processRawQrValue(raw);
+            })
+            .catch(function () {
+              var now = Date.now();
+              if ((now - serverDecodeErrorShownAt) > 2500) {
+                setStatus('QR decode request failed. Check local server/decoder connection.', 'error');
+                serverDecodeErrorShownAt = now;
+              }
+            })
+            .then(function () {
+              clearTimeout(timeoutId);
+              serverDecodeBusy = false;
+            });
+        }
+      }
+
+      async function startCamera() {
+        var hasNativeDetector = detector ? true : await initDetector();
+        scanMode = hasNativeDetector ? 'native' : 'server';
+        nativeStartedAt = Date.now();
+        nativeMissCount = 0;
+        autoFallbackTried = false;
+
+        navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 640, max: 960 },
+            height: { ideal: 480, max: 720 },
+            frameRate: { ideal: 30, max: 30 }
+          },
+          audio: false
+        })
+          .then(function (s) {
+            stream = s;
+            video.srcObject = s;
+            overlay.classList.add('is-active');
+            btnStart.disabled = true;
+            btnStop.disabled = false;
+            if (scanMode === 'native') {
+              setStatus('Camera active. Native QR scanner ready.', 'info');
+            } else {
+              setStatus('Camera active. Using local server QR decode fallback.', 'info');
+            }
+
+            stopLoop();
+            detectTimer = setInterval(scanOnce, scanMode === 'native' ? 180 : 220);
+          })
+          .catch(function (err) {
+            setStatus('Unable to open camera: ' + (err && err.message ? err.message : 'permission denied'), 'error');
+          });
+      }
+
+      btnStart.addEventListener('click', startCamera);
+      btnStop.addEventListener('click', function () {
+        stopCamera();
+        setStatus('Camera stopped.', 'info');
+      });
+
+      window.addEventListener('beforeunload', stopCamera);
+
+      if (!window.isSecureContext && location.hostname !== 'localhost') {
+        setStatus('If camera fails, open this page via HTTPS or localhost.', 'error');
+      }
+    })();
+  </script>
+</body>
+</html>

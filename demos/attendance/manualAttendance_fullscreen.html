@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual Attendance — Fullscreen</title>
+  <link rel="stylesheet" href="css/fullscreen.css" />
+  <link rel="stylesheet" href="css/manualAttendanceDesign.css" />
+  <link rel="stylesheet" href="css/manualAttendanceFullscreen.css" />
+</head>
+<body class="manual-attendance-fullscreen-page">
+
+  <header>
+    <div class="header-left">
+      <span class="header-title">ATTENDANCE CAPTURE</span>
+      <span class="badge-flag">Manual Monitoring</span>
+    </div>
+    <div class="header-right">
+      <button type="button" class="header-icon-btn" id="btnManualMinimize" title="Minimize to main view" aria-label="Minimize fullscreen">
+        <img class="icon-sm" src="assets/icons/minimize.png" alt="minimize">
+      </button>
+      <span id="currentDate"></span>
+      <span id="elapsedTimer"></span>
+      <img class="icon-sm" src="assets/icons/icon-flag.png" alt="flag">
+    </div>
+  </header>
+
+  <main>
+    
+  </main>
+
+  <script src="js/manualAttendanceDesign.js"></script>
+  <script>
+    (function () {
+      var returnUrl = ;
+
+      /* Same realtime clock as capture.php (#elapsedTimer) — not session elapsed time */
+      function formatClock(d) {
+        var h = d.getHours();
+        var ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12;
+        if (h === 0) h = 12;
+        var hh = String(h);
+        var mm = String(d.getMinutes()).padStart(2, '0');
+        var ss = String(d.getSeconds()).padStart(2, '0');
+        return hh + ':' + mm + ':' + ss + ' ' + ampm;
+      }
+
+      function formatHeaderDate(date) {
+        return date.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+
+      var dateEl = document.getElementById('currentDate');
+      if (dateEl) {
+        dateEl.textContent = formatHeaderDate(new Date());
+      }
+
+      var timerInterval = null;
+
+      function paintClock() {
+        var v = formatClock(new Date());
+        var el = document.getElementById('elapsedTimer');
+        if (el) el.textContent = v;
+      }
+
+      function startTimer() {
+        if (timerInterval) return;
+        paintClock();
+        timerInterval = setInterval(paintClock, 1000);
+      }
+
+      function exitFullscreenIfAny() {
+        try {
+          if (document.fullscreenElement && document.exitFullscreen) return document.exitFullscreen();
+          if (document.webkitFullscreenElement && document.webkitExitFullscreen) return document.webkitExitFullscreen();
+          if (document.msFullscreenElement && document.msExitFullscreen) return document.msExitFullscreen();
+        } catch (e) {}
+        return Promise.resolve();
+      }
+
+      function goBack() {
+        try { localStorage.setItem('openManualOnLoad', '1'); } catch (e) {}
+        window.location.href = returnUrl || 'capture.php?manual=1';
+      }
+
+      if (window.initManualAttendanceDesignModule) {
+        window.initManualAttendanceDesignModule({ embed: false, root: document.querySelector('.manual-attendance-design-root') });
+      }
+
+      startTimer();
+
+      var minBtn = document.getElementById('btnManualMinimize');
+      if (minBtn) {
+        minBtn.addEventListener('click', function () {
+          Promise.resolve(exitFullscreenIfAny()).finally(goBack);
+        });
+      }
+
+      try {
+        var root = document.documentElement;
+        if (root && root.requestFullscreen) root.requestFullscreen().catch(function () {});
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

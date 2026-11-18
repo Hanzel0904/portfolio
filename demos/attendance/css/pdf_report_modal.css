@@ -1,0 +1,539 @@
+/* Shared PDF export modal (records-style): overlay, two-column layout, logos, preview */
+body.modal-open {
+  overflow: hidden;
+}
+.pdf-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 3000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.pdf-overlay.open {
+  display: flex;
+}
+.pdf-modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: min(1240px, 96vw);
+  height: 96vh;
+  max-height: 96vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.pdf-modal-header,
+.pdf-modal-footer {
+  padding: 14px 18px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.pdf-modal-footer {
+  border-top: 1px solid #e5e7eb;
+  border-bottom: none;
+  justify-content: flex-end;
+}
+.pdf-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+.pdf-close-btn {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+}
+.pdf-modal-body {
+  padding: 14px 18px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.pdf-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(340px, 1.2fr);
+  gap: 14px;
+  align-items: stretch;
+  height: 100%;
+}
+.pdf-config-col {
+  min-width: 0;
+  overflow: auto;
+  min-height: 0;
+}
+.pdf-preview-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.pdf-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.pdf-field label {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+.pdf-field input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.pdf-preview-wrap {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  background: #fff;
+}
+.pdf-preview {
+  padding: 14px;
+  min-width: 0;
+  color: #111827;
+  font-family: Arial, sans-serif;
+}
+.pdf-preview h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+.pdf-preview .meta {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #374151;
+}
+.pdf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.pdf-table th,
+.pdf-table td {
+  border: 1px solid #d1d5db;
+  padding: 6px 8px;
+  text-align: left;
+}
+.pdf-table th {
+  background: #f3f4f6;
+  font-weight: 700;
+}
+
+/* Records-aligned data table (navy header, borders, zebra rows) — use for PDF exports */
+.doc-att-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+}
+.doc-att-table:not(.flag-range-grid) th {
+  background: #003366;
+  color: #fff;
+  padding: 6px 10px;
+  text-align: center;
+  border: 0.5px solid #002244;
+  font-size: 10.5px;
+  font-weight: 700;
+  font-family: Arial, sans-serif;
+}
+.doc-att-table th.left {
+  text-align: left;
+}
+.doc-att-table td {
+  padding: 5px 10px;
+  border: 0.5px solid #bbb;
+  font-size: 11px;
+  font-family: Arial, sans-serif;
+  line-height: 1.35;
+}
+.doc-att-table td.center {
+  text-align: center;
+}
+.doc-att-table td.left {
+  text-align: left;
+}
+.doc-att-table:not(.flag-range-grid) tr:nth-child(even) td {
+  background: #f0f4ff;
+}
+
+/* Date-range flag ceremony grid (preview + print) */
+.flag-range-grid thead th.month-row-th,
+.flag-range-grid thead th.col-no,
+.flag-range-grid thead th.name-col {
+  background: #003366 !important;
+  color: #fff !important;
+}
+.flag-range-grid thead th.col-flag-raising {
+  background: #1565c0 !important;
+  color: #fff !important;
+  border-color: #0d47a1 !important;
+}
+.flag-range-grid thead th.col-flag-retreat {
+  background: #e65100 !important;
+  color: #fff !important;
+  border-color: #bf360c !important;
+}
+.flag-range-grid tbody td.col-flag-raising {
+  background: #e3f2fd !important;
+}
+.flag-range-grid tbody td.col-flag-retreat {
+  background: #fff3e0 !important;
+}
+.flag-range-grid tbody tr:nth-child(even) td.col-flag-raising {
+  background: #bbdefb !important;
+}
+.flag-range-grid tbody tr:nth-child(even) td.col-flag-retreat {
+  background: #ffe0b2 !important;
+}
+.flag-range-legend {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 0.5px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  font-size: 11px;
+}
+.flag-range-legend-label {
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 10px;
+  color: #475569;
+}
+.flag-range-legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  align-items: center;
+}
+.flag-range-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+.flag-range-legend-swatch {
+  display: inline-block;
+  width: 28px;
+  height: 16px;
+  border-radius: 3px;
+  border: 0.5px solid #64748b;
+  flex-shrink: 0;
+}
+.flag-range-legend-swatch.col-flag-raising {
+  background: #1565c0 !important;
+  border-color: #0d47a1 !important;
+}
+.flag-range-legend-swatch.col-flag-retreat {
+  background: #e65100 !important;
+  border-color: #bf360c !important;
+}
+.flag-range-legend-text--raising {
+  color: #0d47a1 !important;
+}
+.flag-range-legend-text--retreat {
+  color: #bf360c !important;
+}
+
+/* Employee directory PDF: name column as wide as the longest name (no fixed %); single-line names */
+.emp-pdf-dir-table {
+  table-layout: auto;
+  width: max-content;
+  max-width: 100%;
+}
+.emp-pdf-dir-table .emp-pdf-col-no {
+  width: 1%;
+  white-space: nowrap;
+  vertical-align: top;
+}
+.emp-pdf-dir-table th.emp-pdf-name-col,
+.emp-pdf-dir-table td.emp-pdf-name-col {
+  white-space: nowrap;
+  vertical-align: top;
+}
+.emp-pdf-dir-table .emp-pdf-col-id,
+.emp-pdf-dir-table .emp-pdf-col-email,
+.emp-pdf-dir-table .emp-pdf-col-dept,
+.emp-pdf-dir-table .emp-pdf-col-pos {
+  vertical-align: top;
+}
+
+.pdf-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 8px 0 6px;
+}
+.pdf-section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.pdf-mini-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pdf-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  padding: 0;
+}
+.pdf-mini-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.pdf-mini-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.pdf-mini-btn--wide {
+  width: auto;
+  padding: 0 10px;
+  gap: 6px;
+}
+.pdf-mini-btn--wide span {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.pdf-logo-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.pdf-logo-slot {
+  flex: 1;
+}
+.pdf-logo-preview-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #6b7280;
+  overflow: hidden;
+}
+.pdf-logo-preview-box img {
+  max-height: 56px;
+  max-width: 100%;
+  object-fit: contain;
+}
+.pdf-upload-btn {
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  color: #111827;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 5px;
+  display: inline-block;
+}
+.doc-preview-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 12px 0 6px;
+}
+#an-doc-inner {
+  background: #fff;
+  color: #111;
+  font-family: Arial, sans-serif;
+  padding: 16px 20px;
+  font-size: 11.5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+#emp-doc-inner {
+  background: #fff;
+  color: #111;
+  font-family: Arial, sans-serif;
+  padding: 16px 20px;
+  font-size: 11.5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.an-doc-sheet {
+  width: 100%;
+  border-collapse: collapse;
+}
+/* Only the outer layout cells — do not match nested .doc-att-table td (same bug would zero their padding). */
+.an-doc-sheet > thead > tr > td,
+.an-doc-sheet > tbody > tr > td {
+  padding: 0;
+  border: 0;
+  vertical-align: top;
+}
+.doc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.doc-logos-left {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 52px;
+}
+.doc-logos-left img {
+  height: 52px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+.doc-logo-placeholder {
+  height: 52px;
+  width: 52px;
+  background: #e8edf0;
+  border: 1px dashed #aab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  color: #7a8a99;
+  text-align: center;
+  flex-shrink: 0;
+}
+.doc-right-info {
+  text-align: right;
+}
+.doc-right-city {
+  font-size: 10.5px;
+  font-weight: bold;
+  color: #003366;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #003366;
+  padding-bottom: 2px;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+.doc-right-dept {
+  font-size: 11px;
+  font-weight: bold;
+  color: #111;
+}
+.doc-right-addr {
+  font-size: 9.5px;
+  color: #444;
+  margin-top: 3px;
+  line-height: 1.6;
+}
+.doc-divider {
+  border: none;
+  border-top: 1.5px solid #003366;
+  margin: 7px 0;
+}
+.doc-ceremony-title {
+  text-align: center;
+  font-size: 14.5px;
+  font-weight: bold;
+  color: #111;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.doc-date-line {
+  text-align: center;
+  font-size: 11.5px;
+  margin-bottom: 3px;
+}
+.doc-office-line {
+  font-size: 11.5px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+.an-chart-thumb {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background: #fff;
+}
+
+.doc-footer-txt {
+  margin-top: 10px;
+  font-size: 10px;
+  color: #333;
+  line-height: 1.8;
+}
+
+.doc-sig-area {
+  margin-top: 34px;
+}
+
+.doc-sig-line {
+  width: 220px;
+  color: #333;
+}
+
+.doc-sig-name {
+  border-bottom: 1px solid #333;
+  min-height: 16px;
+  padding: 0 2px 2px;
+  font-size: 10.5px;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-sig-caption {
+  margin-top: 3px;
+  font-size: 9.5px;
+  text-align: center;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.pdf-logo-slot .pdf-upload-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+@media (max-width: 1100px) {
+  .pdf-layout {
+    grid-template-columns: 1fr;
+  }
+  .pdf-preview-wrap {
+    max-height: 42vh;
+  }
+}

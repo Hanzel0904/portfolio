@@ -1,0 +1,1515 @@
+/* ========================= */
+/* GLOBAL */
+/* ========================= */
+
+:root {
+  --green: #1A7C3E;
+  --green-light: #dcfce7;
+  --green-dark: #0f5132;
+  --blue: #2563eb;
+  --blue-hover: #1d4ed8;
+  --gray-900: #1a1a2e;
+  --gray-600: #475569;
+  --gray-500: #64748b;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --white: #ffffff;
+  --bg-page: #f5f6f8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg-page);
+    color: var(--gray-900);
+}
+
+/* Let the document grow with content so scrolling happens on the viewport (sticky/fixed header works). */
+html {
+    height: auto;
+    min-height: 100%;
+}
+
+/* Navbar: fixed on this page (sticky can fail when inner layouts / height:100% change scroll container). */
+body.settings-body {
+    min-height: 100vh;
+    padding-top: 72px;
+}
+body.settings-body.modal-open {
+    overflow: hidden;
+}
+
+body.settings-body .plp-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* ========================= */
+/* LAYOUT */
+/* ========================= */
+
+.container {
+    min-height: calc(100vh - 120px);
+    padding: 30px 40px;
+}
+
+.settings-shell {
+    max-width: none;
+    margin: 0;
+}
+
+.settings-body .container {
+    padding-bottom: 48px;
+}
+
+.settings-hero {
+    margin-bottom: 28px;
+}
+
+.settings-hero .page-subtitle {
+    margin-bottom: 0;
+    margin-top: 6px;
+}
+
+.settings-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.settings-top-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+@media (max-width: 980px) {
+    .settings-top-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card-elevated {
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.card-muted {
+    opacity: 0.92;
+    border: 1px dashed var(--gray-200);
+    background: linear-gradient(180deg, #fff 0%, #fafbfc 100%);
+}
+
+.card-top {
+    margin-bottom: 18px;
+}
+
+.card-top h2 {
+    margin-bottom: 6px;
+}
+
+.daily-ceremony-title-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 12px;
+    width: 100%;
+}
+
+.daily-ceremony-title {
+    margin: 0;
+}
+
+.daily-ceremony-toggle-wrap {
+    margin: 0;
+    justify-self: end;
+}
+
+.daily-ceremony-subtitle {
+    margin-top: 10px;
+}
+
+/* SYSTEM SETTINGS TITLE - SAME STYLE FORMAT AS HEADER */
+.page-title {
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--gray-900);
+}
+
+.page-subtitle {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    margin-bottom: 20px;
+}
+
+/* ========================= */
+/* CARD */
+/* ========================= */
+
+.card {
+    background: #fff;
+    padding: 20px 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 4px;
+}
+
+.card-subtitle {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    margin-bottom: 10px;
+}
+
+/* ========================= */
+/* FORM */
+/* ========================= */
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 20px;
+    margin-top: 12px;
+    align-items: flex-end; /* aligns button with time picker */
+}
+
+.form-row-tight {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 16px;
+    margin-bottom: 12px;
+    align-items: flex-end;
+}
+
+/* Ensure HTML hidden attribute wins over layout utility classes. */
+[hidden] {
+    display: none !important;
+}
+
+.form-group-narrow {
+    flex: 0 0 120px;
+    min-width: 100px;
+}
+
+.form-grid-special {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px 18px;
+    align-items: end;
+    margin-bottom: 8px;
+}
+
+.form-group-action {
+    grid-column: 1 / -1;
+}
+
+@media (min-width: 900px) {
+    .form-group-action {
+        grid-column: auto;
+        align-self: end;
+    }
+}
+
+.label-spacer {
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    pointer-events: none;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+input, select {
+    padding: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    border-radius: 6px;
+    border: 1px solid var(--gray-200);
+}
+
+/* Special Schedule */
+.section-add {
+    font-size: 0.95rem;
+    margin-top: 15px;
+    color: var(--gray-900);
+}
+
+/* ========================= */
+/* BUTTONS */
+/* ========================= */
+
+.primary-button {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.secondary-button {
+    background: var(--gray-200);
+    color: var(--gray-900);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+/* System Settings: unify button colors */
+.settings-shell .secondary-button {
+    background: var(--green);
+    color: #fff;
+}
+
+.settings-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+/* Daily flag ceremony — 5 equal columns, uniform gaps */
+.ceremony-settings-toolbar {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: 1.25rem;
+    row-gap: 0;
+    align-items: end;
+    width: 100%;
+    padding-bottom: 6px;
+    box-sizing: border-box;
+}
+
+/* Scheduling-style layout for default ceremonies */
+.ceremony-schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ceremony-schedule-row {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(320px, 420px);
+    gap: 14px 18px;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    background: #fafbfc;
+}
+
+.ceremony-schedule-row--rules {
+    background: #fff;
+}
+
+.ceremony-schedule-meta {
+    min-width: 0;
+}
+
+.ceremony-schedule-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1.2;
+}
+
+.ceremony-schedule-sub {
+    margin-top: 4px;
+    font-size: 0.82rem;
+    color: var(--gray-500);
+}
+
+.ceremony-schedule-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    align-items: end;
+}
+
+.ceremony-schedule-fields--rules {
+    grid-template-columns: 1fr 1fr;
+}
+
+.ceremony-schedule-row .ceremony-field {
+    margin: 0;
+}
+
+.ceremony-schedule-row select,
+.ceremony-schedule-row input[type="time"],
+.ceremony-schedule-row input[type="number"] {
+    height: 2.5rem;
+    border-radius: 10px;
+}
+
+.ceremony-schedule-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.ceremony-schedule-actions .primary-button {
+    height: 2.5rem;
+    border-radius: 10px;
+    padding: 0 1.25rem;
+}
+
+@media (max-width: 860px) {
+    .ceremony-schedule-row {
+        grid-template-columns: 1fr;
+    }
+    .ceremony-schedule-fields--rules {
+        grid-template-columns: 1fr 1fr;
+    }
+    .ceremony-schedule-actions {
+        justify-content: stretch;
+    }
+    .ceremony-schedule-actions .primary-button {
+        width: 100%;
+    }
+}
+
+.ceremony-settings-toolbar .ceremony-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    min-width: 0;
+    width: 100%;
+}
+
+.ceremony-settings-toolbar .ceremony-field label {
+    font-weight: 600;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    color: var(--gray-700, #344054);
+    white-space: normal;
+}
+
+.ceremony-toolbar-label-spacer {
+    display: block;
+    font-weight: 600;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    color: transparent;
+    user-select: none;
+    min-height: calc(0.72rem * 1.3);
+}
+
+.ceremony-settings-toolbar .ceremony-field--time input[type="time"] {
+    width: 100%;
+    max-width: 100%;
+    height: 2.375rem;
+    margin-top: 0;
+    padding: 0 0.45rem;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200, #e2e8f0);
+    font-size: 0.9rem;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.ceremony-settings-toolbar .ceremony-field--num input[type="number"] {
+    width: 100%;
+    max-width: 100%;
+    height: 2.375rem;
+    margin-top: 0;
+    padding: 0 0.4rem;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200, #e2e8f0);
+    font-size: 0.9rem;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.ceremony-settings-toolbar .ceremony-field--save {
+    width: 100%;
+}
+
+.ceremony-settings-toolbar .ceremony-field--save .primary-button {
+    width: 100%;
+    max-width: 100%;
+    height: 2.375rem;
+    min-height: 2.375rem;
+    padding: 0 0.75rem;
+    box-sizing: border-box;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media (max-width: 900px) {
+    .ceremony-settings-toolbar {
+        grid-template-columns: repeat(5, minmax(8.5rem, 1fr));
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+.ceremony-field-hint {
+    margin: 0.4rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: var(--gray-500, #667085);
+    max-width: 28rem;
+}
+
+/* Departments settings */
+.dept-add-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 18px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    padding: 16px 18px;
+    background: var(--gray-100);
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+}
+
+.dept-add-field {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dept-add-field.dept-add-narrow {
+    flex: 0 0 auto;
+    min-width: 100px;
+}
+
+.dept-add-field input[type="text"] {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.dept-add-field input[type="color"] {
+    width: 100%;
+    height: 42px;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    cursor: pointer;
+    background: var(--white);
+}
+
+.dept-add-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-end;
+}
+
+.dept-add-row--single .dept-add-field {
+    flex: 1 1 280px;
+    max-width: none;
+    min-width: 0;
+}
+
+.dept-add-row--single {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
+    column-gap: 14px;
+    align-items: end;
+}
+
+.dept-add-row--single .dept-add-actions {
+    width: 100%;
+}
+
+.dept-add-row--single .dept-add-actions .primary-button {
+    width: 100%;
+}
+
+@media (max-width: 700px) {
+    .dept-add-row--single {
+        grid-template-columns: 1fr;
+        row-gap: 10px;
+    }
+}
+
+.dept-list-toolbar {
+    margin-top: 16px;
+}
+
+.dept-table-panel {
+    margin-top: 12px;
+}
+
+.dept-list-toggle {
+    font-size: 0.92rem;
+}
+
+/* "Show ... list" should look like a hyperlink (still a button for a11y) */
+.dept-list-toggle.secondary-button {
+    background: transparent !important;
+    color: var(--green) !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    font-size: 0.92rem !important;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.dept-list-toggle.secondary-button:hover {
+    color: var(--green-dark) !important;
+    text-decoration-thickness: 2px;
+}
+
+.dept-list-toggle.secondary-button:focus {
+    outline: 2px solid rgba(37, 99, 235, 0.35);
+    outline-offset: 3px;
+}
+
+.dept-table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+}
+
+.dept-settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+}
+
+.dept-settings-table th,
+.dept-settings-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.dept-settings-table th {
+    text-align: left;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gray-500);
+    background: #f8fafc;
+}
+
+.dept-settings-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.dept-settings-table tbody tr:hover td {
+    background: #f9fafb;
+}
+
+.col-swatch {
+    width: 52px;
+}
+
+.dept-swatch {
+    display: block;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.col-hex {
+    width: 100px;
+}
+
+.dept-hex {
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    background: var(--gray-100);
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+.col-act {
+    min-width: 140px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.dept-actions {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    justify-content: flex-end;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.table-action-btn-danger {
+    background: #dc2626; /* red */
+    color: #ffffff;      /* icon/text */
+    border: 1px solid #dc2626;
+}
+
+.table-action-btn-danger:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+}
+
+.table-action-btn-secondary {
+    background: var(--green-light);
+    color: var(--green-dark);
+    border: 1px solid #86efac;
+}
+
+.table-action-btn-secondary:hover {
+    background: #bbf7d0;
+    border-color: #4ade80;
+}
+
+.modal-card-narrow {
+    width: min(420px, 100%);
+}
+
+input[type="time"],
+input[type="date"],
+input[type="number"] {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+}
+
+select {
+    padding: 10px 12px;
+}
+
+/* ========================= */
+/* BACKUP */
+/* ========================= */
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.card-icon {
+    width: 20px;
+}
+
+.backup-actions {
+    display: grid;
+    gap: 12px;
+}
+
+.backup-actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.backup-actions-text strong {
+    font-size: 0.95rem;
+}
+
+.backup-actions-text .card-subtitle {
+    margin-top: 4px;
+}
+
+.backup-actions .secondary-button {
+    display: inline-block;
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* Account settings inline label + edit icon */
+.account-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.account-label-row > label {
+    margin-bottom: 0;
+}
+
+.account-edit-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid #86efac;
+    background: var(--green-light);
+    color: var(--green-dark);
+    cursor: pointer;
+    padding: 0;
+}
+
+.account-edit-icon-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+.account-edit-icon-btn:hover {
+    background: #bbf7d0;
+    border-color: #4ade80;
+}
+
+.account-edit-icon-btn[hidden] {
+    display: none !important;
+}
+
+/* ========================= */
+/* TOGGLE */
+/* ========================= */
+
+.toggle-switch {
+    position: relative;
+    width: 45px;
+    height: 22px;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.toggle-switch input:checked + .slider {
+    background: #1e7e34;
+}
+
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* ========================= */
+/* Special Schedules Table */
+/* ========================= */
+
+.schedule-list {
+    margin-top: 18px;
+}
+
+.schedule-list-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+}
+
+.schedule-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.special-schedules-table-wrap {
+    overflow-x: auto;
+}
+
+.special-schedules-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.special-schedules-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--gray-100);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.special-schedules-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.special-schedules-table td:last-child {
+    white-space: nowrap;
+}
+
+.special-schedules-table tr:hover td {
+    background: var(--gray-100);
+}
+
+.table-empty {
+    text-align: center;
+    padding: 1.25rem;
+    color: var(--gray-500);
+}
+
+.status-pill {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-pill.active {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.status-pill.inactive {
+    background: var(--gray-200);
+    color: var(--gray-600);
+}
+
+.table-action-btn {
+    background: var(--blue);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.table-action-btn:hover {
+    background: var(--blue-hover);
+}
+
+/* Ensure secondary buttons override base .table-action-btn (edit) */
+.table-action-btn.table-action-btn-secondary {
+    background: #ffedd5; /* light orange */
+    color: #9a3412;      /* orange/brown */
+    border: 1px solid #fdba74;
+}
+
+.table-action-btn.table-action-btn-secondary:hover {
+    background: #fed7aa;
+    border-color: #fb923c;
+}
+
+/* Ensure danger buttons override base .table-action-btn (defined below in file) */
+.table-action-btn.table-action-btn-danger {
+    background: #dc2626;
+    color: #ffffff;
+    border: 1px solid #dc2626;
+}
+
+.table-action-btn.table-action-btn-danger:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+}
+
+.table-action-disabled {
+    color: var(--gray-500);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Icon-only buttons inside schedule action cells (prevents wrapping) */
+.dept-actions .table-action-btn {
+    padding: 6px !important;
+    width: 34px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+
+.dept-actions .table-action-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.dept-actions .table-action-disabled {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    width: 34px;
+    height: 28px;
+    padding: 0;
+}
+
+.dept-actions .table-action-disabled svg {
+    width: 16px;
+    height: 16px;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    /* Above fixed .plp-header (1000) */
+    z-index: 2000;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2010;
+    padding: 16px;
+}
+
+.modal[hidden],
+.modal-backdrop[hidden] {
+    display: none !important;
+}
+
+.modal-card {
+    width: min(760px, 100%);
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.22);
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.modal-header-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.staff-count-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    border: 1px solid var(--gray-200);
+    color: var(--gray-700);
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.modal-close-btn {
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--gray-600);
+}
+
+.modal-body {
+    padding: 16px 18px 8px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 12px 18px 16px;
+}
+
+.schedule-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--gray-200);
+}
+
+.schedule-pagination-info {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+}
+
+.schedule-pagination-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.schedule-page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--green);
+    background: var(--green-light);
+    text-decoration: none;
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+.schedule-page-link:hover {
+    filter: brightness(0.95);
+}
+
+.schedule-page-current {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--green);
+}
+
+/* Participants (special schedules) */
+.participant-fieldset {
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 14px 16px 16px;
+    margin: 16px 0 8px;
+    background: #fafbfc;
+}
+
+.participant-legend {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0 6px;
+    color: var(--gray-900);
+}
+
+.participant-hint {
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+.participant-mode-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin-bottom: 12px;
+}
+
+.participant-mode-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: stretch;
+}
+
+.participant-radio--block {
+    margin-bottom: 0;
+}
+
+.participant-mode-block {
+    padding: 10px 12px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+}
+
+.participant-mode-block .participant-nested {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--gray-200);
+}
+
+.participant-radio {
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.participant-section {
+    margin-top: 10px;
+}
+
+.participant-section-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 10px 0 6px;
+    color: var(--gray-900);
+}
+
+.participant-dept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px 14px;
+}
+
+.participant-dept-label {
+    font-size: 0.88rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.participant-empty {
+    font-size: 0.88rem;
+    color: var(--gray-500);
+    margin: 0;
+}
+
+.participant-select,
+.participant-multiselect {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 6px;
+}
+
+.participant-multiselect {
+    min-height: 160px;
+}
+
+.participant-emp-cb-list {
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    background: var(--white);
+}
+
+.participant-emp-search {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 6px;
+    margin-bottom: 4px;
+    padding: 0.5rem 0.65rem;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.participant-emp-search::placeholder {
+    color: var(--gray-500);
+}
+
+.participant-emp-cb-list--3col {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px 10px;
+    padding: 10px;
+    max-height: 320px;
+}
+
+.participant-emp-cb-list--3col .participant-emp-cb-row {
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 10px;
+    margin: 0;
+    border: 1px solid var(--gray-100);
+    border-radius: 8px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.participant-emp-cb-list--3col .participant-emp-cb-row:last-child {
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.participant-emp-cb-list--3col .participant-emp-cb-row--on {
+    padding-left: 10px;
+    border-left: 3px solid rgba(26, 124, 62, 0.45);
+}
+
+@media (max-width: 720px) {
+    .participant-emp-cb-list--3col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    .participant-emp-cb-list--3col {
+        grid-template-columns: 1fr;
+    }
+}
+
+.participant-loading,
+.participant-emp-cb-list .participant-empty {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    font-size: 0.88rem;
+    color: var(--gray-500);
+}
+
+.participant-emp-cb-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    margin: 0;
+    cursor: pointer;
+    border-bottom: 1px solid var(--gray-100);
+    transition: background-color 0.12s ease, border-color 0.12s ease;
+    font-weight: 500;
+    font-size: 0.88rem;
+}
+
+.participant-emp-cb-row:last-child {
+    border-bottom: none;
+}
+
+.participant-emp-cb-row:hover {
+    background: #f8fafc;
+}
+
+.participant-emp-cb-row--on {
+    background: rgba(26, 124, 62, 0.1);
+    border-left: 3px solid rgba(26, 124, 62, 0.45);
+    padding-left: 9px;
+}
+
+.participant-emp-cb-row input[type="checkbox"] {
+    margin-top: 3px;
+    flex-shrink: 0;
+    accent-color: var(--green);
+}
+
+.participant-emp-cb-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.participant-emp-cb-name {
+    color: var(--gray-900);
+    line-height: 1.35;
+}
+
+.participant-emp-cb-dept {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--gray-500);
+}
+
+.schedule-list-header-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.schedule-list-header-row .schedule-list-title {
+    margin-bottom: 0;
+}
+
+.schedule-list-note {
+    font-weight: 500;
+    color: var(--gray-500);
+    font-size: 0.82rem;
+}
+
+.col-participants {
+    max-width: 220px;
+}
+
+.participant-cell {
+    display: inline-block;
+    max-width: 100%;
+    line-height: 1.35;
+    color: var(--gray-600);
+    font-size: 0.85rem;
+}
+
+.modal-card-wide {
+    width: min(960px, 100%);
+    max-height: calc(100vh - 32px);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-card-wide .modal-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.modal-card-wide .modal-actions {
+    flex-shrink: 0;
+    border-top: 1px solid var(--gray-200);
+    background: var(--white);
+}
+
+.modal-card-schedule-add {
+    max-height: calc(100vh - 24px);
+}
+
+.schedule-add-lead {
+    font-size: 0.88rem;
+    color: var(--gray-600);
+    margin: 0 0 14px;
+    line-height: 1.45;
+}
+
+.modal-body-schedule-add {
+    padding: 16px 18px 8px;
+    overflow-y: auto;
+    max-height: min(72vh, 640px);
+    flex: 1;
+    min-height: 0;
+}
+
+.modal-card-schedule-add .modal-actions {
+    flex-shrink: 0;
+    border-top: 1px solid var(--gray-200);
+    background: var(--white);
+}
+
+.modal-body-flush {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+}
+
+.schedule-all-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--gray-200);
+    background: #fafbfc;
+}
+
+.schedule-all-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.schedule-all-tab {
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--gray-600);
+}
+
+.schedule-all-tab.is-active {
+    background: var(--green);
+    color: var(--white);
+    border-color: var(--green);
+}
+
+.schedule-all-count {
+    font-weight: 700;
+    opacity: 0.95;
+}
+
+.schedule-all-search-wrap {
+    flex: 1 1 200px;
+    max-width: 360px;
+}
+
+.schedule-all-search {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.schedule-all-table-wrap {
+    overflow: auto;
+    max-height: min(60vh, 520px);
+    border-top: none;
+}

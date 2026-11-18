@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mobile QR Attendance</title>
+  <link rel="stylesheet" href="css/fullscreen.css" />
+  <link rel="stylesheet" href="css/mobileQrFullscreen.css" />
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <span class="header-title">EVENT ATTENDANCE</span>
+      <span class="badge-flag" id="currentEventBadge">Flag Raising</span>
+    </div>
+    <div class="header-right">
+      <button class="header-icon-btn" id="btnMinimize" title="Minimize to main view" aria-label="Minimize fullscreen">
+        <img class="icon-sm" src="assets/icons/minimize.png" alt="minimize">
+      </button>
+      <span id="currentDate"></span>
+      <img class="icon-sm" src="assets/icons/icon-flag.png" alt="flag">
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT-->
+  <main>
+    <!-- ── LEFT: Mobile QR (phone scan) ── -->
+    <div class="panel-left">
+      <div class="title-row">
+        <div class="panel-title" id="modeTitle">Mobile QR Scanner</div>
+      </div>
+
+      <div class="camera-wrapper">
+        <div class="camera-placeholder" id="cameraPlaceholder">
+          <img src="assets/icons/icon-camera-off.png" alt="qr">
+          <span>QR Scanner using phone</span>
+          <span class="qr-waiting-sub">Attendance details will appear after a successful scan.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT: Employee Information ── -->
+    <div class="panel-right">
+      <div class="info-card">
+        <div class="info-card-title">Employee Information</div>
+
+        <!-- STATE: Waiting for phone scan -->
+        <div class="state-waiting" id="stateWaiting">
+          <div class="avatar-circle">
+            <img src="assets/icons/icon-person.png" alt="person">
+          </div>
+          <div class="waiting-text">
+            Waiting for phone QR scan...<br>
+            Bring your phone QR near the scanner
+          </div>
+        </div>
+
+        <!-- STATE: Employee detected -->
+        <div class="state-detected" id="stateDetected">
+          <div class="attendance-banner">
+            <div class="attendance-label">
+              <img src="assets/icons/icon-check-circle.png" alt="check">
+              Attendance Recorded!
+            </div>
+            <span class="badge-timein" id="attendanceTypeBadge">Time in</span>
+          </div>
+
+          <div class="emp-avatar">
+            <div class="emp-avatar-circle">
+              <img src="assets/icons/icon-person.png" alt="person">
+            </div>
+            <div class="emp-name" id="empName">Maria Santos</div>
+            <div class="emp-id" id="empId">EMP2024001</div>
+          </div>
+
+          <div class="info-rows">
+            <div class="info-row">
+              <img class="row-icon" src="assets/icons/icon-department.png" alt="department">
+              <div class="info-row-text">
+                <label>Department</label>
+                <span id="empDepartment">College of Engineering</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <img class="row-icon" src="assets/icons/icon-position.png" alt="position">
+              <div class="info-row-text">
+                <label>Position</label>
+                <span id="empPosition">Professor</span>
+              </div>
+            </div>
+
+            <div class="info-row highlighted">
+              <img class="row-icon" src="assets/icons/icon-clock.png" alt="time">
+              <div class="info-row-text">
+                <label>Time Recorded</label>
+                <span id="timeRecorded">--:-- --</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <img class="row-icon" src="assets/icons/icon-calendar.png" alt="date">
+              <div class="info-row-text">
+                <label>Date</label>
+                <span id="dateRecorded">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ── DOM References ──────────────────────────────────────────
+    const btnMinimize            = document.getElementById('btnMinimize');
+    const stateWaiting         = document.getElementById('stateWaiting');
+    const stateDetected        = document.getElementById('stateDetected');
+    const attendanceTypeBadge  = document.getElementById('attendanceTypeBadge');
+    const empName              = document.getElementById('empName');
+    const empId                = document.getElementById('empId');
+    const empDepartment       = document.getElementById('empDepartment');
+    const empPosition         = document.getElementById('empPosition');
+    const timeRecorded        = document.getElementById('timeRecorded');
+    const dateRecorded        = document.getElementById('dateRecorded');
+
+    const today = new Date();
+    document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    function formatHumanTime(d) {
+      return d.toLocaleTimeString('en-PH', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+    }
+
+    function formatHumanDate(d) {
+      return d.toLocaleDateString('en-PH', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    function updateCurrentEventUI(eventData) {
+      const badge = document.getElementById('currentEventBadge');
+      if (!badge || !eventData) return;
+      badge.textContent = eventData.name || 'No Event';
+    }
+
+    function loadCurrentEvent() {
+      const now = new Date();
+      const url =
+        'ajax/current_event.php?t=' +
+        Date.now() +
+        '&client_now=' +
+        encodeURIComponent(now.toISOString()) +
+        '&client_tz_offset_min=' +
+        encodeURIComponent(String(now.getTimezoneOffset()));
+
+      fetch(url, { cache: 'no-store' })
+        .then(res => res.json())
+        .then(data => {
+          if (!data || !data.success || !data.event) return;
+          updateCurrentEventUI(data.event);
+        })
+        .catch(() => {});
+    }
+
+    function showEmployeeInfo(latest) {
+      if (!latest) return;
+      const status = String(latest.log_status || 'time_in');
+      const isOut = status === 'time_out';
+      const isLate = status === 'late';
+
+      if (empName) empName.textContent = latest.full_name || 'Unknown';
+      if (empId) empId.textContent = latest.employee_id || '---';
+      if (empDepartment) empDepartment.textContent = latest.department || '---';
+      if (empPosition) empPosition.textContent = latest.position || '---';
+
+      const now = new Date();
+      if (timeRecorded) timeRecorded.textContent = formatHumanTime(now);
+      if (dateRecorded) dateRecorded.textContent = formatHumanDate(now);
+
+      if (attendanceTypeBadge) {
+        attendanceTypeBadge.classList.toggle('badge-timeout', isOut);
+        attendanceTypeBadge.classList.toggle('badge-timein', !isOut);
+        attendanceTypeBadge.textContent = isOut ? 'Time out' : (isLate ? 'Late' : 'Time in');
+      }
+
+      stateWaiting.style.display = 'none';
+      stateDetected.style.display = 'flex';
+    }
+
+    function scheduleHideInfo(hideAfterMs) {
+      hideAfterMs = hideAfterMs || 3000;
+      if (window.__mqHideTimer) clearTimeout(window.__mqHideTimer);
+      window.__mqHideTimer = setTimeout(() => {
+        stateWaiting.style.display = 'flex';
+        stateDetected.style.display = 'none';
+        window.__mqHideTimer = null;
+      }, hideAfterMs);
+    }
+
+    // ── Polling logic (baseline so we don't immediately show old data) ──
+    let pollInterval = null;
+    let mobileQrLastLogId = 0;
+    let mobileQrLastMarker = '';
+    let baselineReady = false;
+
+    let lastShownMarker = null;
+    let busy = false;
+
+    function pollLatestScan() {
+      if (busy) return;
+      busy = true;
+
+      const url =
+        'ajax/latest_attendance_employee.php?last_id=' + encodeURIComponent(String(mobileQrLastLogId)) +
+        '&last_marker=' + encodeURIComponent(String(mobileQrLastMarker || '')) +
+        '&t=' + Date.now();
+
+      fetch(url, { cache: 'no-store' })
+        .then(res => res.json())
+        .then(data => {
+          if (!data || !data.success) return;
+          if (data.marker) mobileQrLastMarker = String(data.marker);
+
+          // Baseline first so we only show NEW scans.
+          if (!baselineReady) {
+            baselineReady = true;
+            return;
+          }
+
+          if (!data.updated || !data.latest) return;
+          if (data.marker && data.marker === lastShownMarker) return;
+          lastShownMarker = data.marker || null;
+
+          // Update right-side employee info.
+          const latest = data.latest;
+          showEmployeeInfo(latest);
+          scheduleHideInfo(3000);
+        })
+        .catch(() => {})
+        .finally(() => { busy = false; });
+    }
+
+    function startPolling() {
+      if (pollInterval) return;
+      pollLatestScan(); // baseline
+      pollInterval = setInterval(pollLatestScan, 1200);
+    }
+
+    function stopPolling() {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+    }
+
+    // ── Minimize back to capture.php (Mobile QR mode) ─────────────────────
+    if (btnMinimize) {
+      btnMinimize.addEventListener('click', () => {
+        stopPolling();
+        window.location.href = 'capture.php?mobileqr=1';
+      });
+    }
+
+    window.addEventListener('visibilitychange', function () {
+      if (!document.hidden) loadCurrentEvent();
+    });
+
+    window.addEventListener('focus', function () {
+      loadCurrentEvent();
+    });
+
+    // init
+    loadCurrentEvent();
+    startPolling();
+  </script>
+</body>
+</html>
+
