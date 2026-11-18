@@ -308,6 +308,33 @@
   <h1>Attendance Records</h1>
   <p class="subtitle">Generate and export flag ceremony attendance for <span class="date-badge">Nov 18, 2026</span>.</p>
 
+  <div class="rep-stats">
+    <div class="rep-stat-card">
+      <div class="rep-stat-info">
+        <h4>Total employees</h4>
+        <div class="value">48</div>
+        <span class="hint">Unique employees</span>
+      </div>
+      <span class="rep-stat-icon employees" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
+    </div>
+    <div class="rep-stat-card">
+      <div class="rep-stat-info">
+        <h4>Present</h4>
+        <div class="value">36</div>
+        <span class="hint">Includes late</span>
+      </div>
+      <span class="rep-stat-icon timein" aria-hidden="true"><i class="fa-solid fa-arrow-trend-up"></i></span>
+    </div>
+    <div class="rep-stat-card">
+      <div class="rep-stat-info">
+        <h4>Absent</h4>
+        <div class="value">12</div>
+        <span class="hint">Not logged</span>
+      </div>
+      <span class="rep-stat-icon timeout" aria-hidden="true"><i class="fa-solid fa-arrow-trend-down"></i></span>
+    </div>
+  </div>
+
   <form method="get" action="#" autocomplete="off" id="filter-form" class="rep-card" data-reopen-date-panel="" onsubmit="return false;">
     <h3>Report configuration</h3>
 
@@ -404,33 +431,6 @@
       <a href="" class="rep-btn rep-btn-secondary" id="downloadCsvBtn">Download CSV</a>
     </div>
   </form>
-
-  <div class="rep-stats">
-    <div class="rep-stat-card">
-      <div class="rep-stat-info">
-        <h4>Total employees</h4>
-        <div class="value">48</div>
-        <span class="hint">Unique employees</span>
-      </div>
-      <span class="rep-stat-icon employees" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
-    </div>
-    <div class="rep-stat-card">
-      <div class="rep-stat-info">
-        <h4>Present</h4>
-        <div class="value">36</div>
-        <span class="hint">Includes late</span>
-      </div>
-      <span class="rep-stat-icon timein" aria-hidden="true"><i class="fa-solid fa-arrow-trend-up"></i></span>
-    </div>
-    <div class="rep-stat-card">
-      <div class="rep-stat-info">
-        <h4>Absent</h4>
-        <div class="value">12</div>
-        <span class="hint">Not logged</span>
-      </div>
-      <span class="rep-stat-icon timeout" aria-hidden="true"><i class="fa-solid fa-arrow-trend-down"></i></span>
-    </div>
-  </div>
 
   <div class="rep-table-card">
     <h3>Flag ceremony logs</h3>
