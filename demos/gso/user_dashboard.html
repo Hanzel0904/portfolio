@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<base href="/demos/gso/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
@@ -257,6 +258,8 @@
       }
     }
   </style>
+<link rel="stylesheet" href="css/dashb-gso.css">
+<style>body{display:flex;align-items:flex-start;margin:0}.main-content,.content{flex:1;min-width:0}.sidebar ul{list-style:none;padding:0;margin:0}.sidebar a{display:block;text-decoration:none;padding:.55rem 0}</style>
 </head>
 <body>
 <div class="sidebar"><h3>Department Portal</h3><div class="user-info"><div class="user-name">Demo account</div><div class="dept-info">Sample office</div></div><ul><li><a href="user_dashboard.html"><span>Dashboard</span></a></li><li><a href="user_add_PLP.html"><span>Request form</span></a></li><li><a href="user_history.html"><span>History</span></a></li><li><a href="user_settings.html"><span>Settings</span></a></li><li><a href="index.html"><span>Logout</span></a></li></ul></div>
@@ -264,28 +267,28 @@
 <div class="main-content">
   <div class="dashboard-header">
     <h1>Dashboard Overview</h1>
-    <p>Welcome back, <strong></strong> | Department: <strong></strong></p>
+    <p>Welcome back, <strong>Demo account</strong> | Department: <strong>Sample office</strong></p>
   </div>
 
   <div class="summary-cards">
     <div class="summary-card pending" onclick="showSection('pending')">
       <i class="fas fa-clock card-icon"></i>
       <div class="card-title">Pending Requests</div>
-      <div class="card-value"></div>
+      <div class="card-value">2</div>
       <a href="javascript:void(0)" class="card-link">View Details</a>
     </div>
     
     <div class="summary-card delivered" onclick="showSection('delivered')">
       <i class="fas fa-check-circle card-icon"></i>
       <div class="card-title">Delivered Requests</div>
-      <div class="card-value"></div>
+      <div class="card-value">1</div>
       <a href="javascript:void(0)" class="card-link">View Details</a>
     </div>
     
     <div class="summary-card out-of-stock" onclick="showSection('out-of-stock')">
       <i class="fas fa-times-circle card-icon"></i>
       <div class="card-title">Out of Stock</div>
-      <div class="card-value"></div>
+      <div class="card-value">1</div>
       <a href="javascript:void(0)" class="card-link">View Details</a>
     </div>
   </div>

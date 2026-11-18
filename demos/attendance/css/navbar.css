@@ -21,11 +21,14 @@ body {
   -webkit-font-smoothing: antialiased;
   background: var(--plp-bg-header);
   border-bottom: 1px solid var(--plp-border-color);
-  padding: 0 5%;
-  height: 72px;
+  padding: 8px 3%;
+  min-height: 72px;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -78,14 +81,16 @@ body {
 .plp-nav {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 4px;
 }
 
 .plp-nav-link {
   text-decoration: none;
-  padding: 10px 16px;
+  padding: 8px 10px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--plp-text-muted);
   transition: background-color 0.2s ease, color 0.2s ease;
