@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/dashb-gso.css">
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+<div class="sidebar">
+  <h3>Department Portal</h3>
+  <div class="user-info">
+    <div class="user-name">Demo account</div>
+    <div class="user-role">User</div>
+    <div class="dept-info">Sample office</div>
+  </div>
+  <ul>
+    <li><a href="dashboard.html"><i data-feather="home"></i><span> Dashboard</span></a></li>
+    <li><a href="index.html"><i data-feather="log-out"></i><span> Logout</span></a></li>
+  </ul>
+</div>
+<div class="main-content">
+  <div class="dashboard-header">
+    <h1>Dashboard Overview</h1>
+    <p>Welcome back, <strong>Demo account</strong> | Department: <strong>Sample office</strong></p>
+  </div>
+  <div class="summary-cards">
+    <div class="summary-card pending" onclick="showSection('pending')">
+      <i class="fas fa-clock card-icon"></i>
+      <div class="card-title">Pending Requests</div>
+      <div class="card-value">2</div>
+      <a href="javascript:void(0)" class="card-link">View Details</a>
+    </div>
+    <div class="summary-card delivered" onclick="showSection('delivered')">
+      <i class="fas fa-check-circle card-icon"></i>
+      <div class="card-title">Delivered Requests</div>
+      <div class="card-value">1</div>
+      <a href="javascript:void(0)" class="card-link">View Details</a>
+    </div>
+    <div class="summary-card out-of-stock" onclick="showSection('out-of-stock')">
+      <i class="fas fa-times-circle card-icon"></i>
+      <div class="card-title">Out of Stock</div>
+      <div class="card-value">1</div>
+      <a href="javascript:void(0)" class="card-link">View Details</a>
+    </div>
+  </div>
+  <div id="pendingSection" class="status-section">
+    <div class="section-header">
+      <h2><i class="fas fa-clock"></i> Pending Requests</h2>
+      <button class="back-btn" onclick="hideSections()" type="button"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+    </div>
+    <table>
+      <thead>
+        <tr><th>RIS No</th><th>Item</th><th>Description</th><th>Quantity</th><th>Requested Date</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>RIS-1042</td><td>Bond paper, A4</td><td>For office printing</td><td>2</td><td>Nov 18, 2026</td><td><span class="status-badge badge-pending">PENDING</span></td></tr>
+        <tr><td>RIS-1044</td><td>Ballpen, black</td><td>Counter supply</td><td>1</td><td>Nov 18, 2026</td><td><span class="status-badge badge-pending">PENDING</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="deliveredSection" class="status-section">
+    <div class="section-header">
+      <h2><i class="fas fa-check-circle"></i> Delivered Requests</h2>
+      <button class="back-btn" onclick="hideSections()" type="button"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+    </div>
+    <table>
+      <thead>
+        <tr><th>RIS No</th><th>Item</th><th>Description</th><th>Quantity</th><th>Delivered Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>RIS-1038</td><td>Folder, long</td><td>Records filing</td><td>3</td><td>Nov 17, 2026</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="outOfStockSection" class="status-section">
+    <div class="section-header">
+      <h2><i class="fas fa-times-circle"></i> Out of Stock Items</h2>
+      <button class="back-btn" onclick="hideSections()" type="button"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+    </div>
+    <table>
+      <thead>
+        <tr><th>RIS No</th><th>Item</th><th>Description</th><th>Quantity</th><th>Requested Date</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>RIS-1031</td><td>Alcohol, 500 ml</td><td>Sanitation</td><td>4</td><td>Nov 16, 2026</td><td><span class="status-badge badge-out-of-stock">OUT OF STOCK</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  function showSection(section) {
+    document.querySelectorAll(".status-section").forEach(function (sec) { sec.classList.remove("active"); });
+    var id = section === "pending" ? "pendingSection" : section === "delivered" ? "deliveredSection" : "outOfStockSection";
+    document.getElementById(id).classList.add("active");
+    document.querySelector(".summary-cards").style.display = "none";
+  }
+  function hideSections() {
+    document.querySelectorAll(".status-section").forEach(function (sec) { sec.classList.remove("active"); });
+    document.querySelector(".summary-cards").style.display = "grid";
+  }
+  if (window.feather) feather.replace();
+</script>
+</body>
+</html>

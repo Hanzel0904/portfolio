@@ -2,76 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GSO inventory model demo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../demo.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Login - PLP GSO Supply Tracking and Monitoring System</title>
+  <script src="https://unpkg.com/feather-icons@4.29.0/dist/feather.min.js"></script>
+  <link rel="stylesheet" href="login.css">
 </head>
 <body>
-  <header class="top">
-    <a class="mark" href="../../index.html">GSO inventory model</a>
-    <span class="badge">Sample data</span>
-  </header>
-  <main class="wrap">
-    <div class="tabs" role="tablist">
-      <button type="button" role="tab" aria-selected="true" data-panel="board">Dashboard</button>
-      <button type="button" role="tab" aria-selected="false" data-panel="stock">Stock</button>
-      <button type="button" role="tab" aria-selected="false" data-panel="ris">RIS</button>
+  <div class="container">
+    <div class="header">
+      <h1>PLP GSO Supply Tracking and Monitoring System</h1>
     </div>
-
-    <section id="board" class="panel active">
-      <div class="stats">
-        <div class="stat"><span>Items tracked</span><strong>42</strong></div>
-        <div class="stat"><span>Pending RIS</span><strong>3</strong></div>
-        <div class="stat"><span>Issued today</span><strong>5</strong></div>
+    <form action="dashboard.html" method="get">
+      <div class="form-section">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 1.5rem;">User Login</h2>
+        <div class="form-grid">
+          <div class="form-control">
+            <label for="username" class="required-field">
+              <i data-feather="user"></i>Username or Email
+            </label>
+            <input type="text" id="username" name="username" required placeholder="Enter your username or email">
+          </div>
+          <div class="form-control">
+            <label for="password" class="required-field">
+              <i data-feather="lock"></i>Password
+            </label>
+            <div class="password-input">
+              <input type="password" id="password" name="password" required placeholder="Enter your password">
+              <button type="button" class="toggle-password" aria-label="Show password">
+                <i data-feather="eye" id="password-toggle-icon"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card">
-        <p>General Services Office supply desk. Counts and slips here are samples, not the live inventory.</p>
+      <button type="submit" class="submit-btn">
+        <i data-feather="log-in"></i>Login
+      </button>
+      <div class="info-section">
+        Model demo of the original login screen. Any sample login opens the dashboard.
       </div>
-    </section>
-
-    <section id="stock" class="panel">
-      <table>
-        <thead>
-          <tr><th>Item</th><th>Unit</th><th>On hand</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Bond paper, A4</td><td>ream</td><td>18</td><td class="ok">In stock</td></tr>
-          <tr><td>Ballpen, black</td><td>box</td><td>6</td><td class="ok">In stock</td></tr>
-          <tr><td>Alcohol, 500 ml</td><td>bottle</td><td>2</td><td class="wait">Low</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section id="ris" class="panel">
-      <table>
-        <thead>
-          <tr><th>RIS no.</th><th>Office</th><th>Item</th><th>Status</th></tr>
-        </thead>
-        <tbody id="ris-body">
-          <tr><td>RIS-1042</td><td>Registrar</td><td>Bond paper · 2 reams</td><td class="wait">Pending</td></tr>
-          <tr><td>RIS-1038</td><td>College of Computing</td><td>Ballpen · 1 box</td><td class="ok">Issued</td></tr>
-        </tbody>
-      </table>
-      <p><button class="action" type="button" id="issue-slip">Issue the pending slip</button></p>
-      <p id="ris-status" role="status"></p>
-    </section>
-  </main>
-  <script src="../demo.js"></script>
+    </form>
+  </div>
   <script>
-    document.getElementById("issue-slip").addEventListener("click", function () {
-      var cell = document.querySelector("#ris-body tr td.wait, #ris-body tr .wait");
-      var row = document.querySelector("#ris-body tr");
-      if (row) {
-        var status = row.querySelector(".wait");
-        if (status) {
-          status.textContent = "Issued";
-          status.className = "ok";
-        }
-      }
-      document.getElementById("ris-status").textContent = "RIS-1042 marked issued in this model.";
+    document.addEventListener("DOMContentLoaded", function () {
+      if (window.feather) feather.replace();
+      var toggle = document.querySelector(".toggle-password");
+      var password = document.querySelector("#password");
+      toggle.addEventListener("click", function () {
+        var show = password.getAttribute("type") === "password";
+        password.setAttribute("type", show ? "text" : "password");
+        toggle.innerHTML = '<i data-feather="' + (show ? "eye-off" : "eye") + '"></i>';
+        feather.replace();
+      });
     });
   </script>
 </body>

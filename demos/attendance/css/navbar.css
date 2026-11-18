@@ -1,0 +1,193 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap");
+
+:root {
+  --plp-primary: #1a7a40;
+  --plp-primary-hover: #145c30;
+  --plp-bg-header: #ffffff;
+  --plp-text-main: #334155;
+  --plp-text-muted: #64748b;
+  --plp-border-color: #e2e8f0;
+  --plp-hover-bg: #f1f5f9;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+}
+
+/* Isolate nav from page stylesheets that redefine body (e.g. register / employee pages). */
+.plp-header {
+  font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  background: var(--plp-bg-header);
+  border-bottom: 1px solid var(--plp-border-color);
+  padding: 0 5%;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.plp-header * {
+  font-family: inherit !important;
+}
+
+.plp-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.plp-logo-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--plp-hover-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--plp-border-color);
+}
+
+.plp-logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.plp-logo-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--plp-primary);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.plp-logo-sub {
+  font-size: 12px;
+  color: var(--plp-text-muted);
+  font-weight: 500;
+}
+
+.plp-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.plp-nav-link {
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--plp-text-muted);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plp-nav-link:hover,
+.plp-nav-link:focus-visible {
+  background: var(--plp-hover-bg);
+  color: var(--plp-text-main);
+  outline: 2px solid var(--plp-primary);
+  outline-offset: -2px;
+}
+
+.plp-nav-link.active {
+  background: var(--plp-primary);
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(26, 122, 64, 0.25);
+}
+
+.plp-menu-wrap {
+  position: relative;
+}
+
+.plp-menu-btn {
+  border: none;
+  background: transparent;
+  color: var(--plp-text-muted);
+  border-radius: 8px;
+  padding: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.plp-menu-btn:hover,
+.plp-menu-btn:focus-visible {
+  background: var(--plp-hover-bg);
+  color: var(--plp-text-main);
+  outline: 2px solid var(--plp-primary);
+  outline-offset: -2px;
+}
+
+.plp-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid var(--plp-border-color);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  padding: 8px 0;
+  z-index: 1001;
+  display: none;
+}
+
+.plp-menu-dropdown.is-open {
+  display: block;
+}
+
+.plp-menu-dropdown a {
+  display: block;
+  text-decoration: none;
+  color: var(--plp-text-main);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 14px;
+}
+
+.plp-menu-dropdown a:hover {
+  background: var(--plp-hover-bg);
+}
+
+.plp-menu-dropdown a.plp-menu-logout {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.plp-menu-dropdown a.plp-menu-logout:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+@media (max-width: 900px) {
+  .plp-header {
+    padding: 0 20px;
+  }
+
+  .plp-logo-sub {
+    display: none;
+  }
+
+  .plp-nav-link span {
+    display: none;
+  }
+
+  .plp-nav-link {
+    padding: 10px;
+  }
+}
