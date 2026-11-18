@@ -36,23 +36,70 @@
 <body>
 
 <header class="plp-header" role="banner">
-  <a href="dashboard.html" class="plp-logo-wrap">
-    <div class="plp-logo-icon"><img src="assets/logo.png" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
-    <div class="plp-logo-text"><span class="plp-logo-title">PLP Smart Attendance</span><span class="plp-logo-sub">Demo</span></div>
+  <a href="dashboard.html" class="plp-logo-wrap" aria-label="Return to Dashboard">
+    <div class="plp-logo-icon">
+      <img src="assets/logo.png" alt="Institutional Logo" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    <div class="plp-logo-text">
+      <span class="plp-logo-title">PLP Smart Attendance</span>
+      <span class="plp-logo-sub">Ceremony Portal</span>
+    </div>
   </a>
-  <nav class="plp-nav">
-    <a class="plp-nav-link" href="dashboard.html"><span>Dashboard</span></a>
-    <a class="plp-nav-link" href="employee_registration.html"><span>Register</span></a>
-    <a class="plp-nav-link" href="records.html"><span>Records</span></a>
-    <a class="plp-nav-link" href="employee_management.html"><span>Employees</span></a>
-    <a class="plp-nav-link" href="capture.html"><span>Capture</span></a>
-    <a class="plp-nav-link" href="analytics.html"><span>Analytics</span></a>
-    <a class="plp-nav-link" href="audit_monitoring.html"><span>Audit</span></a>
-    <a class="plp-nav-link" href="system_settings.html"><span>Settings</span></a>
-    <a class="plp-nav-link" href="scanner.html"><span>Scanner</span></a><a class="plp-nav-link" href="manualAttendanceDesign.html"><span>Manual</span></a><a class="plp-nav-link" href="fullscreen.html"><span>Ceremony</span></a><a class="plp-nav-link" href="mobileQr_fullscreen.html"><span>Mobile QR</span></a>
-    <a class="plp-nav-link" href="index.html"><span>Logout</span></a>
+  <nav class="plp-nav" role="navigation" aria-label="Main Navigation">
+    <a href="dashboard.html" class="plp-nav-link">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="employee_registration.html" class="plp-nav-link">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+      <span>Register</span>
+    </a>
+    <a href="records.html" class="plp-nav-link">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+      <span>Records</span>
+    </a>
+    <div class="plp-menu-wrap">
+      <button type="button" class="plp-menu-btn" aria-label="More pages" aria-expanded="false" aria-haspopup="true">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <div class="plp-menu-dropdown" id="plpMenuDropdown">
+        <a href="employee_management.html">Employee Management</a>
+        <a href="capture.html">Attendance Capture</a>
+        <a href="audit_monitoring.html">Audit &amp; Monitoring</a>
+        <a href="analytics.html">Analytics</a>
+        <a href="system_settings.html">System Settings</a>
+        <a href="scanner.html">Scanner</a>
+        <a href="manualAttendanceDesign.html">Manual attendance</a>
+        <a href="fullscreen.html">Ceremony screen</a>
+        <a href="mobileQr_fullscreen.html">Mobile QR</a>
+        <div style="height:1px;background:#e2e8f0;margin:6px 0;"></div>
+        <a href="index.html" class="plp-menu-logout">Logout</a>
+      </div>
+    </div>
   </nav>
 </header>
+<script>
+(function () {
+  var btn = document.querySelector('.plp-menu-btn');
+  var menu = document.getElementById('plpMenuDropdown');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    menu.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', menu.classList.contains('is-open') ? 'true' : 'false');
+  });
+  document.addEventListener('click', function (e) {
+    if (!menu.contains(e.target) && e.target !== btn) {
+      menu.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+})();
+</script>
 
   
 
@@ -189,71 +236,52 @@
             </tr>
           </thead>
           <tbody id="employeeTableBody">
-            
-            <tr
-              class="employee-directory-row"
-              data-id=""
-              data-name=""
-              data-employee-id=""
-              data-email=""
-              data-department=""
-              data-position=""
-              data-status=""
-              data-enrollment=""
-            >
+            <tr class="employee-directory-row" data-id="EMP-014" data-name="Demo Staff A" data-employee-id="EMP-014" data-email="demo.a@example.com" data-department="Sample office" data-position="Staff" data-status="Active" data-enrollment="2026-01-06">
               <td>
                 <div class="employee-cell">
-                  <div class="avatar">
-                    <span class="avatar-initials"></span>
-                  </div>
-                  <div>
-                    <div class="employee-name"></div>
-                    <div class="employee-id"></div>
-                  </div>
+                  <div class="avatar"><span class="avatar-initials">DA</span></div>
+                  <div><div class="employee-name">Demo Staff A</div><div class="employee-id">EMP-014</div></div>
                 </div>
               </td>
-              <td>
-                <div class="dept-cell">
-                  <svg class="icon" viewBox="0 0 24 24"><use href="#ico-building"/></svg>
-                  <div>
-                    <div class="dept-name"></div>
-                    <div class="dept-title"></div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="contact-cell">
-                  <div class="email"><svg class="icon" viewBox="0 0 24 24"><use href="#ico-envelope"/></svg> </div>
-                </div>
-              </td>
-              <td>
-                <div style="display:flex;align-items:center;justify-content:flex-start;gap:10px;min-height:28px;">
-                  
-                    <span title="Face enrolled" aria-label="Face enrolled" style="width:42px;height:26px;border-radius:999px;background:#dcfce7;border:1px solid #86efac;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:0.4px;color:#0f5132;font-family:inherit;">
-                      FACE
-                    </span>
-                  
-                  
-                    <span title="QR assigned" aria-label="QR assigned" style="width:38px;height:26px;border-radius:999px;background:#dcfce7;border:1px solid #86efac;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:0.4px;color:#0f5132;font-family:inherit;">
-                      QR
-                    </span>
-                  
-                  
-                    <span style="color:#94a3b8;">—</span>
-                  
-                </div>
-              </td>
-              <td><span class="badge "></span></td>
-              <td><button type="button" class="actions-btn" aria-label="Actions"><svg class="icon" viewBox="0 0 24 24"><use href="#ico-ellipsis"/></svg></button></td>
+              <td><div class="dept-cell"><div><div class="dept-name">Sample office</div><div class="dept-title">Staff</div></div></div></td>
+              <td><div class="contact-cell"><div class="email">demo.a@example.com</div></div></td>
+              <td><span style="font-size:12px;font-weight:700;color:#0f5132;">FACE · QR</span></td>
+              <td><span class="badge">Active</span></td>
+              <td><button type="button" class="actions-btn" aria-label="Actions">···</button></td>
             </tr>
-            
+            <tr class="employee-directory-row" data-id="EMP-021" data-name="Demo Staff B" data-employee-id="EMP-021" data-email="demo.b@example.com" data-department="Sample office" data-position="Staff" data-status="Active" data-enrollment="2026-01-06">
+              <td>
+                <div class="employee-cell">
+                  <div class="avatar"><span class="avatar-initials">DB</span></div>
+                  <div><div class="employee-name">Demo Staff B</div><div class="employee-id">EMP-021</div></div>
+                </div>
+              </td>
+              <td><div class="dept-cell"><div><div class="dept-name">Sample office</div><div class="dept-title">Staff</div></div></div></td>
+              <td><div class="contact-cell"><div class="email">demo.b@example.com</div></div></td>
+              <td><span style="font-size:12px;font-weight:700;color:#0f5132;">FACE · QR</span></td>
+              <td><span class="badge">Active</span></td>
+              <td><button type="button" class="actions-btn" aria-label="Actions">···</button></td>
+            </tr>
+            <tr class="employee-directory-row" data-id="EMP-033" data-name="Demo Staff C" data-employee-id="EMP-033" data-email="demo.c@example.com" data-department="Sample office" data-position="Staff" data-status="Active" data-enrollment="2026-01-06">
+              <td>
+                <div class="employee-cell">
+                  <div class="avatar"><span class="avatar-initials">DC</span></div>
+                  <div><div class="employee-name">Demo Staff C</div><div class="employee-id">EMP-033</div></div>
+                </div>
+              </td>
+              <td><div class="dept-cell"><div><div class="dept-name">Sample office</div><div class="dept-title">Staff</div></div></div></td>
+              <td><div class="contact-cell"><div class="email">demo.c@example.com</div></div></td>
+              <td><span style="font-size:12px;font-weight:700;color:#0f5132;">FACE · QR</span></td>
+              <td><span class="badge">Active</span></td>
+              <td><button type="button" class="actions-btn" aria-label="Actions">···</button></td>
+            </tr>
           </tbody>
         </table>
       </div>
       
       <div class="emp-pagination" style="justify-content:center; text-align:center;">
         <span class="emp-pagination-info">
-          Showing – of 
+          Showing 1–3 of 3
         </span>
         <nav class="emp-pagination-nav" aria-label="Employee directory pages" style="justify-content:center;">
           
