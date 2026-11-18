@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attendance model demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../demo.css">
+</head>
+<body>
+  <header class="top">
+    <a class="mark" href="../../index.html">Attendance model</a>
+    <span class="badge">Sample data</span>
+  </header>
+  <main class="wrap">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" aria-selected="true" data-panel="board">Dashboard</button>
+      <button type="button" role="tab" aria-selected="false" data-panel="check">Ceremony check-in</button>
+      <button type="button" role="tab" aria-selected="false" data-panel="log">Today’s log</button>
+    </div>
+
+    <section id="board" class="panel active">
+      <div class="stats">
+        <div class="stat"><span>Expected</span><strong>24</strong></div>
+        <div class="stat"><span>Present</span><strong>18</strong></div>
+        <div class="stat"><span>Not yet in</span><strong>6</strong></div>
+      </div>
+      <div class="card">
+        <p>Flag ceremony · Monday, 7:00 AM. This screen uses made-up counts so the real attendance records stay on the school computer.</p>
+      </div>
+    </section>
+
+    <section id="check" class="panel">
+      <div class="card checkin">
+        <div class="face" aria-hidden="true"></div>
+        <div>
+          <p><strong>Sample match · present</strong></p>
+          <p>The live system compares a face with the stored profile. This model only shows the result.</p>
+          <button class="action" type="button" id="mark-present">Mark sample present</button>
+          <p id="check-status" role="status"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="log" class="panel">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Office</th><th>Time</th><th>Status</th></tr>
+        </thead>
+        <tbody id="log-body">
+          <tr><td>EMP-014</td><td>College of Computing</td><td>6:52 AM</td><td class="ok">Present</td></tr>
+          <tr><td>EMP-021</td><td>General Services</td><td>6:58 AM</td><td class="ok">Present</td></tr>
+          <tr><td>EMP-033</td><td>Registrar</td><td>—</td><td class="wait">Waiting</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <script src="../demo.js"></script>
+  <script>
+    document.getElementById("mark-present").addEventListener("click", function () {
+      document.getElementById("check-status").textContent = "Sample check-in saved as present.";
+      var row = document.createElement("tr");
+      row.innerHTML = "<td>EMP-040</td><td>Sample office</td><td>7:01 AM</td><td class=\"ok\">Present</td>";
+      document.getElementById("log-body").prepend(row);
+    });
+  </script>
+</body>
+</html>
